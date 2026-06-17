@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    cursor: crosshair;
+  }
+  a, button, [role="button"] { 
+    cursor: pointer; 
+  }
+}
+
+@layer components {
+  /* Chamfered Corners */
+  .chamfered {
+    clip-path: polygon(0 15px, 15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+  }
+
+  /* Tactical Panel */
+  .tactical-panel {
+    @apply bg-surface-container-lowest/70 border border-cyber-cyan/20 relative transition-all duration-300;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    clip-path: polygon(0 15px, 15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+  }
+  .tactical-panel::before {
+    content: ''; 
+    @apply absolute top-0 left-0 w-full h-[2px] bg-cyber-cyan opacity-50;
+  }
+  .tactical-panel:hover {
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.2); 
+    @apply border-cyber-cyan/50;
+  }
+
+  /* Button Glitch */
+  .btn-glitch { 
+    @apply relative overflow-hidden; 
+  }
+  .btn-glitch::after {
+    content: ''; 
+    @apply absolute top-0 w-full h-full;
+    left: -100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.4), transparent);
+    transition: left 0.5s ease;
+  }
+  .btn-glitch:hover::after { 
+    left: 100%; 
+  }
+
+  /* Card Scanning Line */
+  .card-scanner { 
+    @apply relative overflow-hidden; 
+  }
+  .card-scanner::after {
+    content: ''; 
+    @apply absolute left-0 w-full h-[2px] bg-cyber-cyan opacity-0 transition-opacity duration-300;
+    top: -100%;
+    box-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff; 
+  }
+  .card-scanner:hover::after { 
+    opacity: 0.8; 
+    animation: scanline 2s linear infinite; 
+  }
+
+  /* Network Nodes specific styles */
+  .network-node {
+    @apply bg-surface-container-lowest/40 border border-cyber-cyan/30 p-8 flex flex-col justify-center items-center relative overflow-hidden h-48 cursor-crosshair chamfered;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .network-node:hover {
+    @apply border-elec-yellow;
+    box-shadow: 0 0 25px rgba(252, 238, 10, 0.3);
+    transform: translateY(-5px);
+  }
+}
+
+@layer utilities {
+  .scale-105-on-hover:hover { 
+    transform: scale(1.05); 
+  }
+
+  /* Scanline Overlay */
+  .scanlines {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2));
+    background-size: 100% 4px;
+  }
+
+  /* Pixel Grid Background */
+  .grid-bg {
+    background-image: linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* CRT Vignette */
+  .crt-vignette {
+    background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.6) 100%);
+  }
+
+  .cursor-blink, .blink { 
+    animation: blink 1s step-end infinite; 
+  }
+
+  .glitch-hover:hover {
+    animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+    @apply text-crimson-red;
+    text-shadow: 2px 0 #00f3ff, -2px 0 #fcee0a;
+  }
+
+  .timeline-line {
+    background: linear-gradient(to bottom, rgba(0, 243, 255, 0.1) 0%, rgba(0, 243, 255, 0.8) 50%, rgba(0, 243, 255, 0.1) 100%);
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+  }
+}
+
+@keyframes glitch {
+  0% { transform: translate(0) }
+  20% { transform: translate(-2px, 2px) }
+  40% { transform: translate(-2px, -2px) }
+  60% { transform: translate(2px, 2px) }
+  80% { transform: translate(2px, -2px) }
+  100% { transform: translate(0) }
+}
+
+@keyframes blink { 
+  0%, 100% { opacity: 1; } 
+  50% { opacity: 0; } 
+}
+
+@keyframes scanline { 
+  0% { top: -10%; } 
+  100% { top: 110%; } 
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { @apply bg-background border-l border-cyber-cyan/10; }
+::-webkit-scrollbar-thumb { @apply bg-outline-variant; }
+::-webkit-scrollbar-thumb:hover { @apply bg-cyber-cyan; }
