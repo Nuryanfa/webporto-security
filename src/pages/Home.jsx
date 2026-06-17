@@ -1,10 +1,13 @@
+import AnimatedPage from '../components/AnimatedPage';
+import TypewriterText from '../components/TypewriterText';
+
 export default function Home() {
   return (
-    <section className="flex-col gap-8 flex w-full animate-fade-in">
-      <header className="mb-12">
+    <AnimatedPage>
+      <header className="mb-12 h-32">
         <div className="font-terminal text-cyber-cyan text-4xl md:text-6xl mb-2 drop-shadow-[0_0_8px_rgba(0,243,255,0.6)] font-bold">
-          &gt; INIT_SYS_SEQ...<br/>
-          &gt; HELLO, WORLD. I AM MUHAMAD NUR YANFA.
+          <TypewriterText text="> INIT_SYS_SEQ..." speed={60} /><br/>
+          <TypewriterText text="> HELLO, WORLD. I AM MUHAMAD NUR YANFA." delay={1200} speed={40} />
         </div>
         <div className="font-code text-lg text-elec-yellow mt-4 opacity-90 flex items-center gap-2">
           [SYS_STATUS]: BLUE_TEAM_ACTIVE <span className="w-3 h-5 bg-elec-yellow inline-block cursor-blink"></span>
@@ -54,6 +57,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-    </section>
+    </AnimatedPage>
   );
 }

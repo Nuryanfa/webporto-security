@@ -1,3 +1,6 @@
+import AnimatedPage from '../components/AnimatedPage';
+import TypewriterText from '../components/TypewriterText';
+
 export default function Archive() {
   const projects = [
     {
@@ -35,15 +38,15 @@ export default function Archive() {
   ];
 
   return (
-    <section className="flex-col w-full flex animate-fade-in">
-      <header className="mb-12 border-b border-primary/20 pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 relative">
+    <AnimatedPage>
+      <header className="mb-12 border-b border-primary/20 pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 relative min-h-[120px]">
         <div>
           <h2 className="font-terminal text-3xl md:text-5xl text-primary-container glitch-hover flex items-center gap-2 drop-shadow-[0_0_8px_rgba(0,243,255,0.5)]">
             <span className="text-tertiary-fixed-dim">&gt;</span>
-            QUERY_DATABASE: /root/archive/projects<span className="blink w-4 h-6 md:h-10 bg-primary-container inline-block ml-1 opacity-80"></span>
+            <TypewriterText text="QUERY_DATABASE: /root/archive/projects" speed={40} />
           </h2>
           <p className="font-code text-body-md text-on-surface-variant mt-3 uppercase tracking-widest opacity-80">
-            Retrieving archived records... <span className="text-secondary-fixed-dim">[{projects.length}] MATCHES FOUND</span>
+            <TypewriterText text={`Retrieving archived records... [${projects.length}] MATCHES FOUND`} delay={1500} speed={30} />
           </p>
         </div>
       </header>
@@ -72,6 +75,6 @@ export default function Archive() {
           </article>
         ))}
       </div>
-    </section>
+    </AnimatedPage>
   );
 }

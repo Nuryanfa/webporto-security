@@ -1,3 +1,6 @@
+import AnimatedPage from '../components/AnimatedPage';
+import TypewriterText from '../components/TypewriterText';
+
 export default function Timeline() {
   const logs = [
     {
@@ -21,10 +24,10 @@ export default function Timeline() {
   ];
 
   return (
-    <section className="flex-col w-full flex animate-fade-in">
-      <header className="mb-12 border-b border-primary/20 pb-6 relative">
+    <AnimatedPage>
+      <header className="mb-12 border-b border-primary/20 pb-6 relative h-20">
         <h2 className="font-terminal text-3xl md:text-5xl text-cyber-cyan glitch-hover flex items-center gap-2 drop-shadow-[0_0_8px_rgba(0,243,255,0.5)]">
-          &gt; FETCHING_LOGS: /root/timeline/sys_audit<span className="blink w-4 h-6 md:h-10 bg-cyber-cyan inline-block ml-1 opacity-80"></span>
+          <TypewriterText text="> FETCHING_LOGS: /root/timeline/sys_audit" speed={40} />
         </h2>
       </header>
       
@@ -85,6 +88,6 @@ export default function Timeline() {
           </div>
         ))}
       </div>
-    </section>
+    </AnimatedPage>
   );
 }

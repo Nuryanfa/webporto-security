@@ -1,8 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Terminal, FolderOpen, History, Network, Power } from 'lucide-react';
+import { useAudioHover } from '../utils/useAudioHover';
 
 export default function Sidebar() {
   const location = useLocation();
+  const playHoverSound = useAudioHover();
 
   const navItems = [
     { name: 'Home', path: '/', icon: Terminal },
@@ -35,7 +37,8 @@ export default function Sidebar() {
           return (
             <Link 
               key={item.path}
-              to={item.path} 
+              to={item.path}
+              onMouseEnter={playHoverSound}
               className={`flex items-center gap-3 px-4 py-3 font-code text-body-md transition-all rounded ${
                 isActive 
                   ? 'bg-secondary-container/20 text-secondary-fixed-dim border-l-4 border-secondary font-bold drop-shadow-[0_0_10px_rgba(255,171,243,0.3)]' 

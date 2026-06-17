@@ -1,8 +1,13 @@
 import Sidebar from './Sidebar';
+import MouseSpotlight from './MouseSpotlight';
+import ParticleBackground from './ParticleBackground';
 
 export default function Layout({ children }) {
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen relative">
+      <MouseSpotlight />
+      <ParticleBackground />
+      
       {/* Mobile Top Navigation */}
       <nav className="bg-background/80 backdrop-blur-xl docked full-width top-0 border-b border-outline-variant/30 flat no shadows flex justify-between items-center w-full px-4 py-4 z-40 fixed lg:hidden">
         <div className="font-headline-md text-headline-md font-bold tracking-tighter text-primary-container drop-shadow-[0_0_15px_rgba(0,220,230,0.4)]">
