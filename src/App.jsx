@@ -1,10 +1,15 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import Archive from './pages/Archive';
 import Timeline from './pages/Timeline';
 import Network from './pages/Network';
+import BootSequence from './components/BootSequence';
+import CustomCursor from './components/CustomCursor';
+import TabTitleUpdater from './components/TabTitleUpdater';
+import NoiseOverlay from './components/NoiseOverlay';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -20,14 +25,27 @@ function AnimatedRoutes() {
   );
 }
 
-function App() {
+export default function App() {
+  const [isBooting, setIsBooting] = useState(() => {
+    return sessionStorage.getItem('rebooting') === 'true';
+  });
+
+  const handleBootComplete = () => {
+    setIsBooting(false);
+    sessionStorage.removeItem('rebooting');
+  };
+
   return (
-    <Router>
-      <Layout>
-        <AnimatedRoutes />
-      </Layout>
-    </Router>
+    <>
+      <CustomCursor />
+      <NoiseOverlay />
+      {isBooting && <BootSequence onComplete={handleBootComplete} />}
+      <Router>
+        <TabTitleUpdater />
+        <Layout>
+          <AnimatedRoutes />
+        </Layout>
+      </Router>
+    </>
   );
 }
-
-export default App;

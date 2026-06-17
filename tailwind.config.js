@@ -53,10 +53,11 @@ export default {
         "headline-lg-mobile": ["Space Grotesk", "sans-serif"],
         "body-lg": ["JetBrains Mono", "monospace"], 
         "label-caps": ["JetBrains Mono", "monospace"], 
-        "display": ["Space Grotesk", "sans-serif"],
-        "code": ["JetBrains Mono", "monospace"], 
-        "body-md": ["JetBrains Mono", "monospace"], 
-        "terminal": ["VT323", "monospace"]
+        "display": ["Pixelify Sans", "sans-serif"],
+        "code": ["VT323", "monospace"], 
+        "body-md": ["Pixelify Sans", "monospace"], 
+        "terminal": ["VT323", "monospace"],
+        "pixel": ["Pixelify Sans", "monospace"]
       }
     },
   },

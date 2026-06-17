@@ -12,7 +12,7 @@ export default function TypewriterText({ text, delay = 0, speed = 50, className 
     const startTyping = () => {
       timeout = setInterval(() => {
         if (currentIndex < text.length) {
-          setDisplayedText((prev) => prev + text.charAt(currentIndex));
+          setDisplayedText(text.substring(0, currentIndex + 1));
           currentIndex++;
         } else {
           clearInterval(timeout);

@@ -8,13 +8,18 @@ export function useAudioHover() {
   const [audio, setAudio] = useState(null);
 
   useEffect(() => {
-    // We create a tiny synth beep instead of base64 to ensure it works
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) return;
-    
-    const actx = new AudioContext();
-    
+    let actx = null;
+
+    const initAudio = () => {
+      if (!actx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) actx = new AudioContext();
+      }
+    };
+
     const playClick = () => {
+      initAudio();
+      if (!actx) return;
       if (actx.state === 'suspended') actx.resume();
       
       const osc = actx.createOscillator();
@@ -24,7 +29,7 @@ export function useAudioHover() {
       osc.frequency.setValueAtTime(800, actx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(100, actx.currentTime + 0.05);
       
-      gain.gain.setValueAtTime(0.02, actx.currentTime); // Very low volume
+      gain.gain.setValueAtTime(0.02, actx.currentTime); 
       gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.05);
       
       osc.connect(gain);
@@ -37,7 +42,7 @@ export function useAudioHover() {
     setAudio(() => playClick);
 
     return () => {
-      actx.close();
+      if (actx) actx.close();
     };
   }, []);
 
