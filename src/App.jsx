@@ -1,11 +1,14 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useState, Suspense, lazy } from 'react';
 import Layout from './components/Layout';
-import Home from './pages/Home';
-import Archive from './pages/Archive';
-import Timeline from './pages/Timeline';
-import Network from './pages/Network';
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
+
+const Home = lazy(() => import('./pages/Home'));
+const Archive = lazy(() => import('./pages/Archive'));
+const Timeline = lazy(() => import('./pages/Timeline'));
+const Network = lazy(() => import('./pages/Network'));
 import BootSequence from './components/BootSequence';
 import CustomCursor from './components/CustomCursor';
 import TabTitleUpdater from './components/TabTitleUpdater';
@@ -15,12 +18,14 @@ function AnimatedRoutes() {
   const location = useLocation();
   return (
     <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Home />} />
-        <Route path="/archive" element={<Archive />} />
-        <Route path="/timeline" element={<Timeline />} />
-        <Route path="/network" element={<Network />} />
-      </Routes>
+      <Suspense fallback={<div className="flex h-screen items-center justify-center font-mono text-cyber-cyan">Loading...</div>}>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<Home />} />
+          <Route path="/archive" element={<Archive />} />
+          <Route path="/timeline" element={<Timeline />} />
+          <Route path="/network" element={<Network />} />
+        </Routes>
+      </Suspense>
     </AnimatePresence>
   );
 }
@@ -46,6 +51,8 @@ export default function App() {
           <AnimatedRoutes />
         </Layout>
       </Router>
+      <Analytics />
+      <SpeedInsights />
     </>
   );
 }
