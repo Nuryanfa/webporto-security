@@ -1,6 +1,6 @@
 import AnimatedPage from '../components/AnimatedPage';
 import TypewriterText from '../components/TypewriterText';
-import { Code2, Briefcase, Mail, Server } from 'lucide-react';
+import { Code2, Briefcase } from 'lucide-react';
 import { useAudioHover } from '../utils/useAudioHover';
 import MagneticWrapper from '../components/MagneticWrapper';
 import { motion } from 'framer-motion';
@@ -11,17 +11,12 @@ export default function Network() {
   const nodes = [
     {
       icon: Code2, protocol: "GITHUB", desc: "Link to repositories.",
-      href: "https://github.com/nuryanfa", target: "_blank",
+      href: "https://github.com/Nuryanfa", target: "_blank",
       glow: "elec-yellow", baseColor: "cyber-cyan"
     },
     {
       icon: Briefcase, protocol: "LINKEDIN", desc: "Link to professional network.",
-      href: "https://linkedin.com/in/nuryanfa", target: "_blank",
-      glow: "elec-yellow", baseColor: "cyber-cyan"
-    },
-    {
-      icon: Mail, protocol: "EMAIL", desc: "Direct encrypted message relay.",
-      href: "mailto:hello@nuryanfa.my.id", target: "_self",
+      href: "https://www.linkedin.com/in/muhamad-nur-yanfa-069036368", target: "_blank",
       glow: "elec-yellow", baseColor: "cyber-cyan"
     }
   ];
@@ -62,7 +57,7 @@ export default function Network() {
         variants={containerVariants}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-1 md:grid-cols-2 gap-8"
+        className="grid grid-cols-1 lg:grid-cols-2 gap-8"
       >
         {nodes.map((node, idx) => (
           <motion.div key={idx} variants={itemVariants}>
@@ -78,21 +73,6 @@ export default function Network() {
           </motion.div>
         ))}
 
-        {/* Main Server Node */}
-        <motion.div variants={itemVariants}>
-          <MagneticWrapper>
-            <a href="https://nuryanfa.my.id" target="_blank" onMouseEnter={playHoverSound} className="network-node group border-tertiary-fixed-dim/50 bg-tertiary-fixed-dim/10 shadow-[0_0_15px_rgba(42,229,0,0.1)] hover:border-tertiary-fixed-dim block h-full">
-              <div className="absolute inset-0 bg-tertiary-fixed-dim/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-tertiary-fixed-dim opacity-0 group-hover:opacity-100 shadow-[0_0_15px_#2ae500] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-in-out"></div>
-              <div className="flex items-center gap-2 mb-4">
-                <Server className="w-8 h-8 text-tertiary-fixed-dim" />
-                <span className="font-code text-xs bg-tertiary-fixed-dim/20 text-tertiary-fixed-dim px-2 py-1 rounded">ROOT_SERVER</span>
-              </div>
-              <h3 className="font-display font-bold text-2xl text-tertiary-fixed-dim mb-2 uppercase tracking-wide">nuryanfa.my.id</h3>
-              <p className="font-code text-sm text-tertiary-fixed-dim mt-2 opacity-80">Status: ONLINE // MAIN UPLINK</p>
-            </a>
-          </MagneticWrapper>
-        </motion.div>
       </motion.div>
     </AnimatedPage>
   );

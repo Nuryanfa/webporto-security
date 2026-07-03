@@ -1,7 +1,7 @@
 import AnimatedPage from '../components/AnimatedPage';
 import TypewriterText from '../components/TypewriterText';
 import GlitchBlur from '../components/GlitchBlur';
-import profileImg from '../../../WhatsApp Image 2024-10-01 at 14.09.45_9642c528.jpg';
+import profileImg from '../assets/profile.jpg';
 
 export default function Home() {
   return (
@@ -16,9 +16,9 @@ export default function Home() {
         </div>
       </header>
       
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Module 1: Physical ID Card */}
-        <div className="md:col-span-4 flex">
+        <div className="lg:col-span-4 flex">
           <div className="tactical-panel w-full p-0 flex flex-col relative overflow-hidden group">
             {/* Hologram Overlay */}
             <div className="absolute inset-0 bg-gradient-to-br from-cyber-cyan/10 via-transparent to-elec-yellow/10 mix-blend-overlay z-10 pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -87,7 +87,7 @@ export default function Home() {
         </div>
         
         {/* Right Side Modules (Col 5-12) */}
-        <div className="md:col-span-8 flex flex-col gap-6">
+        <div className="lg:col-span-8 flex flex-col gap-6">
           
           {/* Module 2: Expanded Dossier Terminal */}
           <div className="tactical-panel p-6 flex flex-col flex-grow">
@@ -116,7 +116,7 @@ export default function Home() {
           </div>
 
           {/* Bottom Row Modules */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
             {/* Module 3: Current Focus */}
             <div className="tactical-panel p-6">

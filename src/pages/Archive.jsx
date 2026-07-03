@@ -6,7 +6,20 @@ import { motion } from 'framer-motion';
 export default function Archive() {
   const projects = [
     {
-      id: "PRJ-001", sec: "CLOUD",
+      id: "PRJ-001", sec: "SEC_LAB",
+      title: "SecureNet Enterprise Lab",
+      desc: "Purple team-focused enterprise network security lab — built, attacked, defended, and continuously hardened. Features 6 versioned releases with MITRE ATT&CK mapped attack simulations.",
+      tags: [
+        { name: "MikroTik", style: "bg-tertiary-container/10 border-tertiary-container/30 text-tertiary-fixed-dim" },
+        { name: "Wazuh", style: "bg-[#00d8ff]/10 border-[#00d8ff]/30 text-[#00d8ff]" },
+        { name: "Suricata", style: "bg-error-container/20 border-error-container/50 text-error" },
+        { name: "Purple Team", style: "bg-secondary-container/10 border-secondary-container/30 text-secondary-fixed-dim" }
+      ],
+      glow: "primary-container",
+      link: "https://github.com/Nuryanfa/securenet-enterprise-lab"
+    },
+    {
+      id: "PRJ-002", sec: "CLOUD",
       title: "Cloud-Native Certificate Validation System",
       desc: "A high-throughput microservice for X.509 certificate validation using zero-trust principles.",
       tags: [
@@ -14,53 +27,20 @@ export default function Archive() {
         { name: "PostgreSQL", style: "bg-surface-variant border-outline-variant/50 text-on-surface-variant" },
         { name: "Cloud KMS", style: "bg-secondary-container/10 border-secondary-container/30 text-secondary-fixed-dim" }
       ],
-      glow: "primary-container",
-      link: "https://github.com/Nuryanfa"
-    },
-    {
-      id: "PRJ-002", sec: "ECOM",
-      title: "Vegetable E-Commerce for UMKM",
-      desc: "Decentralized digital storefront with real-time inventory and payment gateway.",
-      tags: [
-        { name: "Laravel", style: "bg-error-container/20 border-error-container/50 text-error" },
-        { name: "React", style: "bg-[#00d8ff]/10 border-[#00d8ff]/30 text-[#00d8ff]" },
-        { name: "Midtrans", style: "bg-surface-variant border-outline-variant/50 text-on-surface-variant" }
-      ],
       glow: "[#fcee0a]",
       link: "https://github.com/Nuryanfa"
     },
     {
-      id: "PRJ-003", sec: "CV",
-      title: "Athlete Posture Detection",
-      desc: "Computer vision project focusing on detecting and analyzing the running posture of athletes.",
+      id: "PRJ-003", sec: "SQA",
+      title: "E-Commerce SQA",
+      desc: "Software quality assurance implementation for e-commerce platform with secure transaction handling and testing pipelines.",
       tags: [
-        { name: "Python", style: "bg-tertiary-container/10 border-tertiary-container/30 text-tertiary-fixed-dim" },
-        { name: "Computer Vision", style: "bg-surface-variant border-outline-variant/50 text-on-surface-variant" }
+        { name: "Golang", style: "bg-tertiary-container/10 border-tertiary-container/30 text-tertiary-fixed-dim" },
+        { name: "SQA", style: "bg-[#00d8ff]/10 border-[#00d8ff]/30 text-[#00d8ff]" },
+        { name: "Testing", style: "bg-surface-variant border-outline-variant/50 text-on-surface-variant" }
       ],
       glow: "primary-container",
-      link: "https://github.com/Nuryanfa/DeteksiPose-Lari"
-    },
-    {
-      id: "PRJ-004", sec: "ML",
-      title: "Data Bank Machine Learning",
-      desc: "Machine learning model implementation designed for banking data analysis and prediction.",
-      tags: [
-        { name: "Python", style: "bg-error-container/20 border-error-container/50 text-error" },
-        { name: "Machine Learning", style: "bg-[#00d8ff]/10 border-[#00d8ff]/30 text-[#00d8ff]" }
-      ],
-      glow: "[#fcee0a]",
-      link: "https://github.com/Nuryanfa/MachineLearningProject"
-    },
-    {
-      id: "PRJ-005", sec: "SYS",
-      title: "Task Manager",
-      desc: "Robust task management system focusing on secure backend operations.",
-      tags: [
-        { name: "Backend", style: "bg-[#4B8BBE]/10 border-[#4B8BBE]/50 text-[#FFE873]" },
-        { name: "Security", style: "bg-surface-variant border-outline-variant/50 text-on-surface-variant" }
-      ],
-      glow: "secondary-fixed",
-      link: "https://github.com/Nuryanfa/TaskManager"
+      link: "https://github.com/Nuryanfa/e-commerse-sqa"
     }
   ];
 
@@ -103,7 +83,7 @@ export default function Archive() {
         variants={containerVariants}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
       >
         {projects.map((proj) => (
           <motion.a 
@@ -112,8 +92,18 @@ export default function Archive() {
             rel="noopener noreferrer"
             key={proj.id} 
             variants={itemVariants}
-            className={`card-scanner chamfered relative bg-[rgba(255,255,255,0.02)] backdrop-blur-md border border-outline-variant/30 p-6 flex flex-col min-h-[380px] group hover:border-${proj.glow}/60 hover:-translate-y-2 hover:shadow-[0_0_25px_rgba(0,243,255,0.15)] transition-all duration-500 z-10`}
+            className={`card-scanner chamfered relative bg-[rgba(255,255,255,0.02)] backdrop-blur-md border border-outline-variant/30 p-6 flex flex-col min-h-[380px] group hover:border-${proj.glow}/60 hover:-translate-y-2 hover:shadow-[0_0_25px_rgba(0,243,255,0.15)] transition-all duration-500 z-10 overflow-hidden`}
           >
+            {/* Glitch Top Line Sweep */}
+            <div className={`absolute top-0 left-0 w-full h-[2px] bg-cyber-cyan opacity-0 group-hover:opacity-100 shadow-[0_0_15px_#00f3ff] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-out pointer-events-none`}></div>
+            
+            {/* HUD Corner Brackets */}
+            <div className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-cyber-cyan opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-x-2 -translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 pointer-events-none"></div>
+            <div className="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2 border-cyber-cyan opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 pointer-events-none"></div>
+
+            {/* Scan Grid Overlay */}
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMCwyNDMsMjU1LDAuMSkiIHN0cm9rZS13aWR0aD0iMSIvPjwvc3ZnPg==')] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
             <div className={`absolute inset-0 bg-${proj.glow}/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}></div>
             <div className={`absolute top-4 right-4 font-terminal text-sm text-on-surface-variant/50 tracking-widest group-hover:text-${proj.glow}/70 transition-colors flex items-center gap-2`}>

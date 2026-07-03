@@ -35,18 +35,31 @@ export default function Sidebar({ isOpen, toggle }) {
   };
 
   return (
-    <motion.aside 
-      initial={false}
-      animate={{ width: isOpen ? 256 : 80 }}
-      className="bg-surface-container-lowest/90 backdrop-blur-2xl h-screen fixed left-0 top-0 border-r border-outline-variant/20 shadow-2xl hidden lg:flex flex-col py-6 z-30 pt-12"
-    >
-      <button 
-        onClick={toggle}
-        onMouseEnter={playHoverSound}
-        className="absolute top-4 -right-3 w-6 h-10 bg-primary/20 hover:bg-primary/50 text-primary-fixed border border-primary/50 rounded-r-md flex items-center justify-center cursor-pointer transition-colors z-40"
+    <>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={toggle}
+            className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+          />
+        )}
+      </AnimatePresence>
+
+      <motion.aside 
+        initial={false}
+        animate={{ width: isOpen ? 256 : 80 }}
+        className={`bg-surface-container-lowest/90 backdrop-blur-2xl h-screen fixed left-0 top-0 border-r border-outline-variant/20 shadow-2xl flex flex-col py-6 z-50 pt-24 lg:pt-12 transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
-        {isOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
-      </button>
+        <button 
+          onClick={toggle}
+          onMouseEnter={playHoverSound}
+          className="absolute top-4 -right-3 w-6 h-10 bg-primary/20 hover:bg-primary/50 text-primary-fixed border border-primary/50 rounded-r-md hidden lg:flex items-center justify-center cursor-pointer transition-colors z-40"
+        >
+          {isOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+        </button>
 
       <div className={`mb-8 border-b border-outline-variant/30 pb-6 px-6 flex items-center ${isOpen ? 'gap-4' : 'justify-center'} transition-all`}>
         <div className="w-12 h-12 rounded-none chamfered bg-surface-variant flex-shrink-0 flex items-center justify-center border border-outline-variant relative overflow-hidden group">
@@ -113,5 +126,6 @@ export default function Sidebar({ isOpen, toggle }) {
         </MagneticWrapper>
       </div>
     </motion.aside>
+    </>
   );
 }
