@@ -1,31 +1,33 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
+const siteUrl = 'https://www.nuryanfa.my.id';
+const pages = {
+  '/': { title: 'Muhamad Nur Yanfa — Backend & Security Engineer', description: 'Portfolio of Muhamad Nur Yanfa, a backend and security engineer building secure APIs, resilient infrastructure, and practical defensive systems.' },
+  '/archive': { title: 'Selected Operations — Muhamad Nur Yanfa', description: 'Selected backend, security, purple-team, and software quality projects by Muhamad Nur Yanfa.' },
+  '/timeline': { title: 'Experience — Muhamad Nur Yanfa', description: 'Engineering experience and field history of backend and security engineer Muhamad Nur Yanfa.' },
+  '/network': { title: 'Contact — Muhamad Nur Yanfa', description: 'Contact Muhamad Nur Yanfa for backend engineering, cybersecurity, and secure systems opportunities.' },
+};
+
+function setMeta(selector, content) {
+  const element = document.querySelector(selector);
+  if (element) element.setAttribute('content', content);
+}
+
 export default function TabTitleUpdater() {
-  const location = useLocation();
-
+  const { pathname } = useLocation();
   useEffect(() => {
-    // Base name based on route
-    let baseName = "NEO_SEC";
-    if (location.pathname.includes('archive')) baseName = "ARCHIVE";
-    if (location.pathname.includes('timeline')) baseName = "TIMELINE";
-    if (location.pathname.includes('network')) baseName = "NETWORK";
-
-    const frames = [
-      `[ - ] ${baseName}`,
-      `[ \\ ] ${baseName}`,
-      `[ | ] ${baseName}`,
-      `[ / ] ${baseName}`
-    ];
-    
-    let i = 0;
-    const interval = setInterval(() => {
-      document.title = frames[i];
-      i = (i + 1) % frames.length;
-    }, 250); // Spin speed
-
-    return () => clearInterval(interval);
-  }, [location]);
-
+    const page = pages[pathname] || { title: 'Page not found — Muhamad Nur Yanfa', description: 'The requested coordinate could not be found.' };
+    const url = `${siteUrl}${pathname === '/' ? '/' : pathname}`;
+    document.title = page.title;
+    setMeta('meta[name="description"]', page.description);
+    setMeta('meta[property="og:title"]', page.title);
+    setMeta('meta[property="og:description"]', page.description);
+    setMeta('meta[property="og:url"]', url);
+    setMeta('meta[name="twitter:title"]', page.title);
+    setMeta('meta[name="twitter:description"]', page.description);
+    document.querySelector('link[rel="canonical"]')?.setAttribute('href', url);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [pathname]);
   return null;
 }

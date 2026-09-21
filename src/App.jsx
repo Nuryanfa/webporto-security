@@ -9,6 +9,7 @@ const Home = lazy(() => import('./pages/Home'));
 const Archive = lazy(() => import('./pages/Archive'));
 const Timeline = lazy(() => import('./pages/Timeline'));
 const Network = lazy(() => import('./pages/Network'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 import TabTitleUpdater from './components/TabTitleUpdater';
 
 function AnimatedRoutes() {
@@ -21,6 +22,7 @@ function AnimatedRoutes() {
           <Route path="/archive" element={<Archive />} />
           <Route path="/timeline" element={<Timeline />} />
           <Route path="/network" element={<Network />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
     </AnimatePresence>

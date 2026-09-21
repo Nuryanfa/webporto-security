@@ -4,7 +4,6 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ArrowUpRight, Braces, Radio, Route, ShieldCheck } from 'lucide-react';
 import AnimatedPage from '../components/AnimatedPage';
 import TiltPanel from '../components/TiltPanel';
-import profileImg from '../assets/profile.jpg';
 
 const nodes = [
   { id: 'profile', index: '01', label: 'Identity', eyebrow: 'Backend × Security', title: 'Muhamad Nur Yanfa', description: 'I build secure backend systems and practical defensive infrastructure from Indonesia.', meta: 'Go · PostgreSQL · Security', icon: ShieldCheck, position: 'node-profile' },
@@ -23,7 +22,7 @@ export default function Home() {
       <svg className="nexus-lines" viewBox="0 0 1200 720" preserveAspectRatio="none" aria-hidden="true"><motion.path d="M600 360 L220 145 M600 360 L980 155 M600 360 L1030 565 M600 360 L190 570" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="5 9" initial={reduced ? false : { pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: .28 }} transition={{ duration: 1.6, delay: .35 }} /></svg>
 
       <div className="nexus-core" data-cursor="active" onPointerEnter={() => setActive(nodes[0])}>
-        <TiltPanel className="relative h-full w-full overflow-hidden rounded-full border border-resonance/35 bg-[#11171a] shadow-[0_0_80px_rgba(121,230,223,.12)]"><img src={profileImg} alt="Muhamad Nur Yanfa" className="h-full w-full object-cover grayscale-[30%] contrast-110" /><div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-resonance/10" /><div className="scan-beam" /></TiltPanel>
+        <TiltPanel className="relative h-full w-full overflow-hidden rounded-full border border-resonance/35 bg-[#11171a] shadow-[0_0_80px_rgba(121,230,223,.12)]"><img src="/profile.webp" alt="Portrait of Muhamad Nur Yanfa" width="960" height="960" fetchPriority="high" decoding="async" className="h-full w-full object-cover grayscale-[30%] contrast-110" /><div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-resonance/10" /><div className="scan-beam" /></TiltPanel>
         <motion.div className="core-orbit" animate={reduced ? {} : { rotate: 360 }} transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}><span /><span /></motion.div>
         <span className="core-label">CORE / NY-07</span>
       </div>

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://nuryanfa.vercel.app/sitemap.xml
+Sitemap: https://www.nuryanfa.my.id/sitemap.xml

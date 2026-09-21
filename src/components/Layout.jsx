@@ -18,6 +18,7 @@ export default function Layout({ children }) {
   const current = coordinates.find(item => item.to === location.pathname) || coordinates[0];
 
   return <div className="min-h-screen bg-void text-on-surface selection:bg-resonance selection:text-void">
+    <a href="#main-content" className="skip-link">Skip to content</a>
     <CyberCursor /><ResonanceField />
     <motion.div className="fixed left-0 top-0 z-[70] h-[2px] w-full origin-left bg-acid" style={{ scaleX: progress }} />
 
@@ -31,7 +32,7 @@ export default function Layout({ children }) {
 
     <div className="fixed left-20 right-0 top-0 z-30 hidden h-12 items-center justify-between border-b border-white/[.06] px-7 font-code text-[9px] uppercase tracking-[.2em] text-muted md:flex"><span>Coordinate / {current.code}.{current.label}</span><span className="flex items-center gap-3"><i className="h-1.5 w-1.5 rounded-full bg-acid shadow-[0_0_12px_#e8f53b]" />Connection stable · Jakarta</span></div>
 
-    <main className="relative z-10 min-h-screen px-5 pb-28 pt-8 md:ml-20 md:px-10 md:pb-16 md:pt-20 xl:px-16">{children}</main>
+    <main id="main-content" className="relative z-10 min-h-screen px-5 pb-28 pt-8 md:ml-20 md:px-10 md:pb-16 md:pt-20 xl:px-16">{children}</main>
 
     <nav className="fixed inset-x-3 bottom-3 z-50 grid grid-cols-4 border border-white/10 bg-void/90 p-1.5 backdrop-blur-xl md:hidden" aria-label="Primary navigation">{coordinates.map(({ label, to, icon: Icon }) => <NavLink key={to} to={to} aria-label={label} className={({ isActive }) => `flex min-h-12 flex-col items-center justify-center gap-1 font-code text-[8px] uppercase tracking-[.08em] ${isActive ? 'bg-resonance text-void' : 'text-muted'}`}><Icon size={16} /><span>{label}</span></NavLink>)}</nav>
 
