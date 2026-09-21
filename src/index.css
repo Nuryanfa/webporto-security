@@ -3,17 +3,10 @@
 @tailwind utilities;
 
 @layer base {
-  /* Hide default cursor for custom cyber cursor */
-  html, body, *, a, button, input, textarea, select {
-    cursor: none !important;
-  }
-
-  body {
-    cursor: crosshair;
-  }
-  a, button, [role="button"] { 
-    cursor: pointer; 
-  }
+  html { scroll-behavior: smooth; }
+  body { background: #080a0d; }
+  a, button, [role="button"] { cursor: pointer; }
+  :focus-visible { outline: 2px solid #e8f53b; outline-offset: 4px; }
 
   @keyframes radar-sweep {
     0% { transform: translateY(-100vh); opacity: 0; }
@@ -91,6 +84,12 @@
 }
 
 @layer components {
+  .signal-button { @apply inline-flex min-h-12 items-center justify-center gap-4 bg-acid px-6 font-code text-xs font-semibold uppercase tracking-[.14em] text-void transition-colors hover:bg-white; clip-path: polygon(0 10px, 10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%); }
+  .ghost-button { @apply inline-flex min-h-12 items-center justify-center border border-white/15 px-6 font-code text-xs uppercase tracking-[.14em] text-white transition-colors hover:border-resonance/60 hover:text-resonance; }
+  .section-shell { @apply py-24 md:py-32; }
+  .tech-tag { @apply border border-white/10 bg-white/[.03] px-3 py-2 font-code text-[10px] uppercase tracking-[.14em] text-muted; }
+  .chamfer-sm { clip-path: polygon(0 7px, 7px 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%); }
+  .portrait-frame { clip-path: polygon(0 28px, 28px 0, 100% 0, 100% calc(100% - 58px), calc(100% - 58px) 100%, 0 100%); }
   /* Chamfered Corners */
   .chamfered {
     clip-path: polygon(0 15px, 15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
@@ -164,6 +163,16 @@
     box-shadow: 0 0 25px rgba(252, 238, 10, 0.3);
     transform: translateY(-5px);
   }
+}
+
+.resonance-grid {
+  background-image: linear-gradient(rgba(121,230,223,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(121,230,223,.025) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(to bottom, black, transparent 85%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
 
 @layer utilities {

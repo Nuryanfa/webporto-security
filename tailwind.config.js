@@ -8,6 +8,11 @@ export default {
   theme: {
     extend: {
       colors: {
+        "void": "#080a0d",
+        "resonance": "#79e6df",
+        "acid": "#e8f53b",
+        "threat": "#ff4d5e",
+        "muted": "#8c969d",
         "surface-container-low": "#1c1b1d",
         "primary-fixed-dim": "#00dce6",
         "primary": "#e3fdff",
@@ -53,11 +58,11 @@ export default {
         "headline-lg-mobile": ["Space Grotesk", "sans-serif"],
         "body-lg": ["JetBrains Mono", "monospace"], 
         "label-caps": ["JetBrains Mono", "monospace"], 
-        "display": ["Pixelify Sans", "sans-serif"],
+        "display": ["Space Grotesk", "sans-serif"],
         "code": ["VT323", "monospace"], 
-        "body-md": ["Pixelify Sans", "monospace"], 
-        "terminal": ["VT323", "monospace"],
-        "pixel": ["Pixelify Sans", "monospace"]
+        "body-md": ["Space Grotesk", "sans-serif"],
+        "terminal": ["JetBrains Mono", "monospace"],
+        "pixel": ["Space Grotesk", "sans-serif"]
       }
     },
   },

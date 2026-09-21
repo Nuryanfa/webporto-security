@@ -1,79 +1,16 @@
-import AnimatedPage from '../components/AnimatedPage';
-import TypewriterText from '../components/TypewriterText';
-import { Code2, Briefcase } from 'lucide-react';
-import { useAudioHover } from '../utils/useAudioHover';
-import MagneticWrapper from '../components/MagneticWrapper';
-import { motion } from 'framer-motion';
+import { ArrowUpRight, Copy, Github, Linkedin, Mail } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Network() {
-  const playHoverSound = useAudioHover();
-
-  const nodes = [
-    {
-      icon: Code2, protocol: "GITHUB", desc: "Link to repositories.",
-      href: "https://github.com/Nuryanfa", target: "_blank",
-      glow: "elec-yellow", baseColor: "cyber-cyan"
-    },
-    {
-      icon: Briefcase, protocol: "LINKEDIN", desc: "Link to professional network.",
-      href: "https://www.linkedin.com/in/muhamad-nur-yanfa-069036368", target: "_blank",
-      glow: "elec-yellow", baseColor: "cyber-cyan"
-    }
+  const [copied, setCopied] = useState(false);
+  const email = 'muhamadnuryanfa@gmail.com';
+  const copyEmail = async () => { await navigator.clipboard.writeText(email); setCopied(true); window.setTimeout(() => setCopied(false), 1800); };
+  const socials = [
+    { label: 'GitHub', detail: '@Nuryanfa', href: 'https://github.com/Nuryanfa', icon: Github },
+    { label: 'LinkedIn', detail: 'Muhamad Nur Yanfa', href: 'https://www.linkedin.com/in/muhamad-nur-yanfa-069036368', icon: Linkedin },
   ];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15, delayChildren: 0.3 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, scale: 0.8, filter: "blur(10px)" },
-    show: { 
-      opacity: 1, 
-      scale: 1, 
-      filter: "blur(0px)",
-      transition: { 
-        duration: 0.7, 
-        ease: [0.16, 1, 0.3, 1] 
-      } 
-    }
-  };
-
-  return (
-    <AnimatedPage>
-      <header className="mb-12 border-b border-primary/20 pb-6 relative h-28">
-        <h2 className="font-terminal text-3xl md:text-5xl text-cyber-cyan glitch-hover flex items-center gap-2 drop-shadow-[0_0_8px_rgba(0,243,255,0.5)]">
-          <TypewriterText text="> ESTABLISHING_SECURE_COMMS: /root/network" speed={40} />
-        </h2>
-        <p className="font-code text-body-md text-elec-yellow mt-3 tracking-widest opacity-90">
-          <TypewriterText text="ENCRYPTION: AES-256 // STATUS: LISTENING..." delay={2000} speed={30} />
-        </p>
-      </header>
-
-      <motion.div 
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
-        className="grid grid-cols-1 lg:grid-cols-2 gap-8"
-      >
-        {nodes.map((node, idx) => (
-          <motion.div key={idx} variants={itemVariants}>
-            <MagneticWrapper>
-              <a href={node.href} target={node.target} onMouseEnter={playHoverSound} className="network-node group block h-full">
-                <div className={`absolute inset-0 bg-${node.baseColor}/5 opacity-0 group-hover:opacity-100 transition-opacity`}></div>
-                <div className={`absolute top-0 left-0 w-full h-[2px] bg-${node.glow} opacity-0 group-hover:opacity-100 shadow-[0_0_15px_#fcee0a] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-in-out`}></div>
-                <node.icon className={`w-10 h-10 text-on-surface-variant group-hover:text-${node.glow} transition-colors mb-4`} />
-                <h3 className="font-pixel text-xl font-bold tracking-widest text-white group-hover:text-primary transition-colors group-hover:glitch-rgb">[ PROTOCOL: {node.protocol} ]</h3>
-                <p className="font-code text-sm text-on-surface-variant opacity-80 mt-1">{node.desc}</p>
-              </a>
-            </MagneticWrapper>
-          </motion.div>
-        ))}
-
-      </motion.div>
-    </AnimatedPage>
-  );
+  return <div className="flex min-h-[calc(100vh-11rem)] flex-col justify-between py-8">
+    <header><p className="font-code text-[10px] uppercase tracking-[.22em] text-resonance">04 / Open channel</p><h1 className="mt-6 max-w-5xl text-5xl font-semibold leading-[.92] tracking-[-.055em] text-white md:text-8xl lg:text-9xl">Let’s build a system worth defending.</h1></header>
+    <div className="mt-20 grid gap-10 border-t border-white/[.08] pt-10 lg:grid-cols-2"><div><p className="max-w-lg text-lg leading-8 text-muted">Have a backend problem, a security challenge, or a role where both disciplines matter? My channel is open.</p><a href={`mailto:${email}`} className="mt-8 inline-flex items-center gap-3 text-xl text-white hover:text-resonance"><Mail size={20} />{email}</a><button onClick={copyEmail} className="ml-4 inline-flex items-center gap-2 font-code text-[10px] uppercase tracking-[.15em] text-muted hover:text-white"><Copy size={14} />{copied ? 'Copied' : 'Copy'}</button></div><div className="space-y-3">{socials.map(({ label, detail, href, icon: Icon }) => <a key={label} href={href} target="_blank" rel="noreferrer" className="group flex items-center justify-between border-b border-white/[.08] py-5"><span className="flex items-center gap-4"><Icon size={19} className="text-resonance" /><span><strong className="block text-white">{label}</strong><small className="text-muted">{detail}</small></span></span><ArrowUpRight className="text-muted transition-transform group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-acid" /></a>)}</div></div>
+  </div>;
 }
