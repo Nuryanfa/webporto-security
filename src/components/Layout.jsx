@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import ResonanceField from './ResonanceField';
+import CyberCursor from './CyberCursor';
 
 const links = [
   { label: 'Home', to: '/' },
@@ -18,6 +19,7 @@ export default function Layout({ children }) {
 
   return (
     <div className="min-h-screen bg-void text-on-surface selection:bg-resonance selection:text-void">
+      <CyberCursor />
       <ResonanceField />
       <div className="fixed left-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-resonance/80 to-transparent z-[60]" aria-hidden="true" />
       <motion.div className="fixed left-0 top-0 z-[70] h-[2px] w-full origin-left bg-acid" style={{ scaleX }} aria-hidden="true" />
@@ -36,6 +38,7 @@ export default function Layout({ children }) {
         {open && <nav className="border-t border-white/[0.07] bg-void px-5 py-4 md:hidden" aria-label="Mobile navigation">{links.map((item, index) => <NavLink key={item.to} to={item.to} onClick={() => setOpen(false)} className="flex border-b border-white/[0.06] py-4 font-display text-lg text-white"><span className="mr-4 font-code text-xs text-resonance">0{index + 1}</span>{item.label}</NavLink>)}</nav>}
       </header>
       <main className="relative z-10 mx-auto min-h-screen max-w-[1440px] px-5 pb-16 pt-28 md:px-10 md:pt-32">{children}</main>
+      <div className="fixed bottom-6 left-6 z-20 hidden items-end gap-2 xl:flex" aria-hidden="true"><span className="hud-bar h-5" /><span className="hud-bar h-10" /><span className="hud-bar h-7" /><span className="ml-2 font-code text-[8px] tracking-[.2em] text-resonance/50 [writing-mode:vertical-rl]">RESONANCE_FEED</span></div>
       <footer className="relative z-10 border-t border-white/[0.07]"><div className="mx-auto flex max-w-[1440px] flex-col justify-between gap-4 px-5 py-8 font-code text-[10px] uppercase tracking-[0.16em] text-muted md:flex-row md:px-10"><span>© {new Date().getFullYear()} Muhamad Nur Yanfa</span><span>Designed with restraint · Built with React</span></div></footer>
     </div>
   );
