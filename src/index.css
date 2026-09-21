@@ -201,6 +201,42 @@
 .hud-bar:nth-child(3) { animation-delay: -.25s; }
 @keyframes hud-level { from { transform: scaleY(.25); transform-origin: bottom; opacity: .35; } to { transform: scaleY(1); transform-origin: bottom; opacity: .9; } }
 
+.nexus-shell { min-height: calc(100vh - 5rem); display: flex; flex-direction: column; }
+.nexus-kicker { display: flex; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,.08); font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: #8c969d; }
+.nexus-stage { position: relative; flex: 1; min-height: 720px; overflow: hidden; }
+.nexus-stage::before { content: ''; position: absolute; left: 50%; top: 50%; width: min(58vw,780px); aspect-ratio: 1; transform: translate(-50%,-50%); border: 1px solid rgba(121,230,223,.055); border-radius: 50%; box-shadow: inset 0 0 90px rgba(121,230,223,.025); }
+.nexus-stage::after { content: ''; position: absolute; left: 50%; top: 50%; width: min(32vw,430px); aspect-ratio: 1; transform: translate(-50%,-50%); border: 1px dashed rgba(255,255,255,.06); border-radius: 50%; animation: orbit-reverse 34s linear infinite; }
+.nexus-lines { position: absolute; inset: 0; width: 100%; height: 100%; color: #79e6df; }
+.nexus-core { position: absolute; z-index: 5; left: 50%; top: 46%; width: clamp(150px,18vw,245px); aspect-ratio: 1; transform: translate(-50%,-50%); }
+.core-orbit { position: absolute; inset: -18px; border: 1px solid rgba(121,230,223,.18); border-radius: 50%; }
+.core-orbit span { position: absolute; width: 7px; height: 7px; background: #e8f53b; border-radius: 50%; box-shadow: 0 0 14px #e8f53b; }
+.core-orbit span:first-child { left: 15%; top: 10%; }.core-orbit span:last-child { right: 4%; bottom: 25%; width: 4px; height: 4px; background: #79e6df; }
+.core-label { position: absolute; left: 50%; bottom: -48px; transform: translateX(-50%); white-space: nowrap; font: 9px 'JetBrains Mono', monospace; letter-spacing: .2em; color: #79e6df; }
+.nexus-node { position: absolute; z-index: 8; display: flex; align-items: center; gap: 12px; }
+.node-work { left: 12%; top: 15%; }.node-experience { right: 11%; top: 17%; }.node-contact { right: 8%; bottom: 16%; }
+.node-trigger { position: relative; display: grid; place-items: center; width: 50px; height: 50px; border: 1px solid rgba(255,255,255,.16); color: #8c969d; background: rgba(8,10,13,.86); transform: rotate(45deg); transition: .35s cubic-bezier(.16,1,.3,1); }
+.node-trigger svg { transform: rotate(-45deg); }.node-trigger:hover, .node-trigger.is-active { color: #080a0d; border-color: #e8f53b; background: #e8f53b; transform: rotate(135deg) scale(1.15); box-shadow: 0 0 30px rgba(232,245,59,.22); }.node-trigger:hover svg, .node-trigger.is-active svg { transform: rotate(-135deg); }
+.node-pulse { position: absolute; inset: -8px; border: 1px solid rgba(121,230,223,.2); animation: node-ping 2.2s ease-out infinite; }
+.node-caption { font: 9px 'JetBrains Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: #8c969d; white-space: nowrap; }.node-caption b { color: #79e6df; margin-right: 5px; }
+.nexus-dossier { position: absolute; z-index: 7; left: 4%; bottom: 8%; width: min(42vw,560px); padding: 24px; border-left: 1px solid #79e6df; background: linear-gradient(90deg,rgba(8,10,13,.96),rgba(8,10,13,.74),transparent); backdrop-filter: blur(10px); }
+.nexus-instruction { position: absolute; right: 0; bottom: 2%; font: 8px 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: .2em; color: rgba(140,150,157,.65); }
+@keyframes orbit-reverse { to { transform: translate(-50%,-50%) rotate(-360deg); } }
+@keyframes node-ping { 0% { transform: scale(.8); opacity: .7; } 80%,100% { transform: scale(1.65); opacity: 0; } }
+
+@media (max-width: 767px) {
+  .nexus-shell { min-height: calc(100vh - 8rem); }
+  .nexus-stage { min-height: 690px; overflow: visible; }
+  .nexus-stage::before { width: 520px; opacity: .6; }
+  .nexus-stage::after { width: 300px; }
+  .nexus-lines { opacity: .45; }
+  .nexus-core { top: 24%; width: 145px; }
+  .node-work { left: 4%; top: 9%; }.node-experience { right: 3%; top: 11%; }.node-contact { right: 5%; top: 43%; bottom: auto; }
+  .node-caption { position: absolute; top: 62px; left: 50%; transform: translateX(-50%); }
+  .nexus-dossier { left: 0; right: 0; bottom: 7%; width: auto; padding: 20px 0 20px 18px; background: linear-gradient(90deg,rgba(8,10,13,.98),rgba(8,10,13,.82)); }
+  .nexus-dossier h1 { font-size: 2.3rem; }
+  .nexus-instruction { bottom: 1%; left: 0; right: auto; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }

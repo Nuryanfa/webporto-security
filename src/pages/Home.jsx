@@ -1,37 +1,48 @@
-import { ArrowRight, Github, ShieldCheck, Terminal, Waves } from 'lucide-react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useReducedMotion } from 'framer-motion';
-import profileImg from '../assets/profile.jpg';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { ArrowUpRight, Braces, Radio, Route, ShieldCheck } from 'lucide-react';
 import AnimatedPage from '../components/AnimatedPage';
 import TiltPanel from '../components/TiltPanel';
+import profileImg from '../assets/profile.jpg';
 
-const expertise = [
-  ['01', 'Secure backend', 'APIs, authentication, database design, and systems built with security as a foundation.'],
-  ['02', 'Detection engineering', 'Practical monitoring, network visibility, and attack-informed defensive controls.'],
-  ['03', 'Quality & delivery', 'Testing and CI/CD practices that keep releases stable, observable, and maintainable.'],
+const nodes = [
+  { id: 'profile', index: '01', label: 'Identity', eyebrow: 'Backend × Security', title: 'Muhamad Nur Yanfa', description: 'I build secure backend systems and practical defensive infrastructure from Indonesia.', meta: 'Go · PostgreSQL · Security', icon: ShieldCheck, position: 'node-profile' },
+  { id: 'work', index: '02', label: 'Operations', eyebrow: 'Selected work', title: 'Systems under pressure', description: 'Purple-team laboratories, secure backend services, and quality-focused delivery.', meta: '3 selected operations', icon: Braces, position: 'node-work', to: '/archive' },
+  { id: 'experience', index: '03', label: 'Trace', eyebrow: 'Field history', title: 'Signals from the field', description: 'A concise record of production engineering, collaboration, and technical growth.', meta: '2026 — present', icon: Route, position: 'node-experience', to: '/timeline' },
+  { id: 'contact', index: '04', label: 'Channel', eyebrow: 'Open connection', title: 'Start a transmission', description: 'Available for backend, security, and roles where both disciplines intersect.', meta: 'Response channel online', icon: Radio, position: 'node-contact', to: '/network' },
 ];
 
 export default function Home() {
-  const reduceMotion = useReducedMotion();
-  const enter = reduceMotion ? {} : { initial: { opacity: 0, y: 24 }, animate: { opacity: 1, y: 0 }, transition: { duration: .7, ease: [0.16, 1, 0.3, 1] } };
-  return <AnimatedPage><div>
-    <section className="grid min-h-[calc(100vh-8rem)] items-center gap-12 pb-20 lg:grid-cols-12 lg:gap-16">
-      <motion.div {...enter} className="lg:col-span-7">
-        <div className="mb-8 flex items-center gap-4 font-code text-[10px] uppercase tracking-[0.22em] text-resonance"><span className="h-px w-12 bg-resonance" />01 — Resonance active</div>
-        <h1 data-text="I BUILD SYSTEMS THAT SURVIVE CONTACT." className="interactive-title max-w-4xl font-display text-[clamp(3.2rem,8vw,7.8rem)] font-semibold leading-[.84] tracking-[-0.065em] text-white">I BUILD SYSTEMS<br />THAT <span className="relative text-resonance">SURVIVE<span className="absolute -right-4 top-1 h-3 w-3 bg-acid md:-right-6" /></span><br />CONTACT.</h1>
-        <p className="mt-8 max-w-2xl text-lg leading-8 text-muted md:text-xl">Backend and security engineer crafting reliable APIs, resilient infrastructure, and attack-informed defenses.</p>
-        <div className="mt-10 flex flex-col gap-3 sm:flex-row"><Link to="/archive" className="signal-button group"><span>Explore selected work</span><ArrowRight size={18} className="transition-transform group-hover:translate-x-1" /></Link><a href="mailto:muhamadnuryanfa@gmail.com" className="ghost-button">Start a conversation</a></div>
-        <div className="mt-14 grid max-w-2xl grid-cols-2 gap-px border border-white/[0.08] bg-white/[0.08] sm:grid-cols-4">{[['BASE', 'Indonesia'], ['FOCUS', 'Backend + Security'], ['STACK', 'Go · PostgreSQL'], ['STATUS', 'Available']].map(([label, value]) => <div key={label} className="bg-void/90 p-4"><span className="block font-code text-[9px] tracking-[.2em] text-muted">{label}</span><strong className="mt-2 block text-xs font-medium text-white">{value}</strong></div>)}</div>
-      </motion.div>
-      <motion.div {...enter} transition={{ duration: .8, delay: .12 }} className="relative lg:col-span-5">
-        <TiltPanel className="portrait-frame portrait-interactive relative mx-auto max-w-[470px] overflow-hidden border border-white/10 bg-[#101419]"><div className="absolute inset-x-0 top-0 z-20 flex justify-between p-4 font-code text-[9px] uppercase tracking-[.18em] text-resonance"><span>OPERATOR / NY-07</span><span>SYNC 98.4%</span></div><img src={profileImg} alt="Muhamad Nur Yanfa" className="aspect-[4/5] w-full object-cover object-center grayscale-[35%] contrast-110 transition duration-700 hover:scale-[1.035] hover:grayscale-0" /><div className="scan-beam" /><div className="absolute inset-0 bg-gradient-to-t from-void via-transparent to-resonance/5" /><div className="absolute bottom-0 left-0 right-0 p-5"><ResonanceWave /><div className="mt-3 flex items-center justify-between font-code text-[9px] uppercase tracking-[.18em] text-muted"><span>Signal integrity stable</span><span className="text-acid">● Online</span></div></div></TiltPanel>
-      </motion.div>
+  const [active, setActive] = useState(nodes[0]);
+  const reduced = useReducedMotion();
+  return <AnimatedPage><div className="nexus-shell">
+    <div className="nexus-kicker"><span>INTERFACE_07</span><span>Navigate the signal map</span></div>
+
+    <section className="nexus-stage" aria-label="Interactive portfolio map">
+      <svg className="nexus-lines" viewBox="0 0 1200 720" preserveAspectRatio="none" aria-hidden="true"><motion.path d="M600 360 L220 145 M600 360 L980 155 M600 360 L1030 565 M600 360 L190 570" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="5 9" initial={reduced ? false : { pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: .28 }} transition={{ duration: 1.6, delay: .35 }} /></svg>
+
+      <div className="nexus-core" data-cursor="active" onPointerEnter={() => setActive(nodes[0])}>
+        <TiltPanel className="relative h-full w-full overflow-hidden rounded-full border border-resonance/35 bg-[#11171a] shadow-[0_0_80px_rgba(121,230,223,.12)]"><img src={profileImg} alt="Muhamad Nur Yanfa" className="h-full w-full object-cover grayscale-[30%] contrast-110" /><div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-resonance/10" /><div className="scan-beam" /></TiltPanel>
+        <motion.div className="core-orbit" animate={reduced ? {} : { rotate: 360 }} transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}><span /><span /></motion.div>
+        <span className="core-label">CORE / NY-07</span>
+      </div>
+
+      {nodes.slice(1).map((node, i) => <Node key={node.id} node={node} active={active.id === node.id} setActive={setActive} delay={.5 + i * .13} reduced={reduced} />)}
+
+      <AnimatePresence mode="wait"><motion.div key={active.id} className="nexus-dossier" initial={reduced ? false : { opacity: 0, y: 16, filter: 'blur(8px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, y: -10, filter: 'blur(5px)' }} transition={{ duration: .35 }}>
+        <div className="flex items-center justify-between"><span className="font-code text-[9px] uppercase tracking-[.2em] text-resonance">{active.eyebrow}</span><span className="font-code text-[9px] text-muted">0{active.index}</span></div>
+        <h1 className="mt-4 text-4xl font-semibold leading-[.95] tracking-[-.05em] text-white md:text-6xl">{active.title}</h1>
+        <p className="mt-5 max-w-lg leading-7 text-muted">{active.description}</p>
+        <div className="mt-7 flex items-center justify-between border-t border-white/10 pt-4"><span className="font-code text-[9px] uppercase tracking-[.16em] text-muted">{active.meta}</span>{active.to ? <Link to={active.to} className="group flex items-center gap-2 font-code text-[10px] uppercase tracking-[.14em] text-acid">Enter node <ArrowUpRight size={15} className="transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" /></Link> : <span className="font-code text-[9px] uppercase tracking-[.15em] text-resonance">Core synchronized</span>}</div>
+      </motion.div></AnimatePresence>
+
+      <div className="nexus-instruction"><span className="hidden md:inline">Hover a node to decode · Click to enter</span><span className="md:hidden">Tap a node to decode</span></div>
     </section>
-    <section className="section-shell"><SectionHeading index="02" eyebrow="Core capabilities" title="Engineering at the edge of reliability and defense." /><div className="mt-12 grid gap-px border-y border-white/[0.08] bg-white/[0.08] lg:grid-cols-3">{expertise.map(([num, title, copy]) => <article key={num} className="group bg-void px-1 py-8 lg:px-8"><span className="font-code text-xs text-resonance">{num}</span><h3 className="mt-12 text-2xl font-medium text-white transition-colors group-hover:text-acid">{title}</h3><p className="mt-4 max-w-sm leading-7 text-muted">{copy}</p></article>)}</div></section>
-    <section className="section-shell border-t border-white/[0.08]"><div className="grid items-end gap-10 lg:grid-cols-2"><SectionHeading index="03" eyebrow="Selected operation" title="SecureNet Enterprise Lab" /><div><p className="max-w-xl leading-7 text-muted">A purple-team enterprise security lab built to be attacked, observed, and hardened. Six versioned releases connect network segmentation, detection tooling, and MITRE ATT&CK–mapped simulations.</p><div className="mt-7 flex flex-wrap gap-2">{['MikroTik', 'Wazuh', 'Suricata', 'Purple Team'].map(tag => <span className="tech-tag" key={tag}>{tag}</span>)}</div><a href="https://github.com/Nuryanfa/securenet-enterprise-lab" target="_blank" rel="noreferrer" className="mt-8 inline-flex items-center gap-3 text-sm font-medium text-white hover:text-resonance"><Github size={17} />View repository <ArrowRight size={16} /></a></div></div><div className="mt-12 grid gap-4 md:grid-cols-3"><Metric icon={ShieldCheck} label="Approach" value="Purple team" /><Metric icon={Terminal} label="Delivery" value="6 releases" /><Metric icon={Waves} label="Framework" value="MITRE ATT&CK" /></div></section>
   </div></AnimatedPage>;
 }
 
-function ResonanceWave() { const reduced = useReducedMotion(); return <svg viewBox="0 0 500 54" className="w-full text-resonance" aria-hidden="true"><motion.path d="M0 28h65l10-5 12 12 12-26 14 39 13-30 14 12 14-3h55l9-6 10 15 12-28 15 40 13-35 14 18 12-3h57l9-8 12 17 13-25 14 31 14-20 14 5h60" fill="none" stroke="currentColor" strokeWidth="1.5" initial={reduced ? false : { pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }} transition={{ duration: 1.8, delay: .55, ease: 'easeInOut' }} /><motion.path d="M0 28h500" stroke="currentColor" opacity=".15" animate={reduced ? {} : { opacity: [.08, .28, .08] }} transition={{ duration: 2.8, repeat: Infinity }} /></svg> }
-function SectionHeading({ index, eyebrow, title }) { return <div><div className="font-code text-[10px] uppercase tracking-[.22em] text-resonance">{index} / {eyebrow}</div><h2 className="mt-5 max-w-3xl text-4xl font-medium leading-tight tracking-[-.035em] text-white md:text-6xl">{title}</h2></div> }
-function Metric({ icon: Icon, label, value }) { return <div className="flex items-center gap-4 border border-white/[.08] bg-white/[.02] p-5"><Icon size={20} className="text-resonance" /><div><span className="block font-code text-[9px] uppercase tracking-[.18em] text-muted">{label}</span><strong className="mt-1 block text-sm text-white">{value}</strong></div></div> }
+function Node({ node, active, setActive, delay, reduced }) {
+  const Icon = node.icon;
+  return <motion.div className={`nexus-node ${node.position}`} initial={reduced ? false : { opacity: 0, scale: .5 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay, type: 'spring', stiffness: 150 }}><button onPointerEnter={() => setActive(node)} onFocus={() => setActive(node)} onClick={() => setActive(node)} className={`node-trigger ${active ? 'is-active' : ''}`} aria-label={`Preview ${node.label}`} aria-pressed={active}><Icon size={18} /><span className="node-pulse" /></button><span className="node-caption"><b>{node.index}</b> {node.label}</span></motion.div>;
+}
