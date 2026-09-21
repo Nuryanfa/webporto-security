@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
+import { motion, useScroll, useSpring } from 'framer-motion';
+import ResonanceField from './ResonanceField';
 
 const links = [
   { label: 'Home', to: '/' },
@@ -11,11 +13,14 @@ const links = [
 
 export default function Layout({ children }) {
   const [open, setOpen] = useState(false);
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 24 });
 
   return (
     <div className="min-h-screen bg-void text-on-surface selection:bg-resonance selection:text-void">
-      <div className="fixed inset-0 pointer-events-none resonance-grid opacity-40" aria-hidden="true" />
+      <ResonanceField />
       <div className="fixed left-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-resonance/80 to-transparent z-[60]" aria-hidden="true" />
+      <motion.div className="fixed left-0 top-0 z-[70] h-[2px] w-full origin-left bg-acid" style={{ scaleX }} aria-hidden="true" />
       <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.07] bg-void/85 backdrop-blur-xl">
         <div className="mx-auto flex h-20 max-w-[1440px] items-center justify-between px-5 md:px-10">
           <Link to="/" className="group flex items-center gap-3" aria-label="Muhamad Nur Yanfa — Home">

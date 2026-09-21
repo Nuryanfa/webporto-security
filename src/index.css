@@ -165,6 +165,10 @@
   }
 }
 
+.signal-button, .ghost-button { position: relative; overflow: hidden; isolation: isolate; }
+.signal-button::after, .ghost-button::after { content: ''; position: absolute; inset: 0; z-index: -1; transform: translateX(-115%) skewX(-18deg); background: rgba(255,255,255,.18); transition: transform .55s cubic-bezier(.16,1,.3,1); }
+.signal-button:hover::after, .ghost-button:hover::after { transform: translateX(115%) skewX(-18deg); }
+
 .resonance-grid {
   background-image: linear-gradient(rgba(121,230,223,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(121,230,223,.025) 1px, transparent 1px);
   background-size: 72px 72px;

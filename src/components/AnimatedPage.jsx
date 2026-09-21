@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 
 const animations = {
   initial: { opacity: 0, y: 30, filter: "blur(10px)" },
@@ -24,22 +24,16 @@ const animations = {
 };
 
 export default function AnimatedPage({ children }) {
+  const reduced = useReducedMotion();
   return (
     <motion.div
       variants={animations}
-      initial="initial"
-      animate="animate"
-      exit="exit"
+      initial={reduced ? false : "initial"}
+      animate={reduced ? undefined : "animate"}
+      exit={reduced ? undefined : "exit"}
       className="h-full w-full relative"
     >
-      {/* Cyber Wipe Element */}
-      <motion.div
-        initial={{ scaleY: 1 }}
-        animate={{ scaleY: 0 }}
-        exit={{ scaleY: 1 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className="fixed inset-0 bg-cyber-cyan z-50 origin-top pointer-events-none mix-blend-overlay"
-      />
+      {!reduced && <motion.div initial={{ scaleX: 1 }} animate={{ scaleX: 0 }} transition={{ duration: .65, ease: [0.76, 0, 0.24, 1] }} className="fixed inset-y-0 left-0 right-0 z-40 origin-right bg-resonance/10 backdrop-blur-md pointer-events-none" />}
       {children}
     </motion.div>
   );
