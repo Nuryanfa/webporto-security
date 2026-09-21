@@ -1,19 +1,27 @@
-import { ArrowUpRight, Copy, Github, Linkedin, Mail } from 'lucide-react';
 import { useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { Check, Copy, Github, Linkedin, Mail, Radio, Send } from 'lucide-react';
 import AnimatedPage from '../components/AnimatedPage';
 
 export default function Network() {
-  const [copied, setCopied] = useState(false);
-  const reduced = useReducedMotion();
   const email = 'muhamadnuryanfa@gmail.com';
-  const copyEmail = async () => { await navigator.clipboard.writeText(email); setCopied(true); window.setTimeout(() => setCopied(false), 1800); };
-  const socials = [
-    { label: 'GitHub', detail: '@Nuryanfa', href: 'https://github.com/Nuryanfa', icon: Github },
-    { label: 'LinkedIn', detail: 'Muhamad Nur Yanfa', href: 'https://www.linkedin.com/in/muhamad-nur-yanfa-069036368', icon: Linkedin },
-  ];
-  return <AnimatedPage><div className="flex min-h-[calc(100vh-11rem)] flex-col justify-between py-8">
-    <header><p className="font-code text-[10px] uppercase tracking-[.22em] text-resonance">04 / Open channel</p><h1 className="mt-6 max-w-5xl text-5xl font-semibold leading-[.92] tracking-[-.055em] text-white md:text-8xl lg:text-9xl">Let’s build a system worth defending.</h1></header>
-    <div className="mt-20 grid gap-10 border-t border-white/[.08] pt-10 lg:grid-cols-2"><motion.div initial={reduced ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .25 }}><p className="max-w-lg text-lg leading-8 text-muted">Have a backend problem, a security challenge, or a role where both disciplines matter? My channel is open.</p><a href={`mailto:${email}`} className="mt-8 inline-flex items-center gap-3 text-xl text-white hover:text-resonance"><Mail size={20} />{email}</a><button onClick={copyEmail} className="ml-4 inline-flex items-center gap-2 font-code text-[10px] uppercase tracking-[.15em] text-muted hover:text-white"><Copy size={14} />{copied ? 'Copied' : 'Copy'}</button></motion.div><div className="space-y-3">{socials.map(({ label, detail, href, icon: Icon }, index) => <motion.a initial={reduced ? false : { opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: .3 + index * .12 }} whileHover={reduced ? {} : { x: 8 }} key={label} href={href} target="_blank" rel="noreferrer" className="group flex items-center justify-between border-b border-white/[.08] py-5"><span className="flex items-center gap-4"><Icon size={19} className="text-resonance" /><span><strong className="block text-white">{label}</strong><small className="text-muted">{detail}</small></span></span><ArrowUpRight className="text-muted transition-transform group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-acid" /></motion.a>)}</div></div>
+  const [copied, setCopied] = useState(false);
+  const [channel, setChannel] = useState('email');
+  const reduced = useReducedMotion();
+  const copy = async () => { await navigator.clipboard.writeText(email); setCopied(true); window.setTimeout(() => setCopied(false), 1600); };
+  const channels = {
+    email: { icon: Mail, label: 'Direct mail', value: email, href: `mailto:${email}`, action: 'Compose message' },
+    github: { icon: Github, label: 'Source network', value: 'github.com/Nuryanfa', href: 'https://github.com/Nuryanfa', action: 'Inspect repositories' },
+    linkedin: { icon: Linkedin, label: 'Professional relay', value: 'Muhamad Nur Yanfa', href: 'https://www.linkedin.com/in/muhamad-nur-yanfa-069036368', action: 'Open connection' },
+  };
+  const current = channels[channel]; const Icon = current.icon;
+  return <AnimatedPage><div className="channel-shell">
+    <header className="channel-heading"><span className="eyebrow">41 / Communication array</span><h1>OPEN A<br />CHANNEL.</h1><p>Choose a frequency. Every route reaches the same operator, but each carries a different kind of signal.</p></header>
+    <section className="channel-console">
+      <div className="channel-radar"><div className="radar-grid"><motion.div className="radar-sweep-arm" animate={reduced ? {} : { rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: 'linear' }} /><span className="radar-contact contact-a" /><span className="radar-contact contact-b" /><span className="radar-contact contact-c" /><Radio className="radar-center" /></div><div className="channel-status"><i /> OPERATOR AVAILABLE</div></div>
+      <div className="channel-panel"><div className="channel-tabs">{Object.entries(channels).map(([key, item]) => <button key={key} onClick={() => setChannel(key)} className={channel === key ? 'is-active' : ''}><item.icon size={17} /><span>{item.label}</span></button>)}</div>
+        <AnimatePresence mode="wait"><motion.div key={channel} initial={reduced ? false : { opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -15 }} className="channel-readout"><span>ACTIVE FREQUENCY / {channel.toUpperCase()}</span><Icon size={36} /><h2>{current.value}</h2><div className="channel-actions"><a href={current.href} target={channel === 'email' ? undefined : '_blank'} rel="noreferrer"><Send size={16} />{current.action}</a>{channel === 'email' && <button onClick={copy}>{copied ? <Check size={16} /> : <Copy size={16} />}{copied ? 'Copied' : 'Copy address'}</button>}</div></motion.div></AnimatePresence>
+      </div>
+    </section>
   </div></AnimatedPage>;
 }

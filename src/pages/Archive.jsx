@@ -1,23 +1,30 @@
-import { ArrowUpRight, Github } from 'lucide-react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { ArrowUpRight, Crosshair, Github, Shield, Workflow } from 'lucide-react';
 import AnimatedPage from '../components/AnimatedPage';
 
 const projects = [
-  { id: '01', type: 'Purple-team laboratory', title: 'SecureNet Enterprise Lab', summary: 'An enterprise network lab designed to be built, attacked, observed, and continuously hardened through six versioned releases.', outcome: 'Attack simulations mapped to MITRE ATT&CK with network visibility across Wazuh, Suricata, and MikroTik.', tags: ['MikroTik', 'Wazuh', 'Suricata', 'MITRE ATT&CK'], href: 'https://github.com/Nuryanfa/securenet-enterprise-lab', accent: 'text-resonance' },
-  { id: '02', type: 'Backend architecture', title: 'Cloud-Native Certificate Validation', summary: 'A secure service concept for validating X.509 certificates with a zero-trust approach and scalable data flow.', outcome: 'Designed around explicit trust boundaries, managed keys, and auditable validation states.', tags: ['Go', 'PostgreSQL', 'Cloud KMS', 'X.509'], href: 'https://github.com/Nuryanfa', accent: 'text-acid' },
-  { id: '03', type: 'Software quality', title: 'E-Commerce SQA', summary: 'Quality engineering for an e-commerce platform, covering secure transaction paths and repeatable test workflows.', outcome: 'A clearer testing strategy for critical commerce flows and safer delivery practices.', tags: ['Golang', 'SQA', 'Testing', 'CI/CD'], href: 'https://github.com/Nuryanfa/e-commerse-sqa', accent: 'text-threat' },
+  { id: 'OP-01', code: 'SNET', type: 'PURPLE TEAM', title: 'SecureNet Enterprise Lab', status: 'DEPLOYED', summary: 'An enterprise network laboratory designed to be built, attacked, observed, and continuously hardened.', outcome: 'Six versioned releases combining segmentation, detection engineering, and MITRE ATT&CK–mapped simulations.', tags: ['MikroTik', 'Wazuh', 'Suricata', 'MITRE ATT&CK'], href: 'https://github.com/Nuryanfa/securenet-enterprise-lab', icon: Shield, color: '#79e6df' },
+  { id: 'OP-02', code: 'X509', type: 'BACKEND ARCHITECTURE', title: 'Certificate Validation System', status: 'PROTOTYPE', summary: 'A secure service concept for validating X.509 certificates with explicit trust boundaries and scalable data flow.', outcome: 'Architecture centered on managed keys, auditable validation states, and zero-trust decisions.', tags: ['Go', 'PostgreSQL', 'Cloud KMS', 'X.509'], href: 'https://github.com/Nuryanfa', icon: Workflow, color: '#e8f53b' },
+  { id: 'OP-03', code: 'SQA', type: 'QUALITY ENGINEERING', title: 'E-Commerce SQA', status: 'ARCHIVED', summary: 'Quality engineering for an e-commerce platform covering secure transaction paths and repeatable test workflows.', outcome: 'A clearer test strategy for critical commerce flows and safer delivery practices.', tags: ['Golang', 'SQA', 'Testing', 'CI/CD'], href: 'https://github.com/Nuryanfa/e-commerse-sqa', icon: Crosshair, color: '#ff4d5e' },
 ];
 
 export default function Archive() {
-  const reduceMotion = useReducedMotion();
-  return <AnimatedPage><div>
-    <header className="max-w-5xl pb-20 pt-8"><p className="font-code text-[10px] uppercase tracking-[.22em] text-resonance">02 / Selected operations</p><h1 className="mt-6 text-5xl font-semibold leading-[.95] tracking-[-.05em] text-white md:text-8xl">Work with<br />a defensive pulse.</h1><p className="mt-8 max-w-2xl text-lg leading-8 text-muted">Selected backend and security work, focused on the decisions behind the system—not decorative dashboards.</p></header>
-    <section className="border-t border-white/[.08]">
-      {projects.map((project, index) => <motion.article data-cursor="active" key={project.id} initial={reduceMotion ? false : { opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} whileHover={reduceMotion ? {} : { x: 12 }} viewport={{ once: true, amount: .2 }} transition={{ delay: index * .08, duration: .55, ease: [0.16, 1, 0.3, 1] }} className="operation-row group relative grid gap-8 overflow-hidden border-b border-white/[.08] py-12 lg:grid-cols-12 lg:py-16">
-        <div className="lg:col-span-2"><span className={`font-code text-sm ${project.accent}`}>OP_{project.id}</span><p className="mt-3 font-code text-[9px] uppercase tracking-[.18em] text-muted">{project.type}</p></div>
-        <div className="lg:col-span-6"><h2 className="text-3xl font-medium tracking-[-.03em] text-white transition-transform duration-300 group-hover:translate-x-2 md:text-5xl">{project.title}</h2><p className="mt-5 max-w-2xl leading-7 text-muted">{project.summary}</p><p className="mt-5 max-w-2xl border-l border-resonance/40 pl-4 text-sm leading-6 text-white/80">{project.outcome}</p></div>
-        <div className="flex flex-col justify-between lg:col-span-4"><div className="flex flex-wrap gap-2">{project.tags.map(tag => <span key={tag} className="tech-tag">{tag}</span>)}</div><a href={project.href} target="_blank" rel="noreferrer" className="mt-8 inline-flex items-center gap-3 self-start text-sm text-white hover:text-resonance"><Github size={17} />Repository <ArrowUpRight size={16} /></a></div>
-      </motion.article>)}
+  const [active, setActive] = useState(projects[0]);
+  const reduced = useReducedMotion();
+  return <AnimatedPage><div className="operation-shell">
+    <header className="operation-header"><div><span className="eyebrow">17 / Operation matrix</span><h1>SELECT<br />A TARGET.</h1></div><p>Each operation exposes its intent, engineering decisions, and outcome. Choose a frequency to decode the record.</p></header>
+    <section className="operation-console">
+      <div className="operation-selector" role="tablist" aria-label="Project selection">{projects.map((project, index) => <button key={project.id} role="tab" aria-selected={active.id === project.id} onClick={() => setActive(project)} onPointerEnter={() => setActive(project)} className={`operation-tab ${active.id === project.id ? 'is-active' : ''}`} style={{ '--signal': project.color }}><span className="operation-index">0{index + 1}</span><project.icon size={18} /><span><b>{project.code}</b><small>{project.type}</small></span><i>{project.status}</i></button>)}</div>
+      <div className="operation-viewport">
+        <div className="target-reticle" aria-hidden="true"><span /><span /><span /></div>
+        <AnimatePresence mode="wait"><motion.article key={active.id} initial={reduced ? false : { opacity: 0, x: 35, filter: 'blur(10px)' }} animate={{ opacity: 1, x: 0, filter: 'blur(0)' }} exit={{ opacity: 0, x: -25, filter: 'blur(7px)' }} transition={{ duration: .42 }} className="operation-dossier">
+          <div className="dossier-top"><span>{active.id} / {active.type}</span><span style={{ color: active.color }}>● {active.status}</span></div>
+          <h2>{active.title}</h2><p className="dossier-summary">{active.summary}</p><div className="dossier-outcome"><span>MISSION OUTPUT</span><p>{active.outcome}</p></div>
+          <div className="flex flex-wrap gap-2">{active.tags.map(tag => <span className="tech-tag" key={tag}>{tag}</span>)}</div>
+          <a href={active.href} target="_blank" rel="noreferrer" className="dossier-link"><Github size={17} />Open repository <ArrowUpRight size={16} /></a>
+        </motion.article></AnimatePresence>
+      </div>
     </section>
   </div></AnimatedPage>;
 }
