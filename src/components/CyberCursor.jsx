@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring } from 'framer-motion';
+import { AnimatePresence, motion, useMotionValue, useSpring } from 'framer-motion';
+import useReducedMotion from '../utils/useMotionPreference';
 
 export default function CyberCursor() {
   const reduced = useReducedMotion();

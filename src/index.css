@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Anime.js owns these layers; Framer owns route/panel presence only. */
+.signal-motion { position: relative; isolation: isolate; }
+.signal-shutters { position: absolute; inset: 0; z-index: 24; pointer-events: none; display: grid; grid-template-rows: repeat(5, 1fr); overflow: hidden; }
+.signal-shutter { display: block; background: #101c20; border-right: 2px solid #79e6df; transform: scaleX(0); transform-origin: right; }
+.signal-shutter:nth-child(even) { background: #162125; }
+.signal-rule { position: absolute; left: 0; right: 0; top: 0; height: 1px; background: linear-gradient(90deg, #e8f53b, #79e6df 40%, transparent); transform-origin: left; pointer-events: none; }
+.signal-response { position: absolute; z-index: 30; width: 36px; height: 36px; margin: -18px; border: 1px solid #79e6df; border-radius: 50%; opacity: 0; pointer-events: none; }
+.signal-lattice { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+@media (max-width: 767px) { .signal-lattice { opacity: .45; } }
+.decode-text { overflow-wrap: anywhere; }
+.identity-hit { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 6; border-radius: 50%; }
+.identity-hit:focus-visible { outline-offset: 8px; }
+.core-orbit { pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .signal-shutters, .signal-response { display: none; } }
+
 @layer base {
   html { scroll-behavior: smooth; }
   body { background: #080a0d; }
@@ -229,11 +244,11 @@
 @media (max-width: 767px) {
   .nexus-shell { min-height: calc(100vh - 8rem); }
   .nexus-stage { min-height: 690px; overflow: visible; }
-  .nexus-stage::before { width: 520px; opacity: .6; }
+  .nexus-stage::before { width: 100%; max-width: 520px; opacity: .6; }
   .nexus-stage::after { width: 300px; }
   .nexus-lines { opacity: .45; }
   .nexus-core { top: 24%; width: 145px; }
-  .node-work { left: 4%; top: 9%; }.node-experience { right: 3%; top: 11%; }.node-contact { right: 5%; top: 43%; bottom: auto; }
+  .node-work { left: 4%; top: 9%; }.node-experience { right: 3%; top: 11%; }.node-contact { right: 5%; top: 38%; bottom: auto; }
   .node-caption { position: absolute; top: 62px; left: 50%; transform: translateX(-50%); }
   .nexus-dossier { left: 0; right: 0; bottom: 7%; width: auto; padding: 20px 0 20px 18px; background: linear-gradient(90deg,rgba(8,10,13,.98),rgba(8,10,13,.82)); }
   .nexus-dossier h1 { font-size: 2.3rem; }
@@ -283,6 +298,13 @@
 
 @media (min-width: 768px) and (max-height: 760px) {
   .nexus-stage { min-height:620px; }.nexus-core { width:175px; top:42%; }.nexus-dossier { bottom:4%; }.operation-header,.trace-title,.channel-heading { padding-top:0; padding-bottom:32px; }.operation-header h1,.trace-title h1,.channel-heading h1 { font-size:5rem; }
+}
+
+/* Reserve separate space for the core and the decoded dossier on short laptops. */
+@media (min-width: 768px) {
+  .nexus-stage { min-height: 800px; }
+  .nexus-core { top: 31%; }
+  .nexus-dossier { bottom: 5%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

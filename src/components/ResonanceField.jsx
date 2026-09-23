@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, useMotionValue, useSpring, useReducedMotion } from 'framer-motion';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
+import useReducedMotion from '../utils/useMotionPreference';
 
 export default function ResonanceField() {
   const root = useRef(null);

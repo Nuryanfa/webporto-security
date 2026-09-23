@@ -3,6 +3,7 @@ import { motion, useScroll, useSpring } from 'framer-motion';
 import { CircleDot, FolderKanban, Radio, Route, UserRound } from 'lucide-react';
 import ResonanceField from './ResonanceField';
 import CyberCursor from './CyberCursor';
+import SignalLattice from './SignalLattice';
 
 const coordinates = [
   { code: '00', label: 'Nexus', to: '/', icon: CircleDot },
@@ -19,7 +20,7 @@ export default function Layout({ children }) {
 
   return <div className="min-h-screen bg-void text-on-surface selection:bg-resonance selection:text-void">
     <a href="#main-content" className="skip-link">Skip to content</a>
-    <CyberCursor /><ResonanceField />
+    <CyberCursor /><ResonanceField /><SignalLattice />
     <motion.div className="fixed left-0 top-0 z-[70] h-[2px] w-full origin-left bg-acid" style={{ scaleX: progress }} />
 
     <aside className="fixed inset-y-0 left-0 z-40 hidden w-20 flex-col items-center border-r border-white/[.08] bg-void/75 py-6 backdrop-blur-xl md:flex">

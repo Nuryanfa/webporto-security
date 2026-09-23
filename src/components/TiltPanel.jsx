@@ -1,4 +1,5 @@
-import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import useReducedMotion from '../utils/useMotionPreference';
 
 export default function TiltPanel({ children, className = '' }) {
   const reduced = useReducedMotion();
@@ -7,7 +8,7 @@ export default function TiltPanel({ children, className = '' }) {
   const rotateX = useSpring(useTransform(my, [-.5, .5], [7, -7]), { stiffness: 180, damping: 20 });
   const rotateY = useSpring(useTransform(mx, [-.5, .5], [-9, 9]), { stiffness: 180, damping: 20 });
   const handleMove = event => {
-    if (reduced) return;
+    if (reduced || event.pointerType !== 'mouse') return;
     const rect = event.currentTarget.getBoundingClientRect();
     mx.set((event.clientX - rect.left) / rect.width - .5);
     my.set((event.clientY - rect.top) / rect.height - .5);

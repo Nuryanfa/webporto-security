@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, MotionConfig } from 'framer-motion';
 import { Suspense, lazy } from 'react';
 import Layout from './components/Layout';
 import { Analytics } from "@vercel/analytics/react";
@@ -15,8 +15,8 @@ import TabTitleUpdater from './components/TabTitleUpdater';
 function AnimatedRoutes() {
   const location = useLocation();
   return (
-    <AnimatePresence mode="wait">
-      <Suspense fallback={<div className="flex h-screen items-center justify-center font-mono text-cyber-cyan">Loading...</div>}>
+    <Suspense fallback={<div role="status" className="flex h-screen items-center justify-center font-mono text-cyber-cyan">Loading...</div>}>
+      <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Home />} />
           <Route path="/archive" element={<Archive />} />
@@ -24,14 +24,14 @@ function AnimatedRoutes() {
           <Route path="/network" element={<Network />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </Suspense>
-    </AnimatePresence>
+      </AnimatePresence>
+    </Suspense>
   );
 }
 
 export default function App() {
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       <Router>
         <TabTitleUpdater />
         <Layout>
@@ -40,6 +40,6 @@ export default function App() {
       </Router>
       <Analytics />
       <SpeedInsights />
-    </>
+    </MotionConfig>
   );
 }
