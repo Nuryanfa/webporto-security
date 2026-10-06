@@ -1,3 +1,4 @@
+import CyberCursor from "./CyberCursor";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   CircleDot,
@@ -22,6 +23,7 @@ export default function Layout({ children }) {
   const active = links.find((x) => x.to === pathname);
   return (
     <div className="cyber-shell">
+      <CyberCursor />
       <a href="#main-content" className="skip-link">
         Skip to content
       </a>

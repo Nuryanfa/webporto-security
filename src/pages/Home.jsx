@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowUpRight, ShieldCheck, Braces, Route, Radio } from "lucide-react";
 import AnimatedPage from "../components/AnimatedPage";
-import WorldBackdrop from "../components/WorldBackdrop";
+import IdentityScene from "../components/IdentityScene";
+import ContentTransition from "../components/ContentTransition";
 import useReducedMotion from "../utils/useMotionPreference";
 const nodes = [
   {
@@ -77,50 +78,17 @@ export default function Home() {
               <i />
               {active.tag}
             </div>
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={active.id}
-                initial={reduced ? false : { opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: reduced ? 0 : 0.16 }}
-              >
-                <h1>{active.title}</h1>
-                <p>{active.description}</p>
-                <Link className="nexus-cta" to={active.to}>
-                  {active.action}
-                  <ArrowUpRight size={17} />
-                </Link>
-                <div className="nexus-meta">{active.meta}</div>
-              </motion.div>
-            </AnimatePresence>
+            <ContentTransition id={active.id}>
+              <h1>{active.title}</h1>
+              <p>{active.description}</p>
+              <Link className="nexus-cta" to={active.to}>
+                {active.action}
+                <ArrowUpRight size={17} />
+              </Link>
+              <div className="nexus-meta">{active.meta}</div>
+            </ContentTransition>
           </div>
-          <div className="identity-scene">
-            <WorldBackdrop />
-            <div className="scene-caption">
-              <span>IDENTITY / NY—07</span>
-              <ShieldCheck size={15} />
-            </div>
-            <div className="identity-rings">
-              <span className="identity-orbit orbit-outer" />
-              <span className="identity-orbit orbit-inner" />
-              <div className="identity-cross cross-h" />
-              <div className="identity-cross cross-v" />
-              <div className="identity-photo">
-                <img
-                  src="/profile.webp"
-                  alt="Muhamad Nur Yanfa"
-                  fetchPriority="high"
-                />
-              </div>
-              <span className="orbit-point point-a" />
-              <span className="orbit-point point-b" />
-            </div>
-            <div className="scene-foot">
-              <span>開発者 / DEVELOPER</span>
-              <span>6°55′ S · 107°36′ E</span>
-            </div>
-          </div>
+          <IdentityScene />
         </div>
         <nav
           className="nexus-selectors"
@@ -133,6 +101,18 @@ export default function Home() {
               aria-pressed={selected === index}
               className={selected === index ? "selected" : ""}
             >
+              {selected === index && (
+                <motion.span
+                  aria-hidden="true"
+                  className="selector-highlight"
+                  layoutId="nexus-selection"
+                  transition={
+                    reduced
+                      ? { duration: 0 }
+                      : { type: "spring", stiffness: 380, damping: 36 }
+                  }
+                />
+              )}
               <span className="selector-number">0{index + 1}</span>
               <Icon size={18} strokeWidth={1.5} />
               <span className="selector-name">

@@ -809,3 +809,148 @@ a:focus-visible {
     transition: none !important;
   }
 }
+
+/* The native pointer never depends on the animation layer. */
+html,
+body {
+  cursor: auto;
+}
+a,
+button,
+summary,
+[role="tab"] {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+.pointer-follower {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 27px;
+  height: 27px;
+  margin: -13.5px 0 0 -13.5px;
+  z-index: 120;
+  pointer-events: none;
+  border: 1px solid #89c9c57a;
+  border-radius: 50%;
+  will-change: transform;
+}
+.content-transition {
+  display: grid;
+  min-width: 0;
+  align-items: start;
+  isolation: isolate;
+}
+.content-frame {
+  grid-area: 1/1;
+  min-width: 0;
+  width: 100%;
+}
+.content-frame[aria-hidden="true"] {
+  user-select: none;
+}
+.identity-depth {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+.nexus-selectors {
+  isolation: isolate;
+}
+.nexus-selectors button {
+  background: transparent !important;
+  isolation: isolate;
+}
+.nexus-selectors button.selected:before {
+  display: none;
+}
+.selector-highlight {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, #89c9c514, #89c9c504);
+  border-top: 2px solid #89c9c5;
+  pointer-events: none;
+}
+.selector-arrow,
+.nexus-cta svg,
+.overview-shortcut svg {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nexus-selectors button:hover .selector-arrow,
+.nexus-cta:hover svg,
+.overview-shortcut:hover svg {
+  transform: translate(2px, -2px);
+}
+.nexus-selectors button:active,
+.nexus-cta:active {
+  transform: translateY(1px);
+}
+.nexus-selectors button {
+  transition:
+    color 0.22s ease,
+    transform 0.15s ease;
+}
+.nexus-cta {
+  transition:
+    background 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.15s ease;
+}
+.nexus-cta:hover {
+  box-shadow: 0 4px 16px #89c9c513;
+}
+.channel-panel > .content-transition {
+  height: 100%;
+}
+.channel-panel .content-frame,
+.channel-panel .channel-readout {
+  height: 100%;
+}
+.channel-readout {
+  min-height: 430px;
+}
+.trace-record {
+  min-height: 330px;
+}
+.operation-dossier {
+  min-height: 520px;
+}
+.nexus-copy .content-transition {
+  min-height: 320px;
+}
+.nexus-copy .content-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.nexus-copy .nexus-meta {
+  min-height: 36px;
+}
+@media (pointer: coarse), (hover: none) {
+  .pointer-follower {
+    display: none;
+  }
+}
+@media (max-width: 767px) {
+  .channel-readout {
+    min-height: 365px;
+  }
+  .trace-record {
+    min-height: 530px;
+  }
+  .nexus-copy .content-transition {
+    min-height: 330px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pointer-follower {
+    display: none;
+  }
+  .identity-depth {
+    will-change: auto;
+  }
+}

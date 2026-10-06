@@ -1,5 +1,6 @@
+import ContentTransition from "../components/ContentTransition";
 import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import useReducedMotion from "../utils/useMotionPreference";
 import { Activity, Braces, Database, GitBranch } from "lucide-react";
 import AnimatedPage from "../components/AnimatedPage";
@@ -88,15 +89,8 @@ export default function Timeline() {
               </button>
             ))}
           </div>
-          <AnimatePresence mode="wait">
-            <motion.section
-              key={signal.id}
-              initial={reduced ? false : { opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0, clipPath: "inset(0 0 0% 0)" }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.18 }}
-              className="trace-record"
-            >
+          <ContentTransition id={signal.id}>
+            <section className="trace-record">
               <div>
                 <span className="eyebrow">Decoded record / {signal.id}</span>
                 <h2>
@@ -107,16 +101,11 @@ export default function Timeline() {
               </div>
               <div className="trace-events">
                 {signal.events.map(({ icon: Icon, text }, i) => (
-                  <motion.div
-                    key={text}
-                    initial={reduced ? false : { opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.18 }}
-                  >
+                  <div key={text}>
                     <Icon size={17} />
                     <span>{text}</span>
                     <b>0{i + 1}</b>
-                  </motion.div>
+                  </div>
                 ))}
                 <div className="mt-5 flex flex-wrap gap-2">
                   {signal.tags.map((tag) => (
@@ -126,8 +115,8 @@ export default function Timeline() {
                   ))}
                 </div>
               </div>
-            </motion.section>
-          </AnimatePresence>
+            </section>
+          </ContentTransition>
         </div>
       </div>
     </AnimatedPage>

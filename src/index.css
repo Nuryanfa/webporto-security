@@ -194,7 +194,7 @@
 }
 
 @media (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  html, body, a, button, [data-cursor="active"] { cursor: none !important; }
+  /* Native pointer stays visible; decorative tracking is progressive enhancement. */
 }
 .cyber-cursor-dot, .cyber-cursor-ring, .cyber-click-pulse { position: fixed; left: 0; top: 0; z-index: 100; pointer-events: none; translate: -50% -50%; }
 .cyber-cursor-dot { width: 5px; height: 5px; border-radius: 50%; background: #e8f53b; box-shadow: 0 0 12px #e8f53b; }

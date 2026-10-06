@@ -1,5 +1,6 @@
+import ContentTransition from "../components/ContentTransition";
 import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import useReducedMotion from "../utils/useMotionPreference";
 import { Check, Copy, Github, Linkedin, Mail, Radio, Send } from "lucide-react";
 import AnimatedPage from "../components/AnimatedPage";
@@ -106,15 +107,8 @@ export default function Network() {
                 </button>
               ))}
             </div>
-            <AnimatePresence mode="wait">
-              <motion.div
-                role="tabpanel"
-                key={channel}
-                initial={reduced ? false : { opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -15 }}
-                className="channel-readout"
-              >
+            <ContentTransition id={channel}>
+              <div role="tabpanel" className="channel-readout">
                 <span>ACTIVE FREQUENCY / {channel.toUpperCase()}</span>
                 <Icon size={36} />
                 <h2>
@@ -136,8 +130,8 @@ export default function Network() {
                     </button>
                   )}
                 </div>
-              </motion.div>
-            </AnimatePresence>
+              </div>
+            </ContentTransition>
           </div>
         </section>
       </div>
