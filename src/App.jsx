@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { AnimatePresence, MotionConfig } from 'framer-motion';
 import { Suspense, lazy } from 'react';
 import Layout from './components/Layout';
+import useMotionPreference from './utils/useMotionPreference';
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 
@@ -10,6 +11,7 @@ const Archive = lazy(() => import('./pages/Archive'));
 const Timeline = lazy(() => import('./pages/Timeline'));
 const Network = lazy(() => import('./pages/Network'));
 const NotFound = lazy(() => import('./pages/NotFound'));
+const Overview = lazy(() => import('./pages/Overview'));
 import TabTitleUpdater from './components/TabTitleUpdater';
 
 function AnimatedRoutes() {
@@ -22,6 +24,7 @@ function AnimatedRoutes() {
           <Route path="/archive" element={<Archive />} />
           <Route path="/timeline" element={<Timeline />} />
           <Route path="/network" element={<Network />} />
+          <Route path="/overview" element={<Overview />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AnimatePresence>
@@ -30,8 +33,9 @@ function AnimatedRoutes() {
 }
 
 export default function App() {
+  const reduced = useMotionPreference();
   return (
-    <MotionConfig reducedMotion="user">
+    <MotionConfig reducedMotion={reduced ? 'always' : 'never'}>
       <Router>
         <TabTitleUpdater />
         <Layout>

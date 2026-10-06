@@ -1,0 +1,7 @@
+import { Crosshair, Shield, Workflow } from 'lucide-react';
+
+export const projects = [
+  { id: 'OP-01', code: 'SNET', type: 'PURPLE TEAM', title: 'SecureNet Enterprise Lab', status: 'DEPLOYED', summary: 'An enterprise network laboratory designed to be built, attacked, observed, and continuously hardened.', outcome: 'Six versioned releases combining segmentation, detection engineering, and MITRE ATT&CK–mapped simulations.', tags: ['MikroTik', 'Wazuh', 'Suricata', 'MITRE ATT&CK'], href: 'https://github.com/Nuryanfa/securenet-enterprise-lab', icon: Shield, color: '#79e6df' },
+  { id: 'OP-02', code: 'X509', type: 'BACKEND ARCHITECTURE', title: 'Certificate Validation System', status: 'PROTOTYPE', summary: 'A secure service concept for validating X.509 certificates with explicit trust boundaries and scalable data flow.', outcome: 'Architecture centered on managed keys, auditable validation states, and zero-trust decisions.', tags: ['Go', 'PostgreSQL', 'Cloud KMS', 'X.509'], href: 'https://github.com/Nuryanfa', icon: Workflow, color: '#e8f53b' },
+  { id: 'OP-03', code: 'SQA', type: 'QUALITY ENGINEERING', title: 'E-Commerce SQA', status: 'ARCHIVED', summary: 'Quality engineering for an e-commerce platform covering secure transaction paths and repeatable test workflows.', outcome: 'A clearer test strategy for critical commerce flows and safer delivery practices.', tags: ['Golang', 'SQA', 'Testing', 'CI/CD'], href: 'https://github.com/Nuryanfa/e-commerse-sqa', icon: Crosshair, color: '#ff4d5e' },
+];

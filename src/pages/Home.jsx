@@ -6,6 +6,7 @@ import { ArrowUpRight, Braces, Radio, Route, ShieldCheck } from 'lucide-react';
 import AnimatedPage from '../components/AnimatedPage';
 import DecodeText from '../components/DecodeText';
 import TiltPanel from '../components/TiltPanel';
+import WorldBackdrop from '../components/WorldBackdrop';
 
 const nodes = [
   { id: 'profile', index: '01', label: 'Identity', eyebrow: 'Backend × Security', title: 'Muhamad Nur Yanfa', description: 'I build secure backend systems and practical defensive infrastructure from Indonesia.', meta: 'Go · PostgreSQL · Security', icon: ShieldCheck, position: 'node-profile' },
@@ -15,12 +16,14 @@ const nodes = [
 ];
 
 export default function Home() {
-  const [active, setActive] = useState(nodes[0]);
+  const [active, updateActive] = useState(() => { try { return nodes.find(node => node.id === sessionStorage.getItem('ny-node')) || nodes[0]; } catch { return nodes[0]; } });
+  const setActive = node => { updateActive(node); try { sessionStorage.setItem('ny-node', node.id); } catch {} };
   const reduced = useReducedMotion();
   return <AnimatedPage><div className="nexus-shell">
     <div className="nexus-kicker"><span>INTERFACE_07</span><span>Navigate the signal map</span></div>
 
     <section className="nexus-stage" aria-label="Interactive portfolio map">
+      <WorldBackdrop />
       <svg className="nexus-lines" viewBox="0 0 1200 720" preserveAspectRatio="none" aria-hidden="true"><motion.path d="M600 360 L220 145 M600 360 L980 155 M600 360 L1030 565 M600 360 L190 570" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="5 9" initial={reduced ? false : { pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: .28 }} transition={{ duration: 1.6, delay: .35 }} /></svg>
 
       <div className="nexus-core" data-cursor="active"><button className="identity-hit" aria-label="Preview identity" onClick={() => setActive(nodes[0])} onFocus={() => setActive(nodes[0])} />
@@ -45,5 +48,5 @@ export default function Home() {
 
 function Node({ node, active, setActive, delay, reduced }) {
   const Icon = node.icon;
-  return <motion.div className={`nexus-node ${node.position}`} initial={reduced ? false : { opacity: 0, scale: .5 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay, type: 'spring', stiffness: 150 }}><button onPointerEnter={() => setActive(node)} onFocus={() => setActive(node)} onClick={() => setActive(node)} className={`node-trigger ${active ? 'is-active' : ''}`} aria-label={`Preview ${node.label}`} aria-pressed={active}><Icon size={18} /><span className="node-pulse" /></button><span className="node-caption"><b>{node.index}</b> {node.label}</span></motion.div>;
+  return <motion.div className={`nexus-node ${node.position}`} initial={reduced ? false : { opacity: 0, scale: .5 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay, type: 'spring', stiffness: 150 }}><button onClick={() => setActive(node)} className={`node-trigger ${active ? 'is-active' : ''}`} aria-label={`Preview ${node.label}`} aria-pressed={active}><Icon size={18} /><span className="node-pulse" /></button><span className="node-caption"><b>{node.index}</b> {node.label}</span></motion.div>;
 }

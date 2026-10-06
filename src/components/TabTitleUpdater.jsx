@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 
 const siteUrl = 'https://www.nuryanfa.my.id';
 const pages = {
+  '/overview': { title: 'Quick Overview — Muhamad Nur Yanfa', description: 'A concise overview of backend and security projects, engineering experience, and contact channels.' },
   '/': { title: 'Muhamad Nur Yanfa — Backend & Security Engineer', description: 'Portfolio of Muhamad Nur Yanfa, a backend and security engineer building secure APIs, resilient infrastructure, and practical defensive systems.' },
   '/archive': { title: 'Selected Operations — Muhamad Nur Yanfa', description: 'Selected backend, security, purple-team, and software quality projects by Muhamad Nur Yanfa.' },
   '/timeline': { title: 'Experience — Muhamad Nur Yanfa', description: 'Engineering experience and field history of backend and security engineer Muhamad Nur Yanfa.' },
