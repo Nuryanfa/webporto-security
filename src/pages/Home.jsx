@@ -1,52 +1,129 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
-import useReducedMotion from '../utils/useMotionPreference';
-import { ArrowUpRight, Braces, Radio, Route, ShieldCheck } from 'lucide-react';
-import AnimatedPage from '../components/AnimatedPage';
-import DecodeText from '../components/DecodeText';
-import TiltPanel from '../components/TiltPanel';
-import WorldBackdrop from '../components/WorldBackdrop';
-
-const nodes = [
-  { id: 'profile', index: '01', label: 'Identity', eyebrow: 'Backend × Security', title: 'Muhamad Nur Yanfa', description: 'I build secure backend systems and practical defensive infrastructure from Indonesia.', meta: 'Go · PostgreSQL · Security', icon: ShieldCheck, position: 'node-profile' },
-  { id: 'work', index: '02', label: 'Operations', eyebrow: 'Selected work', title: 'Systems under pressure', description: 'Purple-team laboratories, secure backend services, and quality-focused delivery.', meta: '3 selected operations', icon: Braces, position: 'node-work', to: '/archive' },
-  { id: 'experience', index: '03', label: 'Trace', eyebrow: 'Field history', title: 'Signals from the field', description: 'A concise record of production engineering, collaboration, and technical growth.', meta: '2026 — present', icon: Route, position: 'node-experience', to: '/timeline' },
-  { id: 'contact', index: '04', label: 'Channel', eyebrow: 'Open connection', title: 'Start a transmission', description: 'Available for backend, security, and roles where both disciplines intersect.', meta: 'Response channel online', icon: Radio, position: 'node-contact', to: '/network' },
-];
-
+import { Link } from "react-router-dom";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { projects } from "../content/projects";
+import ProjectCard from "../components/ProjectCard";
 export default function Home() {
-  const [active, updateActive] = useState(() => { try { return nodes.find(node => node.id === sessionStorage.getItem('ny-node')) || nodes[0]; } catch { return nodes[0]; } });
-  const setActive = node => { updateActive(node); try { sessionStorage.setItem('ny-node', node.id); } catch {} };
-  const reduced = useReducedMotion();
-  return <AnimatedPage><div className="nexus-shell">
-    <div className="nexus-kicker"><span>INTERFACE_07</span><span>Navigate the signal map</span></div>
-
-    <section className="nexus-stage" aria-label="Interactive portfolio map">
-      <WorldBackdrop />
-      <svg className="nexus-lines" viewBox="0 0 1200 720" preserveAspectRatio="none" aria-hidden="true"><motion.path d="M600 360 L220 145 M600 360 L980 155 M600 360 L1030 565 M600 360 L190 570" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="5 9" initial={reduced ? false : { pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: .28 }} transition={{ duration: 1.6, delay: .35 }} /></svg>
-
-      <div className="nexus-core" data-cursor="active"><button className="identity-hit" aria-label="Preview identity" onClick={() => setActive(nodes[0])} onFocus={() => setActive(nodes[0])} />
-        <TiltPanel className="relative h-full w-full overflow-hidden rounded-full border border-resonance/35 bg-[#11171a] shadow-[0_0_80px_rgba(121,230,223,.12)]"><img src="/profile.webp" alt="Portrait of Muhamad Nur Yanfa" width="960" height="960" fetchPriority="high" decoding="async" className="h-full w-full object-cover grayscale-[30%] contrast-110" /><div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-resonance/10" /><div className="scan-beam" /></TiltPanel>
-        <motion.div className="core-orbit" animate={reduced ? {} : { rotate: 360 }} transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}><span /><span /></motion.div>
-        <span className="core-label">CORE / NY-07</span>
-      </div>
-
-      {nodes.slice(1).map((node, i) => <Node key={node.id} node={node} active={active.id === node.id} setActive={setActive} delay={.5 + i * .13} reduced={reduced} />)}
-
-      <AnimatePresence mode="wait"><motion.div key={active.id} className="nexus-dossier" initial={reduced ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: .35 }}>
-        <div className="flex items-center justify-between"><span className="font-code text-[9px] uppercase tracking-[.2em] text-resonance">{active.eyebrow}</span><span className="font-code text-[9px] text-muted">{active.index}</span></div>
-        <h1 className="mt-4 text-4xl font-semibold leading-[.95] tracking-[-.05em] text-white md:text-6xl"><DecodeText text={active.title} /></h1>
-        <p className="mt-5 max-w-lg leading-7 text-muted">{active.description}</p>
-        <div className="mt-7 flex items-center justify-between border-t border-white/10 pt-4"><span className="font-code text-[9px] uppercase tracking-[.16em] text-muted">{active.meta}</span>{active.to ? <Link to={active.to} className="group flex items-center gap-2 font-code text-[10px] uppercase tracking-[.14em] text-acid">Enter node <ArrowUpRight size={15} className="transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" /></Link> : <span className="font-code text-[9px] uppercase tracking-[.15em] text-resonance">Core synchronized</span>}</div>
-      </motion.div></AnimatePresence>
-
-      <div className="nexus-instruction"><span className="hidden md:inline">Select a node · Follow “Enter node”</span><span className="md:hidden">Tap a node to decode</span></div>
-    </section>
-  </div></AnimatedPage>;
-}
-
-function Node({ node, active, setActive, delay, reduced }) {
-  const Icon = node.icon;
-  return <motion.div className={`nexus-node ${node.position}`} initial={reduced ? false : { opacity: 0, scale: .5 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay, type: 'spring', stiffness: 150 }}><button onClick={() => setActive(node)} className={`node-trigger ${active ? 'is-active' : ''}`} aria-label={`Preview ${node.label}`} aria-pressed={active}><Icon size={18} /><span className="node-pulse" /></button><span className="node-caption"><b>{node.index}</b> {node.label}</span></motion.div>;
+  return (
+    <>
+      <section className="hero page-width">
+        <div className="hero-top">
+          <span className="eyebrow">Independent portfolio / 2026</span>
+          <span className="location">Bandung, Indonesia · UTC+7</span>
+        </div>
+        <div className="hero-layout">
+          <div className="hero-copy">
+            <p className="intro">Hello, I’m Muhamad Nur Yanfa.</p>
+            <h1>
+              Behind every
+              <br />
+              good product,
+              <br />
+              <em>a solid system.</em>
+            </h1>
+            <p className="hero-description">
+              I build backend systems and explore the security behind them.
+              Thoughtful APIs, dependable infrastructure, and a habit of asking
+              what could go wrong.
+            </p>
+            <div className="hero-actions">
+              <Link className="button" to="/archive">
+                Explore my work
+                <ArrowUpRight size={18} />
+              </Link>
+              <Link className="text-link" to="/network">
+                Let’s talk
+                <ArrowRight size={18} />
+              </Link>
+            </div>
+          </div>
+          <figure className="portrait">
+            <div className="portrait-frame">
+              <img
+                src="/profile.webp"
+                alt="Muhamad Nur Yanfa"
+                fetchPriority="high"
+              />
+              <span className="portrait-note">The person behind the code.</span>
+            </div>
+            <figcaption>
+              <span>MUHAMAD NUR YANFA</span>
+              <span>Developer & lifelong learner</span>
+            </figcaption>
+          </figure>
+        </div>
+        <div className="hero-foot">
+          <span>Backend development & security</span>
+          <span>Go / PostgreSQL / Infrastructure</span>
+          <a href="#selected-work">Scroll to discover ↓</a>
+        </div>
+      </section>
+      <section id="selected-work" className="work-section page-width">
+        <div className="section-heading">
+          <div>
+            <span className="eyebrow">01 / Selected work</span>
+            <h2>Built with intention.</h2>
+          </div>
+          <Link className="text-link" to="/archive">
+            View all projects
+            <ArrowUpRight size={18} />
+          </Link>
+        </div>
+        <div className="project-grid">
+          {projects.map((project, index) => (
+            <ProjectCard key={project.id} project={project} index={index} />
+          ))}
+        </div>
+      </section>
+      <section className="about-section page-width">
+        <span className="eyebrow">02 / A little about me</span>
+        <div>
+          <h2>
+            Curious by nature.
+            <br />
+            <em>Methodical by practice.</em>
+          </h2>
+          <p>
+            I’m an Informatics student based in Bandung, working at the
+            intersection of backend development and security. I enjoy
+            understanding how systems fit together—and making those connections
+            more reliable.
+          </p>
+          <p>
+            My projects bring that curiosity into practice, from defensive
+            network labs to secure service architecture.
+          </p>
+          <Link className="text-link" to="/timeline">
+            Explore my experience
+            <ArrowUpRight size={18} />
+          </Link>
+        </div>
+        <div className="focus-list">
+          <span>What I focus on</span>
+          {[
+            "Backend & API development",
+            "Database & system design",
+            "Defensive security",
+            "Delivery & infrastructure",
+          ].map((text, i) => (
+            <p key={text}>
+              <small>0{i + 1}</small>
+              {text}
+            </p>
+          ))}
+        </div>
+      </section>
+      <section className="contact-banner page-width">
+        <span className="eyebrow">Have something in mind?</span>
+        <Link to="/network">
+          Let’s build something
+          <br />
+          <em>worth building.</em>
+          <ArrowUpRight />
+        </Link>
+        <p>
+          For opportunities, collaborations, or a good technical conversation.
+        </p>
+      </section>
+    </>
+  );
 }

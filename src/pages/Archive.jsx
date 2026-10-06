@@ -1,50 +1,73 @@
-import { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowUpRight, Github } from 'lucide-react';
-import useReducedMotion from '../utils/useMotionPreference';
-import AnimatedPage from '../components/AnimatedPage';
-import DecodeText from '../components/DecodeText';
-import SystemExplorer from '../components/SystemExplorer';
-import { projects } from '../content/projects';
-
-function rememberedProject() {
-  try { return sessionStorage.getItem('ny-project') || 'SNET'; } catch { return 'SNET'; }
-}
-
+import { Link, useSearchParams } from "react-router-dom";
+import { ArrowUpRight, ArrowLeft } from "lucide-react";
+import { projects } from "../content/projects";
+import ProjectCard from "../components/ProjectCard";
 export default function Archive() {
-  const [params, setParams] = useSearchParams();
-  const code = params.get('project') || rememberedProject();
-  const active = projects.find(project => project.code === code) || projects[0];
-  const reduced = useReducedMotion();
-  useEffect(() => { try { sessionStorage.setItem('ny-project', active.code); } catch {} }, [active.code]);
-  const selectProject = project => setParams({ project: project.code });
-  const selectLayer = layer => setParams({ project: active.code, layer }, { replace: true });
-  const keyboardSelect = (event, index) => {
-    let next;
-    if (['ArrowRight', 'ArrowDown'].includes(event.key)) next = (index + 1) % projects.length;
-    if (['ArrowLeft', 'ArrowUp'].includes(event.key)) next = (index - 1 + projects.length) % projects.length;
-    if (event.key === 'Home') next = 0;
-    if (event.key === 'End') next = projects.length - 1;
-    if (next === undefined) return;
-    event.preventDefault();
-    selectProject(projects[next]);
-    document.getElementById(`tab-${projects[next].code}`)?.focus();
-  };
-  return <AnimatedPage><div className="operation-shell">
-    <header className="operation-header"><div><span className="eyebrow">17 / Operation matrix</span><h1>SELECT<br />A TARGET.</h1></div><p>Select an operation, then explore the layers behind it. Your last selection stays with you when you return.</p></header>
-    <section className="operation-console">
-      <div className="operation-selector" role="tablist" aria-label="Project selection">{projects.map((project, index) => <button id={`tab-${project.code}`} aria-controls="operation-dossier" key={project.id} role="tab" aria-selected={active.id === project.id} tabIndex={active.id === project.id ? 0 : -1} onKeyDown={event => keyboardSelect(event, index)} onClick={() => selectProject(project)} className={`operation-tab ${active.id === project.id ? 'is-active' : ''}`} style={{ '--signal': project.color }}><span className="operation-index">0{index + 1}</span><project.icon size={18} /><span><b>{project.code}</b><small>{project.type}</small></span><i>{project.status}</i></button>)}</div>
-      <div className="operation-viewport">
-        <div className="target-reticle" aria-hidden="true"><span /><span /><span /></div>
-        <AnimatePresence mode="wait" initial={false}><motion.article id="operation-dossier" role="tabpanel" aria-labelledby={`tab-${active.code}`} key={active.id} initial={reduced ? false : { opacity: 0, x: 18 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} transition={{ duration: reduced ? 0 : .22 }} className="operation-dossier">
-          <div className="dossier-top"><span>{active.id} / {active.type}</span><span style={{ color: active.color }}>● {active.status}</span></div>
-          <h2><DecodeText text={active.title} /></h2><p className="dossier-summary">{active.summary}</p><div className="dossier-outcome"><span>MISSION OUTPUT</span><p>{active.outcome}</p></div>
-          <div className="flex flex-wrap gap-2">{active.tags.map(tag => <span className="tech-tag" key={tag}>{tag}</span>)}</div>
-          <div className="project-actions"><a href="#system-explorer-title" className="dossier-link">Explore system layers <ArrowUpRight size={16} /></a><a href={active.href} target="_blank" rel="noreferrer" className="dossier-link"><Github size={17} />{active.code === 'X509' ? 'GitHub profile' : 'Open repository'}<ArrowUpRight size={16} /></a></div>
-        </motion.article></AnimatePresence>
+  const [params] = useSearchParams();
+  const active = projects.find((p) => p.code === params.get("project"));
+  return (
+    <div className="page-width interior">
+      <header className="page-heading">
+        <span className="eyebrow">01 / Work</span>
+        <h1>
+          Ideas put
+          <br />
+          <em>into practice.</em>
+        </h1>
+        <p>
+          A selection of projects exploring backend architecture, defensive
+          security, and software quality.
+        </p>
+      </header>
+      {active ? (
+        <section className="project-detail">
+          <Link className="text-link" to="/archive">
+            <ArrowLeft size={18} />
+            All projects
+          </Link>
+          <div className="detail-layout">
+            <ProjectCard project={active} index={projects.indexOf(active)} />
+            <div>
+              <span className="eyebrow">Project overview</span>
+              <h2>{active.title}</h2>
+              <p>{active.summary}</p>
+              <h3>Focus & approach</h3>
+              <p>{active.outcome}</p>
+              {active.code === "X509" && (
+                <p className="project-disclosure">
+                  This is an architecture prototype. The link below opens my
+                  GitHub profile; a dedicated public repository is not listed
+                  yet.
+                </p>
+              )}
+              <a
+                className="button"
+                href={active.href}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {active.code === "X509"
+                  ? "Visit GitHub profile"
+                  : "Explore the repository"}
+                <ArrowUpRight size={18} />
+              </a>
+            </div>
+          </div>
+        </section>
+      ) : (
+        <div className="project-grid">
+          {projects.map((project, index) => (
+            <ProjectCard key={project.id} project={project} index={index} />
+          ))}
+        </div>
+      )}
+      <div className="interior-end">
+        <p>Interested in how I work?</p>
+        <Link className="text-link" to="/network">
+          Let’s start a conversation
+          <ArrowUpRight size={18} />
+        </Link>
       </div>
-    </section>
-    <SystemExplorer project={active} layer={params.get('layer')} onSelectLayer={selectLayer} />
-  </div></AnimatedPage>;
+    </div>
+  );
 }
