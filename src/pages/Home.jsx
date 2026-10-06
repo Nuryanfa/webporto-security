@@ -1,129 +1,159 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
-import { projects } from "../content/projects";
-import ProjectCard from "../components/ProjectCard";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowUpRight, ShieldCheck, Braces, Route, Radio } from "lucide-react";
+import AnimatedPage from "../components/AnimatedPage";
+import WorldBackdrop from "../components/WorldBackdrop";
+import useReducedMotion from "../utils/useMotionPreference";
+const nodes = [
+  {
+    id: "identity",
+    label: "Identity",
+    detail: "The developer",
+    icon: ShieldCheck,
+    title: "Muhamad Nur Yanfa",
+    tag: "BACKEND × SECURITY",
+    description:
+      "I build secure backend systems and practical defensive infrastructure. Based in Bandung, Indonesia.",
+    meta: "Go · PostgreSQL · Defensive security",
+    to: "/overview",
+    action: "About my work",
+  },
+  {
+    id: "operations",
+    label: "Operations",
+    detail: "Selected projects",
+    icon: Braces,
+    title: "Systems with purpose.",
+    tag: "SELECTED WORK",
+    description:
+      "Explore backend architecture, purple-team laboratories, and the decisions behind each project.",
+    meta: "03 projects · Architecture to implementation",
+    to: "/archive",
+    action: "Explore projects",
+  },
+  {
+    id: "trace",
+    label: "Trace",
+    detail: "Experience",
+    icon: Route,
+    title: "Learning in the field.",
+    tag: "EXPERIENCE",
+    description:
+      "API development, relational data design, and collaborative delivery. A record of the work that shapes my engineering practice.",
+    meta: "2026 · Engineering experience",
+    to: "/timeline",
+    action: "View experience",
+  },
+  {
+    id: "channel",
+    label: "Channel",
+    detail: "Get in touch",
+    icon: Radio,
+    title: "Let’s connect.",
+    tag: "CONTACT",
+    description:
+      "For backend and security opportunities, project collaborations, or a thoughtful technical conversation.",
+    meta: "Bandung, Indonesia · UTC+7",
+    to: "/network",
+    action: "Open contact",
+  },
+];
 export default function Home() {
+  const [selected, setSelected] = useState(0);
+  const reduced = useReducedMotion();
+  const active = nodes[selected];
   return (
-    <>
-      <section className="hero page-width">
-        <div className="hero-top">
-          <span className="eyebrow">Independent portfolio / 2026</span>
-          <span className="location">Bandung, Indonesia · UTC+7</span>
+    <AnimatedPage>
+      <section className="nexus-v2">
+        <div className="nexus-heading">
+          <span className="eyebrow">PERSONAL INTERFACE / 07</span>
+          <span>ENGINEERING WITH INTENT</span>
         </div>
-        <div className="hero-layout">
-          <div className="hero-copy">
-            <p className="intro">Hello, I’m Muhamad Nur Yanfa.</p>
-            <h1>
-              Behind every
-              <br />
-              good product,
-              <br />
-              <em>a solid system.</em>
-            </h1>
-            <p className="hero-description">
-              I build backend systems and explore the security behind them.
-              Thoughtful APIs, dependable infrastructure, and a habit of asking
-              what could go wrong.
-            </p>
-            <div className="hero-actions">
-              <Link className="button" to="/archive">
-                Explore my work
-                <ArrowUpRight size={18} />
-              </Link>
-              <Link className="text-link" to="/network">
-                Let’s talk
-                <ArrowRight size={18} />
-              </Link>
+        <div className="nexus-composition">
+          <div className="nexus-copy">
+            <div className="chapter">
+              <span>0{selected + 1}</span>
+              <i />
+              {active.tag}
+            </div>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={active.id}
+                initial={reduced ? false : { opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: reduced ? 0 : 0.16 }}
+              >
+                <h1>{active.title}</h1>
+                <p>{active.description}</p>
+                <Link className="nexus-cta" to={active.to}>
+                  {active.action}
+                  <ArrowUpRight size={17} />
+                </Link>
+                <div className="nexus-meta">{active.meta}</div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+          <div className="identity-scene">
+            <WorldBackdrop />
+            <div className="scene-caption">
+              <span>IDENTITY / NY—07</span>
+              <ShieldCheck size={15} />
+            </div>
+            <div className="identity-rings">
+              <span className="identity-orbit orbit-outer" />
+              <span className="identity-orbit orbit-inner" />
+              <div className="identity-cross cross-h" />
+              <div className="identity-cross cross-v" />
+              <div className="identity-photo">
+                <img
+                  src="/profile.webp"
+                  alt="Muhamad Nur Yanfa"
+                  fetchPriority="high"
+                />
+              </div>
+              <span className="orbit-point point-a" />
+              <span className="orbit-point point-b" />
+            </div>
+            <div className="scene-foot">
+              <span>開発者 / DEVELOPER</span>
+              <span>6°55′ S · 107°36′ E</span>
             </div>
           </div>
-          <figure className="portrait">
-            <div className="portrait-frame">
-              <img
-                src="/profile.webp"
-                alt="Muhamad Nur Yanfa"
-                fetchPriority="high"
-              />
-              <span className="portrait-note">The person behind the code.</span>
-            </div>
-            <figcaption>
-              <span>MUHAMAD NUR YANFA</span>
-              <span>Developer & lifelong learner</span>
-            </figcaption>
-          </figure>
         </div>
-        <div className="hero-foot">
-          <span>Backend development & security</span>
-          <span>Go / PostgreSQL / Infrastructure</span>
-          <a href="#selected-work">Scroll to discover ↓</a>
-        </div>
-      </section>
-      <section id="selected-work" className="work-section page-width">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow">01 / Selected work</span>
-            <h2>Built with intention.</h2>
-          </div>
-          <Link className="text-link" to="/archive">
-            View all projects
-            <ArrowUpRight size={18} />
-          </Link>
-        </div>
-        <div className="project-grid">
-          {projects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
+        <nav
+          className="nexus-selectors"
+          aria-label="Explore portfolio sections"
+        >
+          {nodes.map(({ id, label, detail, icon: Icon }, index) => (
+            <button
+              key={id}
+              onClick={() => setSelected(index)}
+              aria-pressed={selected === index}
+              className={selected === index ? "selected" : ""}
+            >
+              <span className="selector-number">0{index + 1}</span>
+              <Icon size={18} strokeWidth={1.5} />
+              <span className="selector-name">
+                {label}
+                <small>{detail}</small>
+              </span>
+              <ArrowUpRight className="selector-arrow" size={15} />
+            </button>
           ))}
+        </nav>
+        <div className="nexus-bottom">
+          <span>SELECT A SECTION TO EXPLORE</span>
+          <a
+            href="https://github.com/Nuryanfa"
+            target="_blank"
+            rel="noreferrer"
+          >
+            SOURCE & PROJECTS <ArrowUpRight size={12} />
+          </a>
         </div>
       </section>
-      <section className="about-section page-width">
-        <span className="eyebrow">02 / A little about me</span>
-        <div>
-          <h2>
-            Curious by nature.
-            <br />
-            <em>Methodical by practice.</em>
-          </h2>
-          <p>
-            I’m an Informatics student based in Bandung, working at the
-            intersection of backend development and security. I enjoy
-            understanding how systems fit together—and making those connections
-            more reliable.
-          </p>
-          <p>
-            My projects bring that curiosity into practice, from defensive
-            network labs to secure service architecture.
-          </p>
-          <Link className="text-link" to="/timeline">
-            Explore my experience
-            <ArrowUpRight size={18} />
-          </Link>
-        </div>
-        <div className="focus-list">
-          <span>What I focus on</span>
-          {[
-            "Backend & API development",
-            "Database & system design",
-            "Defensive security",
-            "Delivery & infrastructure",
-          ].map((text, i) => (
-            <p key={text}>
-              <small>0{i + 1}</small>
-              {text}
-            </p>
-          ))}
-        </div>
-      </section>
-      <section className="contact-banner page-width">
-        <span className="eyebrow">Have something in mind?</span>
-        <Link to="/network">
-          Let’s build something
-          <br />
-          <em>worth building.</em>
-          <ArrowUpRight />
-        </Link>
-        <p>
-          For opportunities, collaborations, or a good technical conversation.
-        </p>
-      </section>
-    </>
+    </AnimatedPage>
   );
 }
