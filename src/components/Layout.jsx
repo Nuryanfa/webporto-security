@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import useMotionPreference from "../utils/useMotionPreference";
 import CyberCursor from "./CyberCursor";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import {
@@ -20,6 +22,13 @@ const links = [
 ];
 export default function Layout({ children }) {
   const { pathname } = useLocation();
+  const reduced = useMotionPreference();
+  useEffect(() => {
+    document.documentElement.dataset.motion = reduced ? "reduced" : "full";
+    return () => {
+      delete document.documentElement.dataset.motion;
+    };
+  }, [reduced]);
   const active = links.find((x) => x.to === pathname);
   return (
     <div className="cyber-shell">

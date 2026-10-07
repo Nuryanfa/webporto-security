@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+
 import { ArrowUpRight, ShieldCheck, Braces, Route, Radio } from "lucide-react";
 import AnimatedPage from "../components/AnimatedPage";
-import IdentityScene from "../components/IdentityScene";
+import NexusScene from "../components/NexusScene";
+import { setPreferences } from "../utils/experiencePreferences";
 import ContentTransition from "../components/ContentTransition";
 import useReducedMotion from "../utils/useMotionPreference";
 const nodes = [
@@ -66,71 +67,70 @@ export default function Home() {
   const active = nodes[selected];
   return (
     <AnimatedPage>
-      <section className="nexus-v2">
-        <div className="nexus-heading">
-          <span className="eyebrow">PERSONAL INTERFACE / 07</span>
-          <span>ENGINEERING WITH INTENT</span>
-        </div>
-        <div className="nexus-composition">
-          <div className="nexus-copy">
-            <div className="chapter">
-              <span>0{selected + 1}</span>
-              <i />
-              {active.tag}
-            </div>
-            <ContentTransition id={active.id}>
-              <h1>{active.title}</h1>
-              <p>{active.description}</p>
-              <Link className="nexus-cta" to={active.to}>
-                {active.action}
-                <ArrowUpRight size={17} />
-              </Link>
-              <div className="nexus-meta">{active.meta}</div>
-            </ContentTransition>
+      <section className="nexus-experience">
+        <header className="experience-masthead">
+          <div>
+            <span className="eyebrow">THE PERSONAL NETWORK</span>
+            <h1>
+              Engineering, <span>with an edge.</span>
+            </h1>
           </div>
-          <IdentityScene />
-        </div>
-        <nav
-          className="nexus-selectors"
-          aria-label="Explore portfolio sections"
+          <div className="masthead-index">
+            <span>PORTFOLIO</span>
+            <b>
+              2026<span> / 07</span>
+            </b>
+          </div>
+        </header>
+        <NexusScene nodes={nodes} selected={selected} onSelect={setSelected} />
+        <section
+          id="nexus-dossier"
+          className="map-dossier"
+          aria-label="Selected section"
         >
-          {nodes.map(({ id, label, detail, icon: Icon }, index) => (
-            <button
-              key={id}
-              onClick={() => setSelected(index)}
-              aria-pressed={selected === index}
-              className={selected === index ? "selected" : ""}
-            >
-              {selected === index && (
-                <motion.span
-                  aria-hidden="true"
-                  className="selector-highlight"
-                  layoutId="nexus-selection"
-                  transition={
-                    reduced
-                      ? { duration: 0 }
-                      : { type: "spring", stiffness: 380, damping: 36 }
-                  }
-                />
-              )}
-              <span className="selector-number">0{index + 1}</span>
-              <Icon size={18} strokeWidth={1.5} />
-              <span className="selector-name">
-                {label}
-                <small>{detail}</small>
-              </span>
-              <ArrowUpRight className="selector-arrow" size={15} />
-            </button>
-          ))}
-        </nav>
-        <div className="nexus-bottom">
-          <span>SELECT A SECTION TO EXPLORE</span>
+          <ContentTransition id={active.id}>
+            <div className="map-dossier-grid">
+              <div>
+                <span className="chapter">
+                  0{selected + 1}
+                  <i />
+                  {active.tag}
+                </span>
+                <h2>{active.title}</h2>
+              </div>
+              <div className="map-dossier-copy">
+                <p>{active.description}</p>
+                <div className="map-dossier-actions">
+                  <Link className="nexus-cta" to={active.to}>
+                    {active.action}
+                    <ArrowUpRight size={16} />
+                  </Link>
+                  <span>{active.meta}</span>
+                </div>
+              </div>
+            </div>
+          </ContentTransition>
+        </section>
+        <div className="experience-colophon">
+          <span>DESIGNED TO CONNECT. BUILT TO LAST.</span>
+          <button
+            onClick={() =>
+              setPreferences({ motion: reduced ? "full" : "reduced" })
+            }
+            aria-pressed={!reduced}
+          >
+            <span
+              className={!reduced ? "motion-light active" : "motion-light"}
+            />
+            Motion {reduced ? "off" : "on"}
+          </button>
           <a
             href="https://github.com/Nuryanfa"
             target="_blank"
             rel="noreferrer"
           >
-            SOURCE & PROJECTS <ArrowUpRight size={12} />
+            Explore the source
+            <ArrowUpRight size={13} />
           </a>
         </div>
       </section>
