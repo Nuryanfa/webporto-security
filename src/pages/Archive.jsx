@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import MagneticLink from "../components/MagneticLink";
 import MotionHeading from "../components/MotionHeading";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -7,7 +8,6 @@ import { ArrowUpRight, Github } from "lucide-react";
 import useReducedMotion from "../utils/useMotionPreference";
 import AnimatedPage from "../components/AnimatedPage";
 import DecodeText from "../components/DecodeText";
-import SystemExplorer from "../components/SystemExplorer";
 import { projects } from "../content/projects";
 
 function rememberedProject() {
@@ -30,8 +30,6 @@ export default function Archive() {
     } catch {}
   }, [active.code]);
   const selectProject = (project) => setParams({ project: project.code });
-  const selectLayer = (layer) =>
-    setParams({ project: active.code, layer }, { replace: true });
   const keyboardSelect = (event, index) => {
     let next;
     if (["ArrowRight", "ArrowDown"].includes(event.key))
@@ -57,7 +55,7 @@ export default function Archive() {
             </MotionHeading>
           </div>
           <p>
-            Select an operation, then explore the layers behind it. Your last
+            Select an operation to inspect its purpose and outcomes. Your last
             selection stays with you when you return.
           </p>
         </header>
@@ -137,10 +135,7 @@ export default function Archive() {
                   ))}
                 </div>
                 <div className="project-actions">
-                  <a href="#system-explorer-title" className="dossier-link">
-                    Explore system layers <ArrowUpRight size={16} />
-                  </a>
-                  <a
+                  <MagneticLink
                     href={active.href}
                     target="_blank"
                     rel="noreferrer"
@@ -151,17 +146,12 @@ export default function Archive() {
                       ? "GitHub profile"
                       : "Open repository"}
                     <ArrowUpRight size={16} />
-                  </a>
+                  </MagneticLink>
                 </div>
               </article>
             </ContentTransition>
           </div>
         </section>
-        <SystemExplorer
-          project={active}
-          layer={params.get("layer")}
-          onSelectLayer={selectLayer}
-        />
       </div>
     </AnimatedPage>
   );

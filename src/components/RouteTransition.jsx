@@ -46,7 +46,9 @@ export default function RouteTransition({ children }) {
             ease: [0.22, 1, 0.36, 1],
           }}
         >
-          {children}
+          {/* Page interactions have their own presence boundary; only the
+              route frame participates in the navigation exit sequence. */}
+          <AnimatePresence initial={false}>{children}</AnimatePresence>
         </motion.div>
       </AnimatePresence>
       {!reduced && (

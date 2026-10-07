@@ -82,6 +82,17 @@ export default function NexusScene({ nodes, selected, onSelect }) {
                 ease: [0.22, 1, 0.36, 1],
               }}
             />
+            {selected === i && !reduced && (
+              <motion.path
+                key={`packet-${selected}`}
+                d={d} pathLength="1" fill="none"
+                stroke="#c9f4e6" strokeWidth="2" strokeLinecap="round"
+                strokeDasharray="0.045 0.955"
+                initial={{ strokeDashoffset: 0.05, opacity: 0 }}
+                animate={{ strokeDashoffset: -1, opacity: [0, 0.9, 0.9, 0] }}
+                transition={{ duration: 1.35, ease: "easeInOut", delay: 0.12 }}
+              />
+            )}
           </g>
         ))}
       </svg>
@@ -90,6 +101,11 @@ export default function NexusScene({ nodes, selected, onSelect }) {
         style={{ x: reduced ? 0 : sx, y: reduced ? 0 : sy }}
       >
         <div className="map-core map-entrance">
+          {!reduced && <motion.span key={selected} className="core-response-ring" aria-hidden="true"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1.2, opacity: [0, 0.35, 0] }}
+            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }} />}
+
           <span className="map-core-caption">BUILD · DEFEND · REFINE</span>
           <svg
             viewBox="0 0 300 300"
@@ -124,7 +140,12 @@ export default function NexusScene({ nodes, selected, onSelect }) {
         >
           <span className="map-node-index">0{index + 1}</span>
           <span className="map-node-icon">
-            <Icon size={21} strokeWidth={1.4} />
+            <motion.span key={selected === index ? "selected" : "idle"}
+              initial={false}
+              animate={{ scale: selected === index && !reduced ? 1.12 : 1, rotate: selected === index && !reduced ? -5 : 0 }}
+              transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 18 }}>
+              <Icon size={21} strokeWidth={1.4} />
+            </motion.span>
           </span>
           <span className="map-node-copy">
             <strong>{label}</strong>

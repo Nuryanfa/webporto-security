@@ -1,3 +1,4 @@
+import MagneticLink from "../components/MagneticLink";
 import MotionHeading from "../components/MotionHeading";
 import ContentTransition from "../components/ContentTransition";
 import { useState } from "react";
@@ -128,14 +129,14 @@ export default function Network() {
                   <DecodeText text={current.value} />
                 </h2>
                 <div className="channel-actions" aria-live="polite">
-                  <a
+                  <MagneticLink
                     href={current.href}
                     target={channel === "email" ? undefined : "_blank"}
                     rel="noreferrer"
                   >
                     <Send size={16} />
                     {current.action}
-                  </a>
+                  </MagneticLink>
                   {channel === "email" && (
                     <button onClick={copy}>
                       {copied ? <Check size={16} /> : <Copy size={16} />}

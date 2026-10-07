@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import MagneticLink from "../components/MagneticLink";
 
 import { ArrowUpRight, ShieldCheck, Braces, Route, Radio } from "lucide-react";
 import AnimatedPage from "../components/AnimatedPage";
@@ -101,10 +101,10 @@ export default function Home() {
               <div className="map-dossier-copy">
                 <p>{active.description}</p>
                 <div className="map-dossier-actions">
-                  <Link className="nexus-cta" to={active.to}>
+                  <MagneticLink className="nexus-cta" to={active.to}>
                     {active.action}
                     <ArrowUpRight size={16} />
-                  </Link>
+                  </MagneticLink>
                   <span>{active.meta}</span>
                 </div>
               </div>

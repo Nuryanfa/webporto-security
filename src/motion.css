@@ -117,9 +117,6 @@
 .channel-readout > svg {
   animation: channel-icon-reveal 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.dossier-outcome {
-  animation: outcome-reveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
 .operation-dossier .tags,
 .operation-dossier .tech-tag {
   transition: border-color 0.3s;
@@ -149,16 +146,6 @@
   to {
     opacity: 1;
     transform: scale(1) rotate(0);
-  }
-}
-@keyframes outcome-reveal {
-  from {
-    opacity: 0;
-    transform: translateY(9px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 @media (max-width: 767px) {
@@ -197,4 +184,49 @@ html[data-motion="reduced"] .channel-radar,
 html[data-motion="reduced"] .channel-readout > svg,
 html[data-motion="reduced"] .dossier-outcome {
   animation: none !important;
+}
+
+/* A brief acknowledgment connects the portrait to the chosen destination. */
+.core-response-ring {
+  position: absolute;
+  inset: 0;
+  border: 1px solid #9ed9c9;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.map-node-icon > span { display: inline-flex; }
+.map-node::after {
+  content: "";
+  position: absolute;
+  left: 10%; right: 10%; bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #b4e4d4, transparent);
+  transform: scaleX(0);
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.map-node:hover::after, .map-node:focus-visible::after { transform: scaleX(1); }
+.nexus-cta, .dossier-link, .channel-actions a { position: relative; }
+.nexus-cta::after, .dossier-link::after, .channel-actions a::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -3px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.45;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.nexus-cta:hover::after, .dossier-link:hover::after, .channel-actions a:hover::after,
+.nexus-cta:focus-visible::after, .dossier-link:focus-visible::after, .channel-actions a:focus-visible::after {
+  transform: scaleX(1);
+}
+html[data-motion="reduced"] .map-node::after,
+html[data-motion="reduced"] .nexus-cta::after,
+html[data-motion="reduced"] .dossier-link::after,
+html[data-motion="reduced"] .channel-actions a::after { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .map-node::after, .nexus-cta::after, .dossier-link::after, .channel-actions a::after { transition: none; }
 }

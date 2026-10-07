@@ -8,7 +8,7 @@ export default function AnimatedPage({ children }) {
     if (reduced) return;
     const scope = createScope({ root: root.current }).add(() => {
       animate(
-        ".operation-header,.trace-title,.channel-heading,.experience-masthead",
+        ".operation-header,.trace-title,.channel-heading,.experience-masthead,.overview-heading",
         { opacity: [0, 1], translateY: [12, 0], duration: 750, ease: "out(4)" },
       );
       animate(".operation-console,.trace-console,.channel-console,.nexus-map", {
