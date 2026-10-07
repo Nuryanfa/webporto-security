@@ -1,3 +1,4 @@
+import MotionHeading from "../components/MotionHeading";
 import ContentTransition from "../components/ContentTransition";
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -46,11 +47,11 @@ export default function Timeline() {
       <div className="trace-shell">
         <header className="trace-title">
           <span className="eyebrow">29 / Signal trace</span>
-          <h1>
+          <MotionHeading>
             FOLLOW THE
             <br />
             LIVE WIRE.
-          </h1>
+          </MotionHeading>
           <p>
             Engineering experience, from backend development to collaborative
             delivery. Select a role to explore the work.
@@ -66,7 +67,11 @@ export default function Timeline() {
                 strokeWidth="2"
                 initial={reduced ? false : { pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: 0.3 }}
+                transition={{
+                  duration: reduced ? 0 : 1.3,
+                  delay: reduced ? 0 : 0.25,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
               />
             </svg>
           </div>
@@ -84,6 +89,18 @@ export default function Timeline() {
                 className={active === index ? "is-active" : ""}
               >
                 <span className="trace-dot" />
+                {active === index && (
+                  <motion.span
+                    className="trace-active-line"
+                    layoutId="trace-selection"
+                    transition={
+                      reduced
+                        ? { duration: 0 }
+                        : { type: "spring", stiffness: 210, damping: 28 }
+                    }
+                    aria-hidden="true"
+                  />
+                )}
                 <b>{item.coordinate}</b>
                 <small>{item.id}</small>
               </button>

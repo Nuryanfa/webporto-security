@@ -12,3 +12,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 );
 
 import "./nexus.css";
+
+import "./motion.css";

@@ -1,0 +1,200 @@
+/* Navigation is a signal handoff, followed by content choreography. */
+.route-stage {
+  position: relative;
+  isolation: isolate;
+  min-height: 60vh;
+}
+.route-content {
+  transform-origin: 50% 20%;
+  will-change: opacity, filter, transform;
+}
+.route-signal {
+  position: absolute;
+  z-index: 15;
+  inset: 0 0 auto;
+  height: min(55vh, 500px);
+  pointer-events: none;
+  overflow: hidden;
+  background: radial-gradient(ellipse, #89c9c505, transparent 65%);
+}
+.route-signal svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.route-signal > span {
+  position: absolute;
+  left: 16px;
+  top: 38%;
+  font:
+    8px "JetBrains Mono",
+    monospace;
+  letter-spacing: 2px;
+  color: #8eb9bc;
+  background: #0a131bef;
+  padding: 9px 13px;
+  border-left: 1px solid #91c9c373;
+}
+.heading-mask {
+  display: inline-block;
+  vertical-align: top;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.heading-mask > span {
+  display: inline-block;
+  transform-origin: left bottom;
+  will-change: transform;
+}
+.operation-tab,
+.channel-tabs button,
+.trace-axis button {
+  position: relative;
+  isolation: isolate;
+}
+.project-selection-glow,
+.channel-selection-glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-left: 2px solid #b0d4c7;
+  background: linear-gradient(110deg, #8bbdbd1c, transparent 80%);
+}
+.operation-tab.is-active,
+.channel-tabs button.is-active {
+  box-shadow: none;
+  background: transparent;
+}
+.trace-active-line {
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  bottom: 5px;
+  background: linear-gradient(90deg, transparent, #9fccc5, transparent);
+  pointer-events: none;
+}
+.channel-radar {
+  animation: radar-material 12s ease-in-out infinite alternate;
+}
+.trace-wave {
+  opacity: 0.6;
+}
+.target-reticle {
+  animation-duration: 38s;
+}
+.radar-sweep-arm {
+  animation-duration: 14s;
+}
+.system-wire i {
+  animation-duration: 4.5s !important;
+}
+.system-layer button {
+  transition:
+    background 0.35s,
+    border-color 0.35s,
+    color 0.35s,
+    box-shadow 0.35s,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.system-layer button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px #0003;
+}
+.operation-tab:hover svg,
+.channel-tabs button:hover svg {
+  transform: translateY(-2px);
+}
+.operation-tab svg,
+.channel-tabs button svg {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.trace-axis button:hover .trace-dot {
+  box-shadow: 0 0 16px #89c9c534;
+}
+.channel-readout > svg {
+  animation: channel-icon-reveal 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.dossier-outcome {
+  animation: outcome-reveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.operation-dossier .tags,
+.operation-dossier .tech-tag {
+  transition: border-color 0.3s;
+}
+.operation-dossier .tech-tag:hover {
+  border-color: #89c9c560;
+}
+.cyber-rail nav a svg {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cyber-rail nav a:hover svg {
+  transform: translateY(-2px);
+}
+@keyframes radar-material {
+  from {
+    background-color: #89c9c500;
+  }
+  to {
+    background-color: #89c9c506;
+  }
+}
+@keyframes channel-icon-reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.8) rotate(-12deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+@keyframes outcome-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 767px) {
+  .route-signal {
+    height: 380px;
+  }
+  .route-signal > span {
+    font-size: 7px;
+  }
+  .project-selection-glow,
+  .channel-selection-glow {
+    border-left: 0;
+    border-bottom: 2px solid #b0d4c7;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .route-content {
+    will-change: auto;
+  }
+  .heading-mask > span {
+    will-change: auto;
+  }
+  .route-signal {
+    display: none;
+  }
+  .system-layer button:hover {
+    transform: none;
+  }
+  .channel-radar,
+  .channel-readout > svg,
+  .dossier-outcome {
+    animation: none !important;
+  }
+}
+html[data-motion="reduced"] .channel-radar,
+html[data-motion="reduced"] .channel-readout > svg,
+html[data-motion="reduced"] .dossier-outcome {
+  animation: none !important;
+}

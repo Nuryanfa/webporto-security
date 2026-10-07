@@ -1,3 +1,4 @@
+import RouteTransition from "./components/RouteTransition";
 import {
   BrowserRouter as Router,
   Routes,
@@ -5,34 +6,25 @@ import {
   useLocation,
 } from "react-router-dom";
 import { MotionConfig } from "framer-motion";
-import { Suspense, lazy } from "react";
+
 import Layout from "./components/Layout";
 import useMotionPreference from "./utils/useMotionPreference";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 
-const Home = lazy(() => import("./pages/Home"));
-const Archive = lazy(() => import("./pages/Archive"));
-const Timeline = lazy(() => import("./pages/Timeline"));
-const Network = lazy(() => import("./pages/Network"));
-const NotFound = lazy(() => import("./pages/NotFound"));
-const Overview = lazy(() => import("./pages/Overview"));
+import Home from "./pages/Home";
+import Archive from "./pages/Archive";
+import Timeline from "./pages/Timeline";
+import Network from "./pages/Network";
+import NotFound from "./pages/NotFound";
+import Overview from "./pages/Overview";
 import TabTitleUpdater from "./components/TabTitleUpdater";
 
 function AnimatedRoutes() {
   const location = useLocation();
   return (
-    <Suspense
-      fallback={
-        <div
-          role="status"
-          className="flex h-screen items-center justify-center font-mono text-cyber-cyan"
-        >
-          Loading...
-        </div>
-      }
-    >
-      <Routes location={location} key={location.pathname}>
+    <RouteTransition>
+      <Routes location={location}>
         <Route path="/" element={<Home />} />
         <Route path="/archive" element={<Archive />} />
         <Route path="/timeline" element={<Timeline />} />
@@ -40,7 +32,7 @@ function AnimatedRoutes() {
         <Route path="/overview" element={<Overview />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </Suspense>
+    </RouteTransition>
   );
 }
 

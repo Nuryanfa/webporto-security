@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+import MotionHeading from "../components/MotionHeading";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import ContentTransition from "../components/ContentTransition";
@@ -49,10 +51,10 @@ export default function Archive() {
         <header className="operation-header">
           <div>
             <span className="eyebrow">17 / Operation matrix</span>
-            <h1>
+            <MotionHeading>
               SELECT
               <br />A TARGET.
-            </h1>
+            </MotionHeading>
           </div>
           <p>
             Select an operation, then explore the layers behind it. Your last
@@ -78,6 +80,18 @@ export default function Archive() {
                 className={`operation-tab ${active.id === project.id ? "is-active" : ""}`}
                 style={{ "--signal": project.color }}
               >
+                {active.id === project.id && (
+                  <motion.span
+                    className="project-selection-glow"
+                    layoutId="project-selection"
+                    transition={
+                      reduced
+                        ? { duration: 0 }
+                        : { type: "spring", stiffness: 210, damping: 28 }
+                    }
+                    aria-hidden="true"
+                  />
+                )}
                 <span className="operation-index">0{index + 1}</span>
                 <project.icon size={18} />
                 <span>

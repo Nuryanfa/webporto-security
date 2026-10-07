@@ -1,3 +1,4 @@
+import MotionHeading from "../components/MotionHeading";
 import ContentTransition from "../components/ContentTransition";
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -61,10 +62,10 @@ export default function Network() {
       <div className="channel-shell">
         <header className="channel-heading">
           <span className="eyebrow">41 / Communication array</span>
-          <h1>
+          <MotionHeading>
             OPEN A<br />
             CHANNEL.
-          </h1>
+          </MotionHeading>
           <p>
             For engineering opportunities, collaborations, or technical
             conversations. Choose how you’d like to connect.
@@ -102,6 +103,18 @@ export default function Network() {
                   onClick={() => setChannel(key)}
                   className={channel === key ? "is-active" : ""}
                 >
+                  {channel === key && (
+                    <motion.span
+                      className="channel-selection-glow"
+                      layoutId="channel-selection"
+                      transition={
+                        reduced
+                          ? { duration: 0 }
+                          : { type: "spring", stiffness: 210, damping: 28 }
+                      }
+                      aria-hidden="true"
+                    />
+                  )}
                   <item.icon size={17} />
                   <span>{item.label}</span>
                 </button>
