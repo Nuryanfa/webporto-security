@@ -1,0 +1,305 @@
+/* Focused enhancements layered after the original theme styles. */
+html {
+  scroll-padding-bottom: 88px;
+}
+.cyber-topbar {
+  position: relative;
+  z-index: 40;
+}
+
+.operation-selector .operation-tab {
+  min-height: 84px;
+}
+.operation-mobile-hint {
+  display: none;
+}
+.operation-selector .operation-tab small {
+  line-height: 1.35;
+}
+.operation-dossier {
+  max-width: 900px;
+}
+.overview-all-work {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  margin-top: 16px;
+  color: var(--cyan);
+  font-size: 12px;
+}
+.overview-experience-list > div + div {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.overview-experience-list h3 {
+  margin-top: 6px;
+}
+.trace-axis button {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.motion-control {
+  position: relative;
+  flex: none;
+}
+.motion-control summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 35px;
+  padding: 0 11px;
+  border: 1px solid var(--line);
+  color: #adbdc3;
+  cursor: pointer;
+  list-style: none;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.motion-control summary::-webkit-details-marker {
+  display: none;
+}
+.motion-control summary:hover,
+.motion-control[open] summary {
+  border-color: #91c9c380;
+  color: #cce5e0;
+}
+.motion-control-menu {
+  position: absolute;
+  top: calc(100% + 7px);
+  right: 0;
+  display: grid;
+  gap: 4px;
+  width: 170px;
+  padding: 12px;
+  border: 1px solid #91c9c34d;
+  background: #0b151bf7;
+  box-shadow: 0 14px 35px #0008;
+}
+.motion-control-menu > span,
+.operation-map-heading,
+.operation-map-detail > span,
+.operation-map-note {
+  font: 9px "JetBrains Mono", monospace;
+  letter-spacing: 0.12em;
+  color: #86a2a7;
+}
+.motion-control-menu button {
+  min-height: 36px;
+  padding: 0 10px;
+  color: #a8b9bf;
+  text-align: left;
+  border: 1px solid transparent;
+}
+.motion-control-menu button:hover,
+.motion-control-menu button[aria-pressed="true"] {
+  border-color: #91c9c34d;
+  background: #91c9c315;
+  color: #d7eee9;
+}
+
+.operation-map {
+  margin-top: 29px;
+  padding: 18px;
+  border: 1px solid color-mix(in srgb, var(--signal) 26%, transparent);
+  background: linear-gradient(115deg, color-mix(in srgb, var(--signal) 7%, #0b151b), #0b151b 75%);
+}
+.operation-map-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--signal);
+}
+.operation-map-stages {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 24px 0 18px;
+}
+.operation-map-stages button {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 78px;
+  padding: 12px;
+  border: 1px solid #a0c8c12e;
+  background: #0c1920;
+  color: #adbec3;
+  text-align: left;
+  font-size: 12px;
+  transition: border-color .2s, background .2s, transform .2s;
+}
+.operation-map-stages button:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 38px;
+  left: 100%;
+  width: 17px;
+  height: 1px;
+  background: var(--signal);
+  opacity: .5;
+}
+.operation-map-stages button:hover,
+.operation-map-stages button.is-active {
+  border-color: var(--signal);
+  background: color-mix(in srgb, var(--signal) 12%, #0c1920);
+  color: #f2f7f5;
+  transform: translateY(-2px);
+}
+.operation-map-marker {
+  color: var(--signal);
+  font: 9px "JetBrains Mono", monospace;
+}
+.operation-map-detail {
+  min-height: 75px;
+  padding-left: 14px;
+  border-left: 2px solid var(--signal);
+}
+.operation-map-detail p {
+  margin-top: 7px;
+  max-width: 560px;
+  color: #c4d1d1;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.operation-map-note {
+  margin-top: 18px;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+.mobile-nexus-open {
+  display: none;
+}
+.radar-grid button.radar-contact {
+  width: 42px;
+  height: 42px;
+  border: 1px solid transparent;
+  background: transparent;
+  box-shadow: none;
+  animation: none;
+  transform: translate(-50%, -50%);
+}
+.radar-grid button.radar-contact::before {
+  content: "";
+  position: absolute;
+  inset: 17px;
+  border-radius: 50%;
+  background: #79e6df;
+  box-shadow: 0 0 12px #79e6df;
+  animation: contact-pulse 1.7s infinite;
+}
+.radar-grid button.radar-contact:hover,
+.radar-grid button.radar-contact[aria-pressed="true"],
+.radar-grid button.radar-contact:focus-visible {
+  border-color: #79e6df8c;
+  border-radius: 50%;
+}
+.radar-grid button.contact-b {
+  left: 78%;
+  right: auto;
+}
+.radar-grid button.contact-c {
+  top: 82%;
+  bottom: auto;
+}
+@media (max-width: 767px) {
+  .operation-mobile-hint {
+    display: block;
+    margin: -17px 0 12px;
+    color: #91aeb3;
+    font: 9px "JetBrains Mono", monospace;
+    letter-spacing: .1em;
+  }
+  .operation-selector {
+    display: flex;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+  }
+  .operation-selector .operation-tab {
+    flex: 0 0 132px;
+    scroll-snap-align: start;
+    border-right: 1px solid var(--line);
+  }
+  .motion-control summary {
+    width: 35px;
+    padding: 0;
+  }
+  .motion-control summary span {
+    display: none;
+  }
+  .mobile-nexus-open {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 46px;
+    margin-top: 10px;
+    padding: 0 14px;
+    border: 1px solid #b1d6ca8c;
+    background: #b1d6ca;
+    color: #102126;
+    font-size: 12px;
+  }
+  .operation-map {
+    padding: 14px;
+  }
+  .operation-map-heading {
+    flex-wrap: wrap;
+    font-size: 8px;
+  }
+  .operation-map-stages {
+    gap: 6px;
+  }
+  .operation-map-stages button {
+    min-height: 75px;
+    padding: 9px 7px;
+    font-size: 10px;
+  }
+  .operation-map-stages button:not(:last-child)::after {
+    width: 7px;
+  }
+}
+@media (max-width: 480px) {
+  .cyber-topbar {
+    gap: 8px;
+    padding-inline: 14px;
+  }
+  .cyber-topbar > span:first-child {
+    font-size: 7px;
+    letter-spacing: .05em;
+  }
+  .overview-shortcut {
+    padding: 8px;
+    font-size: 8px;
+  }
+  .overview-shortcut svg {
+    display: none;
+  }
+  .trace-axis button {
+    padding-inline: 7px;
+  }
+  .trace-axis b {
+    font-size: 9px;
+  }
+  .trace-axis small {
+    font-size: 7px;
+    letter-spacing: .08em;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .operation-map-stages button {
+    transition: none;
+    transform: none;
+  }
+}
+html[data-motion="reduced"] .operation-map-stages button {
+  transition: none;
+  transform: none;
+}

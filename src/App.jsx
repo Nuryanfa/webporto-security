@@ -1,50 +1,45 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
-import { useState, Suspense, lazy } from 'react';
-import Layout from './components/Layout';
+import RouteTransition from "./components/RouteTransition";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
+import { MotionConfig } from "framer-motion";
+
+import Layout from "./components/Layout";
+import useMotionPreference from "./utils/useMotionPreference";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 
-const Home = lazy(() => import('./pages/Home'));
-const Archive = lazy(() => import('./pages/Archive'));
-const Timeline = lazy(() => import('./pages/Timeline'));
-const Network = lazy(() => import('./pages/Network'));
-import BootSequence from './components/BootSequence';
-import CustomCursor from './components/CustomCursor';
-import TabTitleUpdater from './components/TabTitleUpdater';
-import NoiseOverlay from './components/NoiseOverlay';
+import Home from "./pages/Home";
+import Archive from "./pages/Archive";
+import Timeline from "./pages/Timeline";
+import Network from "./pages/Network";
+import NotFound from "./pages/NotFound";
+import Overview from "./pages/Overview";
+import TabTitleUpdater from "./components/TabTitleUpdater";
 
 function AnimatedRoutes() {
   const location = useLocation();
   return (
-    <AnimatePresence mode="wait">
-      <Suspense fallback={<div className="flex h-screen items-center justify-center font-mono text-cyber-cyan">Loading...</div>}>
-        <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<Home />} />
-          <Route path="/archive" element={<Archive />} />
-          <Route path="/timeline" element={<Timeline />} />
-          <Route path="/network" element={<Network />} />
-        </Routes>
-      </Suspense>
-    </AnimatePresence>
+    <RouteTransition>
+      <Routes location={location}>
+        <Route path="/" element={<Home />} />
+        <Route path="/archive" element={<Archive />} />
+        <Route path="/timeline" element={<Timeline />} />
+        <Route path="/network" element={<Network />} />
+        <Route path="/overview" element={<Overview />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </RouteTransition>
   );
 }
 
 export default function App() {
-  const [isBooting, setIsBooting] = useState(() => {
-    return sessionStorage.getItem('rebooting') === 'true';
-  });
-
-  const handleBootComplete = () => {
-    setIsBooting(false);
-    sessionStorage.removeItem('rebooting');
-  };
-
+  const reduced = useMotionPreference();
   return (
-    <>
-      <CustomCursor />
-      <NoiseOverlay />
-      {isBooting && <BootSequence onComplete={handleBootComplete} />}
+    <MotionConfig reducedMotion={reduced ? "always" : "never"}>
       <Router>
         <TabTitleUpdater />
         <Layout>
@@ -53,6 +48,6 @@ export default function App() {
       </Router>
       <Analytics />
       <SpeedInsights />
-    </>
+    </MotionConfig>
   );
 }

@@ -1,0 +1,238 @@
+/* A compact viewport-centered handoff stays clear of page headings. */
+.route-stage {
+  position: relative;
+  isolation: isolate;
+  min-height: 60vh;
+}
+.route-content {
+  min-height: inherit;
+}
+.route-signal {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.route-signal-panel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100vw - 32px);
+  padding: 7px 13px 7px 7px;
+  border: 1px solid #91c9c34d;
+  border-radius: 3px;
+  background: #0a131bf2;
+  box-shadow: 0 8px 30px #0008, 0 0 18px #91c9c318;
+}
+.route-signal-panel > span {
+  font: 9px "JetBrains Mono", monospace;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  color: #b9d8d4;
+}
+.route-signal-panel svg {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  fill: none;
+  stroke: #91c9c3;
+  stroke-width: 1;
+}
+.route-signal-track {
+  opacity: 0.18;
+}
+.route-signal-progress {
+  opacity: 0.9;
+  stroke-width: 2;
+}
+.heading-mask {
+  display: inline-block;
+  vertical-align: top;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.heading-mask > span {
+  display: inline-block;
+  transform-origin: left bottom;
+  will-change: transform;
+}
+.operation-tab,
+.channel-tabs button,
+.trace-axis button {
+  position: relative;
+  isolation: isolate;
+}
+.project-selection-glow,
+.channel-selection-glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-left: 2px solid #b0d4c7;
+  background: linear-gradient(110deg, #8bbdbd1c, transparent 80%);
+}
+.operation-tab.is-active,
+.channel-tabs button.is-active {
+  box-shadow: none;
+  background: transparent;
+}
+.trace-active-line {
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  bottom: 5px;
+  background: linear-gradient(90deg, transparent, #9fccc5, transparent);
+  pointer-events: none;
+}
+.channel-radar {
+  animation: radar-material 12s ease-in-out infinite alternate;
+}
+.trace-wave {
+  opacity: 0.6;
+}
+.target-reticle {
+  animation-duration: 38s;
+}
+.radar-sweep-arm {
+  animation-duration: 14s;
+}
+.system-wire i {
+  animation-duration: 4.5s !important;
+}
+.system-layer button {
+  transition:
+    background 0.35s,
+    border-color 0.35s,
+    color 0.35s,
+    box-shadow 0.35s,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.system-layer button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px #0003;
+}
+.operation-tab:hover svg,
+.channel-tabs button:hover svg {
+  transform: translateY(-2px);
+}
+.operation-tab svg,
+.channel-tabs button svg {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.trace-axis button:hover .trace-dot {
+  box-shadow: 0 0 16px #89c9c534;
+}
+.channel-readout > svg {
+  animation: channel-icon-reveal 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.operation-dossier .tags,
+.operation-dossier .tech-tag {
+  transition: border-color 0.3s;
+}
+.operation-dossier .tech-tag:hover {
+  border-color: #89c9c560;
+}
+.cyber-rail nav a svg {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cyber-rail nav a:hover svg {
+  transform: translateY(-2px);
+}
+@keyframes radar-material {
+  from {
+    background-color: #89c9c500;
+  }
+  to {
+    background-color: #89c9c506;
+  }
+}
+@keyframes channel-icon-reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.8) rotate(-12deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+@media (max-width: 767px) {
+  .project-selection-glow,
+  .channel-selection-glow {
+    border-left: 0;
+    border-bottom: 2px solid #b0d4c7;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .route-content {
+    will-change: auto;
+  }
+  .heading-mask > span {
+    will-change: auto;
+  }
+  .route-signal {
+    display: none;
+  }
+  .system-layer button:hover {
+    transform: none;
+  }
+  .channel-radar,
+  .channel-readout > svg,
+  .dossier-outcome {
+    animation: none !important;
+  }
+}
+html[data-motion="reduced"] .channel-radar,
+html[data-motion="reduced"] .channel-readout > svg,
+html[data-motion="reduced"] .dossier-outcome {
+  animation: none !important;
+}
+
+/* A brief acknowledgment connects the portrait to the chosen destination. */
+.core-response-ring {
+  position: absolute;
+  inset: 0;
+  border: 1px solid #9ed9c9;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.map-node-icon > span { display: inline-flex; }
+.map-node::after {
+  content: "";
+  position: absolute;
+  left: 10%; right: 10%; bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #b4e4d4, transparent);
+  transform: scaleX(0);
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.map-node:hover::after, .map-node:focus-visible::after { transform: scaleX(1); }
+.nexus-cta, .dossier-link, .channel-actions a { position: relative; }
+.nexus-cta::after, .dossier-link::after, .channel-actions a::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -3px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.45;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.nexus-cta:hover::after, .dossier-link:hover::after, .channel-actions a:hover::after,
+.nexus-cta:focus-visible::after, .dossier-link:focus-visible::after, .channel-actions a:focus-visible::after {
+  transform: scaleX(1);
+}
+html[data-motion="reduced"] .map-node::after,
+html[data-motion="reduced"] .nexus-cta::after,
+html[data-motion="reduced"] .dossier-link::after,
+html[data-motion="reduced"] .channel-actions a::after { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .map-node::after, .nexus-cta::after, .dossier-link::after, .channel-actions a::after { transition: none; }
+}
