@@ -1,7 +1,6 @@
 import { createServer } from "vite";
 import React from "react";
 import { renderToString } from "react-dom/server";
-import { StaticRouter } from "react-router-dom";
 
 const routes = [
   ["/", "Home"],
@@ -14,9 +13,16 @@ const routes = [
 const server = await createServer({
   server: { middlewareMode: true },
   appType: "custom",
+  // Resolve React Router's ESM entries consistently in Vite's SSR loader.
+  ssr: {
+    noExternal: ["react-router-dom", "react-router"],
+    resolve: { conditions: ["module-sync", "node"] },
+  },
 });
 
 try {
+  // Use the same router module instance as the pages under test.
+  const { StaticRouter } = await server.ssrLoadModule("react-router-dom");
   const { projects } = await server.ssrLoadModule("/src/content/projects.js");
   const { projectScenes } = await server.ssrLoadModule(
     "/src/content/projectScenes.js",
@@ -70,3 +76,4 @@ try {
 } finally {
   await server.close();
 }
+
