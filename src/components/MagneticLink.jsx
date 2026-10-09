@@ -2,7 +2,7 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 import { Link } from "react-router-dom";
 import useReducedMotion from "../utils/useMotionPreference";
 
-const RouterLink = motion(Link);
+const RouterLink = motion.create(Link);
 export default function MagneticLink({ to, children, ...props }) {
   const reduced = useReducedMotion();
   const x = useMotionValue(0), y = useMotionValue(0);

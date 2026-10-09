@@ -1,39 +1,51 @@
-/* Navigation is a signal handoff, followed by content choreography. */
+/* A compact viewport-centered handoff stays clear of page headings. */
 .route-stage {
   position: relative;
   isolation: isolate;
   min-height: 60vh;
 }
 .route-content {
-  transform-origin: 50% 20%;
-  will-change: opacity, filter, transform;
+  min-height: inherit;
 }
 .route-signal {
-  position: absolute;
-  z-index: 15;
-  inset: 0 0 auto;
-  height: min(55vh, 500px);
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: center;
   pointer-events: none;
-  overflow: hidden;
-  background: radial-gradient(ellipse, #89c9c505, transparent 65%);
 }
-.route-signal svg {
-  width: 100%;
-  height: 100%;
-  overflow: visible;
+.route-signal-panel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100vw - 32px);
+  padding: 7px 13px 7px 7px;
+  border: 1px solid #91c9c34d;
+  border-radius: 3px;
+  background: #0a131bf2;
+  box-shadow: 0 8px 30px #0008, 0 0 18px #91c9c318;
 }
-.route-signal > span {
-  position: absolute;
-  left: 16px;
-  top: 38%;
-  font:
-    8px "JetBrains Mono",
-    monospace;
-  letter-spacing: 2px;
-  color: #8eb9bc;
-  background: #0a131bef;
-  padding: 9px 13px;
-  border-left: 1px solid #91c9c373;
+.route-signal-panel > span {
+  font: 9px "JetBrains Mono", monospace;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  color: #b9d8d4;
+}
+.route-signal-panel svg {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  fill: none;
+  stroke: #91c9c3;
+  stroke-width: 1;
+}
+.route-signal-track {
+  opacity: 0.18;
+}
+.route-signal-progress {
+  opacity: 0.9;
+  stroke-width: 2;
 }
 .heading-mask {
   display: inline-block;
@@ -149,12 +161,6 @@
   }
 }
 @media (max-width: 767px) {
-  .route-signal {
-    height: 380px;
-  }
-  .route-signal > span {
-    font-size: 7px;
-  }
   .project-selection-glow,
   .channel-selection-glow {
     border-left: 0;

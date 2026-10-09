@@ -9,22 +9,20 @@ export default function AnimatedPage({ children }) {
     const scope = createScope({ root: root.current }).add(() => {
       animate(
         ".operation-header,.trace-title,.channel-heading,.experience-masthead,.overview-heading",
-        { opacity: [0, 1], translateY: [12, 0], duration: 750, ease: "out(4)" },
+        { translateY: [12, 0], duration: 600, ease: "out(4)" },
       );
       animate(".operation-console,.trace-console,.channel-console,.nexus-map", {
-        opacity: [0, 1],
         translateY: [22, 0],
-        duration: 850,
-        delay: 130,
+        duration: 680,
+        delay: 80,
         ease: "out(4)",
       });
       animate(
         ".operation-selector>button,.channel-tabs>button,.trace-axis>button",
         {
-          opacity: [0, 1],
           translateY: [8, 0],
-          delay: stagger(65, { start: 240 }),
-          duration: 650,
+          delay: stagger(45, { start: 160 }),
+          duration: 520,
           ease: "out(4)",
         },
       );

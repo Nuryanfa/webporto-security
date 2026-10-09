@@ -8,13 +8,14 @@ import { ArrowUpRight, Github } from "lucide-react";
 import useReducedMotion from "../utils/useMotionPreference";
 import AnimatedPage from "../components/AnimatedPage";
 import DecodeText from "../components/DecodeText";
+import OperationMap from "../components/OperationMap";
 import { projects } from "../content/projects";
 
 function rememberedProject() {
   try {
-    return sessionStorage.getItem("ny-project") || "SNET";
+    return sessionStorage.getItem("ny-project") || "AEGIS";
   } catch {
-    return "SNET";
+    return "AEGIS";
   }
 }
 
@@ -55,10 +56,13 @@ export default function Archive() {
             </MotionHeading>
           </div>
           <p>
-            Select an operation to inspect its purpose and outcomes. Your last
-            selection stays with you when you return.
+            {projects.length} selected builds across backend, security, DevOps, and product
+            engineering. Select one to inspect its current scope and source.
           </p>
         </header>
+        <p className="operation-mobile-hint">
+          Swipe to browse all {projects.length} projects
+        </p>
         <section className="operation-console">
           <div
             className="operation-selector"
@@ -68,7 +72,7 @@ export default function Archive() {
             {projects.map((project, index) => (
               <button
                 id={`tab-${project.code}`}
-                aria-controls="operation-dossier"
+                aria-controls={`operation-dossier-${project.code}`}
                 key={project.id}
                 role="tab"
                 aria-selected={active.id === project.id}
@@ -108,10 +112,11 @@ export default function Archive() {
             </div>
             <ContentTransition id={active.id}>
               <article
-                id="operation-dossier"
+                id={`operation-dossier-${active.code}`}
                 role="tabpanel"
                 aria-labelledby={`tab-${active.code}`}
                 className="operation-dossier"
+                style={{ "--signal": active.color }}
               >
                 <div className="dossier-top">
                   <span>
@@ -134,6 +139,7 @@ export default function Archive() {
                     </span>
                   ))}
                 </div>
+                <OperationMap key={active.code} code={active.code} />
                 <div className="project-actions">
                   <MagneticLink
                     href={active.href}

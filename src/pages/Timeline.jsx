@@ -3,45 +3,27 @@ import ContentTransition from "../components/ContentTransition";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import useReducedMotion from "../utils/useMotionPreference";
-import { Activity, Braces, Database, GitBranch } from "lucide-react";
 import AnimatedPage from "../components/AnimatedPage";
 import DecodeText from "../components/DecodeText";
-
-const signals = [
-  {
-    id: "DIGITAK",
-    coordinate: "2026.NOW",
-    role: "Backend Engineer Intern",
-    place: "Digitak Labs",
-    description:
-      "Building backend systems for a food delivery product—from API development and relational data design to GitLab delivery workflows.",
-    events: [
-      { icon: Braces, text: "Backend feature development" },
-      { icon: Database, text: "Relational database design" },
-      { icon: GitBranch, text: "CI/CD workflow management" },
-    ],
-    tags: ["Backend", "API", "GitLab CI/CD"],
-  },
-  {
-    id: "SIMANTAP",
-    coordinate: "2026.05",
-    role: "Development Team",
-    place: "SI MANTAP",
-    description:
-      "Contributed student guidance features to a production university management application with a collaborative delivery process.",
-    events: [
-      { icon: Braces, text: "Production feature delivery" },
-      { icon: Activity, text: "Quality-focused iteration" },
-      { icon: GitBranch, text: "Team implementation" },
-    ],
-    tags: ["Development", "Production", "Collaboration"],
-  },
-];
+import { experiences } from "../content/experience";
 
 export default function Timeline() {
   const [active, setActive] = useState(0);
   const reduced = useReducedMotion();
-  const signal = signals[active];
+  const signal = experiences[active];
+  const selectWithKeyboard = (event, index) => {
+    let next;
+    if (["ArrowRight", "ArrowDown"].includes(event.key))
+      next = (index + 1) % experiences.length;
+    if (["ArrowLeft", "ArrowUp"].includes(event.key))
+      next = (index - 1 + experiences.length) % experiences.length;
+    if (event.key === "Home") next = 0;
+    if (event.key === "End") next = experiences.length - 1;
+    if (next === undefined) return;
+    event.preventDefault();
+    setActive(next);
+    document.getElementById(`trace-tab-${experiences[next].id}`)?.focus();
+  };
   return (
     <AnimatedPage>
       <div className="trace-shell">
@@ -53,8 +35,8 @@ export default function Timeline() {
             LIVE WIRE.
           </MotionHeading>
           <p>
-            Engineering experience, from backend development to collaborative
-            delivery. Select a role to explore the work.
+            Three working contexts across backend, fullstack, and DevOps.
+            Select a role to explore the work.
           </p>
         </header>
         <div className="trace-console">
@@ -80,12 +62,16 @@ export default function Timeline() {
             role="tablist"
             aria-label="Experience timeline"
           >
-            {signals.map((item, index) => (
+            {experiences.map((item, index) => (
               <button
+                id={`trace-tab-${item.id}`}
                 role="tab"
                 aria-selected={active === index}
+                aria-controls={`trace-record-${item.id}`}
+                tabIndex={active === index ? 0 : -1}
                 key={item.id}
                 onClick={() => setActive(index)}
+                onKeyDown={(event) => selectWithKeyboard(event, index)}
                 className={active === index ? "is-active" : ""}
               >
                 <span className="trace-dot" />
@@ -107,7 +93,12 @@ export default function Timeline() {
             ))}
           </div>
           <ContentTransition id={signal.id}>
-            <section className="trace-record">
+            <section
+              id={`trace-record-${signal.id}`}
+              role="tabpanel"
+              aria-labelledby={`trace-tab-${signal.id}`}
+              className="trace-record"
+            >
               <div>
                 <span className="eyebrow">Decoded record / {signal.id}</span>
                 <h2>

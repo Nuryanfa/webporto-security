@@ -4,42 +4,21 @@ import ContentTransition from "../components/ContentTransition";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import useReducedMotion from "../utils/useMotionPreference";
-import { Check, Copy, Github, Linkedin, Mail, Radio, Send } from "lucide-react";
+import { Github, Linkedin, Mail, Radio, Send } from "lucide-react";
 import AnimatedPage from "../components/AnimatedPage";
 import DecodeText from "../components/DecodeText";
 
 export default function Network() {
-  const email = "muhamadnuryanfa@gmail.com";
-  const [copied, setCopied] = useState(false);
+  const email = "nuryanfa93@gmail.com";
   const [channel, setChannel] = useState("email");
   const reduced = useReducedMotion();
-  const copy = async () => {
-    try {
-      if (navigator.clipboard?.writeText)
-        await navigator.clipboard.writeText(email);
-      else {
-        const field = document.createElement("textarea");
-        field.value = email;
-        field.style.position = "fixed";
-        field.style.opacity = "0";
-        document.body.appendChild(field);
-        field.select();
-        document.execCommand("copy");
-        field.remove();
-      }
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1600);
-    } catch {
-      window.location.href = `mailto:${email}`;
-    }
-  };
   const channels = {
     email: {
       icon: Mail,
       label: "Direct mail",
-      value: email,
+      value: "Start a conversation by email",
       href: `mailto:${email}`,
-      action: "Compose message",
+      action: "Open email app",
     },
     github: {
       icon: Github,
@@ -56,6 +35,21 @@ export default function Network() {
       action: "Open connection",
     },
   };
+  const channelKeys = Object.keys(channels);
+  const selectWithKeyboard = (event, index) => {
+    let next;
+    if (["ArrowRight", "ArrowDown"].includes(event.key))
+      next = (index + 1) % channelKeys.length;
+    if (["ArrowLeft", "ArrowUp"].includes(event.key))
+      next = (index - 1 + channelKeys.length) % channelKeys.length;
+    if (event.key === "Home") next = 0;
+    if (event.key === "End") next = channelKeys.length - 1;
+    if (next === undefined) return;
+    event.preventDefault();
+    const nextKey = channelKeys[next];
+    setChannel(nextKey);
+    document.getElementById(`channel-tab-${nextKey}`)?.focus();
+  };
   const current = channels[channel];
   const Icon = current.icon;
   return (
@@ -68,8 +62,8 @@ export default function Network() {
             CHANNEL.
           </MotionHeading>
           <p>
-            For engineering opportunities, collaborations, or technical
-            conversations. Choose how you’d like to connect.
+            For backend, security, and DevOps opportunities, collaborations, or
+            technical conversations. Choose how you’d like to connect.
           </p>
         </header>
         <section className="channel-console">
@@ -80,9 +74,16 @@ export default function Network() {
                 animate={{ rotate: -25 }}
                 transition={{ duration: 0 }}
               />
-              <span className="radar-contact contact-a" />
-              <span className="radar-contact contact-b" />
-              <span className="radar-contact contact-c" />
+              {Object.keys(channels).map((key, index) => (
+                <button
+                  key={key}
+                  type="button"
+                  className={`radar-contact contact-${["a", "b", "c"][index]}`}
+                  aria-label={`Select ${channels[key].label}`}
+                  aria-pressed={channel === key}
+                  onClick={() => setChannel(key)}
+                />
+              ))}
               <Radio className="radar-center" />
             </div>
             <div className="channel-status">
@@ -95,13 +96,17 @@ export default function Network() {
               role="tablist"
               aria-label="Contact channels"
             >
-              {Object.entries(channels).map(([key, item]) => (
+              {Object.entries(channels).map(([key, item], index) => (
                 <button
+                  id={`channel-tab-${key}`}
                   aria-label={item.label}
+                  aria-controls={`channel-readout-${key}`}
                   role="tab"
                   aria-selected={channel === key}
+                  tabIndex={channel === key ? 0 : -1}
                   key={key}
                   onClick={() => setChannel(key)}
+                  onKeyDown={(event) => selectWithKeyboard(event, index)}
                   className={channel === key ? "is-active" : ""}
                 >
                   {channel === key && (
@@ -122,7 +127,12 @@ export default function Network() {
               ))}
             </div>
             <ContentTransition id={channel}>
-              <div role="tabpanel" className="channel-readout">
+              <div
+                id={`channel-readout-${channel}`}
+                role="tabpanel"
+                aria-labelledby={`channel-tab-${channel}`}
+                className="channel-readout"
+              >
                 <span>ACTIVE FREQUENCY / {channel.toUpperCase()}</span>
                 <Icon size={36} />
                 <h2>
@@ -137,12 +147,6 @@ export default function Network() {
                     <Send size={16} />
                     {current.action}
                   </MagneticLink>
-                  {channel === "email" && (
-                    <button onClick={copy}>
-                      {copied ? <Check size={16} /> : <Copy size={16} />}
-                      {copied ? "Copied" : "Copy address"}
-                    </button>
-                  )}
                 </div>
               </div>
             </ContentTransition>

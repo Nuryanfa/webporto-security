@@ -1,23 +1,24 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import MagneticLink from "../components/MagneticLink";
 
 import { ArrowUpRight, ShieldCheck, Braces, Route, Radio } from "lucide-react";
 import AnimatedPage from "../components/AnimatedPage";
 import NexusScene from "../components/NexusScene";
-import { setPreferences } from "../utils/experiencePreferences";
 import ContentTransition from "../components/ContentTransition";
-import useReducedMotion from "../utils/useMotionPreference";
+import { profile } from "../content/profile";
+import { projects } from "../content/projects";
+import { experiences } from "../content/experience";
 const nodes = [
   {
     id: "identity",
     label: "Identity",
     detail: "The developer",
     icon: ShieldCheck,
-    title: "Muhamad Nur Yanfa",
-    tag: "BACKEND × SECURITY",
-    description:
-      "I build secure backend systems and practical defensive infrastructure. Based in Bandung, Indonesia.",
-    meta: "Go · PostgreSQL · Defensive security",
+    title: profile.name,
+    tag: "BACKEND × SECURITY × DEVOPS",
+    description: profile.positioning,
+    meta: "Go · Security · DevOps",
     to: "/overview",
     action: "About my work",
   },
@@ -29,8 +30,8 @@ const nodes = [
     title: "Systems with purpose.",
     tag: "SELECTED WORK",
     description:
-      "Explore backend architecture, purple-team laboratories, and the decisions behind each project.",
-    meta: "03 projects · Architecture to implementation",
+      "Explore secure infrastructure, distributed systems, fullstack products, and the engineering decisions behind them.",
+    meta: `${projects.length} projects · From foundations to released work`,
     to: "/archive",
     action: "Explore projects",
   },
@@ -42,8 +43,8 @@ const nodes = [
     title: "Learning in the field.",
     tag: "EXPERIENCE",
     description:
-      "API development, relational data design, and collaborative delivery. A record of the work that shapes my engineering practice.",
-    meta: "2026 · Engineering experience",
+      "Follow my path through backend engineering, fullstack delivery, and my current DevOps role.",
+    meta: `${experiences.length} roles · Backend to operations`,
     to: "/timeline",
     action: "View experience",
   },
@@ -55,7 +56,7 @@ const nodes = [
     title: "Let’s connect.",
     tag: "CONTACT",
     description:
-      "For backend and security opportunities, project collaborations, or a thoughtful technical conversation.",
+      "For backend, security, and DevOps opportunities—or a thoughtful technical collaboration.",
     meta: "Bandung, Indonesia · UTC+7",
     to: "/network",
     action: "Open contact",
@@ -63,7 +64,6 @@ const nodes = [
 ];
 export default function Home() {
   const [selected, setSelected] = useState(0);
-  const reduced = useReducedMotion();
   const active = nodes[selected];
   return (
     <AnimatedPage>
@@ -72,7 +72,7 @@ export default function Home() {
           <div>
             <span className="eyebrow">THE PERSONAL NETWORK</span>
             <h1>
-              Engineering, <span>with an edge.</span>
+              {profile.taglineLead} <span>{profile.taglineAccent}</span>
             </h1>
           </div>
           <div className="masthead-index">
@@ -83,6 +83,10 @@ export default function Home() {
           </div>
         </header>
         <NexusScene nodes={nodes} selected={selected} onSelect={setSelected} />
+        <Link className="mobile-nexus-open" to={active.to}>
+          Open {active.label}
+          <ArrowUpRight size={16} />
+        </Link>
         <section
           id="nexus-dossier"
           className="map-dossier"
@@ -113,17 +117,6 @@ export default function Home() {
         </section>
         <div className="experience-colophon">
           <span>DESIGNED TO CONNECT. BUILT TO LAST.</span>
-          <button
-            onClick={() =>
-              setPreferences({ motion: reduced ? "full" : "reduced" })
-            }
-            aria-pressed={!reduced}
-          >
-            <span
-              className={!reduced ? "motion-light active" : "motion-light"}
-            />
-            Motion {reduced ? "off" : "on"}
-          </button>
           <a
             href="https://github.com/Nuryanfa"
             target="_blank"

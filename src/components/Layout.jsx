@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import useMotionPreference from "../utils/useMotionPreference";
 import CyberCursor from "./CyberCursor";
+import MotionControl from "./MotionControl";
+import { profile } from "../content/profile";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   CircleDot,
@@ -48,7 +50,7 @@ export default function Layout({ children }) {
             </NavLink>
           ))}
         </nav>
-        <span className="rail-caption">BACKEND × SECURITY</span>
+        <span className="rail-caption">BACKEND × DEVSECOPS</span>
       </aside>
       <div className="cyber-body">
         <header className="cyber-topbar">
@@ -58,6 +60,7 @@ export default function Layout({ children }) {
           <span className="top-location">
             <i /> BANDUNG, ID
           </span>
+          <MotionControl />
           <Link to="/overview" className="overview-shortcut">
             Quick overview
             <ArrowUpRight size={13} />
@@ -67,8 +70,8 @@ export default function Layout({ children }) {
           {children}
         </main>
         <footer className="cyber-footer">
-          <span>MUHAMAD NUR YANFA</span>
-          <span>BACKEND DEVELOPMENT & SECURITY</span>
+          <span>{profile.name.toUpperCase()}</span>
+          <span>{profile.role.toUpperCase()}</span>
           <a
             href="https://github.com/Nuryanfa"
             target="_blank"

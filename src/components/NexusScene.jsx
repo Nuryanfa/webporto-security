@@ -106,7 +106,7 @@ export default function NexusScene({ nodes, selected, onSelect }) {
             animate={{ scale: 1.2, opacity: [0, 0.35, 0] }}
             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }} />}
 
-          <span className="map-core-caption">BUILD · DEFEND · REFINE</span>
+          <span className="map-core-caption">BUILD · DEFEND · OPERATE</span>
           <svg
             viewBox="0 0 300 300"
             className="core-instrument"
@@ -120,13 +120,13 @@ export default function NexusScene({ nodes, selected, onSelect }) {
             <img
               src="/profile.webp"
               alt="Muhamad Nur Yanfa"
-              fetchPriority="high"
+              fetchpriority="high"
             />
           </div>
           <div className="core-nameplate">
             <span>NY—07</span>
             <i />
-            BACKEND / SECURITY
+            BACKEND / DEVSECOPS
           </div>
         </div>
       </motion.div>

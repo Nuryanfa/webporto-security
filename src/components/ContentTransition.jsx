@@ -14,7 +14,7 @@ function Frame({ children, reduced }) {
       // Animate a group or its children, never both on the same axis.
       const targets = candidates.filter(el => !candidates.some(other => other !== el && other.contains(el)));
       animate(targets, {
-        opacity: [0, 1], translateY: [12, 0],
+        translateY: [12, 0],
         delay: stagger(45, { start: 40 }), duration: 560, ease: "out(4)",
       });
     });
@@ -27,7 +27,7 @@ function Frame({ children, reduced }) {
       aria-hidden={present ? undefined : true}
       inert={present ? undefined : ""}
       style={{ pointerEvents: present ? "auto" : "none" }}
-      initial={reduced ? false : { opacity: 0 }}
+      initial={false}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: reduced ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
