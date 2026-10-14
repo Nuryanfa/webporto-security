@@ -6,6 +6,7 @@ import { ArrowUpRight, ShieldCheck, Braces, Route, Radio } from "lucide-react";
 import AnimatedPage from "../components/AnimatedPage";
 import NexusScene from "../components/NexusScene";
 import ContentTransition from "../components/ContentTransition";
+import DecodeText from "../components/DecodeText";
 import { profile } from "../content/profile";
 import { projects } from "../content/projects";
 import { experiences } from "../content/experience";
@@ -100,7 +101,9 @@ export default function Home() {
                   <i />
                   {active.tag}
                 </span>
-                <h2>{active.title}</h2>
+                <h2>
+                  <DecodeText text={active.title} />
+                </h2>
               </div>
               <div className="map-dossier-copy">
                 <p>{active.description}</p>

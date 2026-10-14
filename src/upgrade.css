@@ -221,7 +221,11 @@ html {
     overflow-x: auto;
     overscroll-behavior-inline: contain;
     scroll-snap-type: x proximity;
-    scrollbar-width: thin;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .operation-selector::-webkit-scrollbar {
+    display: none;
   }
   .operation-selector .operation-tab {
     flex: 0 0 132px;
@@ -255,29 +259,52 @@ html {
     font-size: 8px;
   }
   .operation-map-stages {
-    gap: 6px;
+    gap: 8px;
   }
   .operation-map-stages button {
-    min-height: 75px;
-    padding: 9px 7px;
+    min-height: 72px;
+    padding: 10px 8px;
     font-size: 10px;
   }
   .operation-map-stages button:not(:last-child)::after {
-    width: 7px;
+    width: 8px;
+  }
+}
+@media (max-width: 639px) {
+  .operation-map-stages {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin: 16px 0 14px;
+  }
+  .operation-map-stages button {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 46px;
+    padding: 10px 14px;
+    font-size: 11px;
+  }
+  .operation-map-stages button .operation-map-marker {
+    width: auto;
+    gap: 12px;
+  }
+  .operation-map-stages button:not(:last-child)::after {
+    display: none;
   }
 }
 @media (max-width: 480px) {
   .cyber-topbar {
-    gap: 8px;
-    padding-inline: 14px;
+    gap: 6px;
+    padding-inline: 12px;
   }
   .cyber-topbar > span:first-child {
-    font-size: 7px;
-    letter-spacing: .05em;
+    font-size: 7.5px;
+    letter-spacing: .04em;
   }
   .overview-shortcut {
-    padding: 8px;
+    padding: 6px 9px;
     font-size: 8px;
+    gap: 4px;
   }
   .overview-shortcut svg {
     display: none;

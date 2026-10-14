@@ -638,6 +638,34 @@ a:focus-visible {
     padding: 14px;
   }
 }
+@media (min-width: 768px) and (max-width: 1024px) {
+  .cyber-rail {
+    width: 72px;
+    padding: 20px 0;
+  }
+  .cyber-rail nav a {
+    width: 58px;
+    height: 52px;
+    gap: 6px;
+  }
+  .cyber-body {
+    margin-left: 72px;
+  }
+  .cyber-topbar {
+    padding: 0 20px;
+    height: 68px;
+    gap: 16px;
+  }
+  .cyber-main#main-content {
+    padding: 24px 20px;
+  }
+  .cyber-footer {
+    margin: 0 20px;
+    padding: 18px 0;
+    gap: 12px;
+    font-size: 7.5px;
+  }
+}
 @media (max-width: 767px) {
   .cyber-rail {
     top: auto;
