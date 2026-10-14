@@ -7,6 +7,7 @@ import "./refinement.css";
 import "./nexus.css";
 import "./motion.css";
 import "./upgrade.css";
+import "./tactical.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

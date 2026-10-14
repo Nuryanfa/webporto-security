@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
@@ -14,12 +14,41 @@ export default function RouteTransition({ children }) {
   const { pathname } = useLocation();
   const reduced = useReducedMotion();
   const hasMounted = useRef(false);
+  const content = useRef(null);
+  const [scanKey, setScanKey] = useState(0);
+
   useEffect(() => {
     hasMounted.current = true;
   }, []);
+
+  // Feed-switch: brief RGB split + scan slice on route change (skipped on first load)
+  const first = useRef(true);
+  useEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    if (reduced) return;
+    const el = content.current;
+    if (!el) return;
+    el.classList.remove("feed-switch");
+    void el.offsetWidth; // restart animation
+    el.classList.add("feed-switch");
+    setScanKey((k) => k + 1);
+    const id = setTimeout(() => el.classList.remove("feed-switch"), 260);
+    return () => clearTimeout(id);
+  }, [pathname, reduced]);
+
   return (
     <div className="route-stage">
-      <div className="route-content">{children}</div>
+      <div className="route-content" ref={content}>
+        {children}
+      </div>
+      {!reduced && scanKey > 0 &&
+        createPortal(
+          <div key={scanKey} className="feed-scan" aria-hidden="true" />,
+          document.body,
+        )}
       {!reduced && hasMounted.current && createPortal(
         <motion.div
           key={`signal-${pathname}`}

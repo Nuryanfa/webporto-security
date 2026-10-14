@@ -7,11 +7,13 @@ import useReducedMotion from "../utils/useMotionPreference";
 import { Github, Linkedin, Mail, Radio, Send } from "lucide-react";
 import AnimatedPage from "../components/AnimatedPage";
 import DecodeText from "../components/DecodeText";
+import LockOn from "../components/LockOn";
 
 export default function Network() {
   const email = "nuryanfa93@gmail.com";
   const [channel, setChannel] = useState("email");
   const reduced = useReducedMotion();
+
   const channels = {
     email: {
       icon: Mail,
@@ -19,6 +21,7 @@ export default function Network() {
       value: "Start a conversation by email",
       href: `mailto:${email}`,
       action: "Open email app",
+      coord: "045° AZ // DIRECT",
     },
     github: {
       icon: Github,
@@ -26,6 +29,7 @@ export default function Network() {
       value: "github.com/Nuryanfa",
       href: "https://github.com/Nuryanfa",
       action: "Inspect repositories",
+      coord: "135° AZ // RELAY",
     },
     linkedin: {
       icon: Linkedin,
@@ -33,9 +37,12 @@ export default function Network() {
       value: "Muhamad Nur Yanfa",
       href: "https://www.linkedin.com/in/muhamad-nur-yanfa-069036368",
       action: "Open connection",
+      coord: "270° AZ // BEACON",
     },
   };
+
   const channelKeys = Object.keys(channels);
+
   const selectWithKeyboard = (event, index) => {
     let next;
     if (["ArrowRight", "ArrowDown"].includes(event.key))
@@ -50,46 +57,76 @@ export default function Network() {
     setChannel(nextKey);
     document.getElementById(`channel-tab-${nextKey}`)?.focus();
   };
+
   const current = channels[channel];
   const Icon = current.icon;
+
   return (
     <AnimatedPage>
       <div className="channel-shell">
         <header className="channel-heading">
-          <span className="eyebrow">41 / Communication array</span>
+          <span className="eyebrow flex items-center gap-2">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-resonance animate-pulse" />
+            41 / Communication array // RF & Digital Relays
+          </span>
           <MotionHeading>
             OPEN A<br />
             CHANNEL.
           </MotionHeading>
           <p>
             For backend, security, and DevOps opportunities, collaborations, or
-            technical conversations. Choose how you’d like to connect.
+            technical conversations. Choose your designated communication frequency.
           </p>
         </header>
+
         <section className="channel-console">
-          <div className="channel-radar">
-            <div className="radar-grid">
+          {/* Active Tactical Sonar Radar */}
+          <div className="channel-radar relative overflow-hidden">
+            <div className="radar-grid relative">
+              {/* Expanding Sonar Ping Ring */}
+              {!reduced && <div className="sonar-ping" aria-hidden="true" />}
+
+              {/* Smooth Continuous 360° Radar Sweep */}
               <motion.div
                 className="radar-sweep-arm"
-                animate={{ rotate: -25 }}
-                transition={{ duration: 0 }}
+                animate={reduced ? { rotate: -25 } : { rotate: [0, 360] }}
+                transition={
+                  reduced
+                    ? { duration: 0 }
+                    : { duration: 7, ease: "linear", repeat: Infinity }
+                }
               />
+
+              {/* Radar Contacts / Blips with Active Pulsing Ring */}
               {Object.keys(channels).map((key, index) => (
                 <button
                   key={key}
                   type="button"
-                  className={`radar-contact contact-${["a", "b", "c"][index]}`}
+                  className={`radar-contact contact-${["a", "b", "c"][index]} relative`}
                   aria-label={`Select ${channels[key].label}`}
                   aria-pressed={channel === key}
                   onClick={() => setChannel(key)}
-                />
+                >
+                  {channel === key && !reduced && (
+                    <span className="absolute inset-[-6px] rounded-full border border-resonance animate-ping pointer-events-none" />
+                  )}
+                </button>
               ))}
-              <Radio className="radar-center" />
+
+              <Radio className="radar-center text-resonance" />
             </div>
-            <div className="channel-status">
-              <i /> OPERATOR AVAILABLE
+
+            <div className="channel-status flex items-center justify-between px-3 gap-3">
+              <span className="flex items-center gap-2 font-mono text-[9px]">
+                <i className="inline-block w-1.5 h-1.5 rounded-full bg-resonance animate-pulse" />
+                OPERATOR AVAILABLE
+              </span>
+              <span className="font-mono text-[8px] text-resonance/60">
+                // {current.coord}
+              </span>
             </div>
           </div>
+
           <div className="channel-panel">
             <div
               className="channel-tabs"
@@ -107,8 +144,12 @@ export default function Network() {
                   key={key}
                   onClick={() => setChannel(key)}
                   onKeyDown={(event) => selectWithKeyboard(event, index)}
-                  className={channel === key ? "is-active" : ""}
+                  className={`relative ${channel === key ? "is-active" : ""}`}
                 >
+                  {/* Tactical Corner Brackets */}
+                  <span className="hud-corner hud-tl" aria-hidden="true" />
+                  <span className="hud-corner hud-tr" aria-hidden="true" />
+
                   {channel === key && (
                     <motion.span
                       className="channel-selection-glow"
@@ -126,27 +167,49 @@ export default function Network() {
                 </button>
               ))}
             </div>
+
             <ContentTransition id={channel}>
               <div
                 id={`channel-readout-${channel}`}
                 role="tabpanel"
                 aria-labelledby={`channel-tab-${channel}`}
-                className="channel-readout"
+                className="channel-readout holo-tilt relative"
               >
-                <span>ACTIVE FREQUENCY / {channel.toUpperCase()}</span>
-                <Icon size={36} />
+                {/* Tactical Corner Brackets */}
+                <span className="hud-corner hud-tl" aria-hidden="true" />
+                <span className="hud-corner hud-tr" aria-hidden="true" />
+                <span className="hud-corner hud-bl" aria-hidden="true" />
+                <span className="hud-corner hud-br" aria-hidden="true" />
+
+                <span className="font-mono text-xs text-resonance/80 flex items-center gap-2">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-resonance animate-pulse" />
+                  ACTIVE FREQUENCY // {channel.toUpperCase()} // 433.92 MHz
+                </span>
+
+                <motion.div
+                  key={`icon-${channel}`}
+                  initial={{ scale: 0.8, rotate: -10, opacity: 0 }}
+                  animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                >
+                  <Icon size={38} className="text-resonance" />
+                </motion.div>
+
                 <h2>
                   <DecodeText text={current.value} />
                 </h2>
+
                 <div className="channel-actions" aria-live="polite">
-                  <MagneticLink
-                    href={current.href}
-                    target={channel === "email" ? undefined : "_blank"}
-                    rel="noreferrer"
-                  >
-                    <Send size={16} />
-                    {current.action}
-                  </MagneticLink>
+                  <LockOn label={channel.toUpperCase()}>
+                    <MagneticLink
+                      href={current.href}
+                      target={channel === "email" ? undefined : "_blank"}
+                      rel="noreferrer"
+                    >
+                      <Send size={16} />
+                      {current.action}
+                    </MagneticLink>
+                  </LockOn>
                 </div>
               </div>
             </ContentTransition>
