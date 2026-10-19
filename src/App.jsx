@@ -1,10 +1,5 @@
 import RouteTransition from "./components/RouteTransition";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useLocation,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { MotionConfig } from "framer-motion";
 
 import Layout from "./components/Layout";
@@ -21,17 +16,18 @@ import Overview from "./pages/Overview";
 import TabTitleUpdater from "./components/TabTitleUpdater";
 
 function AnimatedRoutes() {
-  const location = useLocation();
   return (
     <RouteTransition>
-      <Routes location={location}>
-        <Route path="/" element={<Home />} />
-        <Route path="/archive" element={<Archive />} />
-        <Route path="/timeline" element={<Timeline />} />
-        <Route path="/network" element={<Network />} />
-        <Route path="/overview" element={<Overview />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      {(location) => (
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<Home />} />
+          <Route path="/archive" element={<Archive />} />
+          <Route path="/timeline" element={<Timeline />} />
+          <Route path="/network" element={<Network />} />
+          <Route path="/overview" element={<Overview />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      )}
     </RouteTransition>
   );
 }

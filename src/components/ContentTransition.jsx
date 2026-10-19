@@ -1,25 +1,29 @@
 import { AnimatePresence, motion, useIsPresent } from "framer-motion";
-import { useEffect, useRef } from "react";
-import { animate, createScope, stagger } from "animejs";
+import { useRef } from "react";
+import { gsap, useGSAP } from "../luxe/gsap";
 import useReducedMotion from "../utils/useMotionPreference";
+
+// Incoming panel staggers its [data-stagger] children; the outgoing one fades in place.
 function Frame({ children, reduced }) {
   const present = useIsPresent();
   const root = useRef(null);
-  useEffect(() => {
-    if (reduced || !present) return;
-    const scope = createScope({ root: root.current }).add(() => {
-      const candidates = [...root.current.querySelectorAll(
-        ".map-dossier-grid>div,.dossier-top,h2,.dossier-summary,.dossier-outcome,.project-actions,.trace-record>*,.channel-readout>span,.channel-actions,.tech-tag"
-      )];
-      // Animate a group or its children, never both on the same axis.
-      const targets = candidates.filter(el => !candidates.some(other => other !== el && other.contains(el)));
-      animate(targets, {
-        translateY: [12, 0],
-        delay: stagger(45, { start: 40 }), duration: 560, ease: "out(4)",
+  useGSAP(
+    () => {
+      if (reduced || !present) return;
+      const targets = gsap.utils.toArray("[data-stagger]", root.current);
+      gsap.from(targets, {
+        y: 26,
+        autoAlpha: 0,
+        filter: "blur(6px)",
+        duration: 0.95,
+        ease: "expo.out",
+        stagger: 0.055,
+        delay: 0.08,
+        clearProps: "filter",
       });
-    });
-    return () => scope.revert();
-  }, [reduced, present]);
+    },
+    { scope: root, dependencies: [reduced, present] },
+  );
   return (
     <motion.div
       ref={root}
@@ -30,12 +34,13 @@ function Frame({ children, reduced }) {
       initial={false}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: reduced ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: reduced ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>
   );
 }
+
 export default function ContentTransition({ id, children, className = "" }) {
   const reduced = useReducedMotion();
   return (

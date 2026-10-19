@@ -5,8 +5,9 @@ import { useLocation } from 'react-router-dom';
 
 const colors = { '/': [121, 230, 223], '/archive': [232, 245, 59], '/timeline': [121, 230, 223], '/network': [121, 170, 255] };
 
-export default function SignalLattice() {
+export default function SignalLattice({ paused = false }) {
   const canvas = useRef(null);
+  const animationRef = useRef(null);
   const reduced = useReducedMotion();
   const { pathname } = useLocation();
 
@@ -65,10 +66,17 @@ export default function SignalLattice() {
         }
       },
     });
-    const visibility = () => document.hidden ? animation.pause() : animation.resume();
+    animationRef.current = animation;
+    const visibility = () => document.hidden || document.querySelector('[data-ui-overlay="active"]')
+      ? animation.pause() : animation.resume();
     document.addEventListener('visibilitychange', visibility);
     visibility();
-    return () => { animation.cancel(); observer.disconnect(); window.removeEventListener('pointermove', move); document.removeEventListener('visibilitychange', visibility); };
+    return () => { animationRef.current = null; animation.cancel(); observer.disconnect(); window.removeEventListener('pointermove', move); document.removeEventListener('visibilitychange', visibility); };
   }, [reduced, pathname]);
+  useEffect(() => {
+    if (!animationRef.current) return;
+    if (paused || document.hidden) animationRef.current.pause();
+    else animationRef.current.resume();
+  }, [paused, reduced, pathname]);
   return reduced ? null : <canvas ref={canvas} className="signal-lattice" aria-hidden="true" />;
 }

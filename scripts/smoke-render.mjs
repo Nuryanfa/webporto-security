@@ -14,6 +14,9 @@ const routes = [
 const server = await createServer({
   server: { middlewareMode: true },
   appType: "custom",
+  // react-router-dom exposes its ESM build under the "module-sync" condition, which
+  // Vite 5's resolver does not know; without it SSR loads the CJS build and loses named exports.
+  ssr: { resolve: { externalConditions: ["module-sync"] } },
 });
 
 try {

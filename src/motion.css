@@ -57,7 +57,19 @@
 .heading-mask > span {
   display: inline-block;
   transform-origin: left bottom;
-  will-change: transform;
+}
+.heading-mask:hover > span { will-change: transform; }
+
+[data-ui-overlay="active"] .spin-slow,
+[data-ui-overlay="active"] .spin-slow-reverse,
+[data-ui-overlay="active"] .sonar-ping,
+[data-ui-overlay="active"] .target-reticle,
+[data-ui-overlay="active"] .channel-radar,
+[data-ui-overlay="active"] .radar-sweep-arm,
+[data-ui-overlay="active"] .cyber-telemetry-badge i,
+[data-ui-overlay="active"] .animate-pulse,
+[data-ui-overlay="active"] .animate-ping {
+  animation-play-state: paused !important;
 }
 .operation-tab,
 .channel-tabs button,
@@ -89,7 +101,7 @@
   pointer-events: none;
 }
 .channel-radar {
-  animation: radar-material 12s ease-in-out infinite alternate;
+  background-color: #89c9c503;
 }
 .trace-wave {
   opacity: 0.6;
@@ -98,7 +110,10 @@
   animation-duration: 38s;
 }
 .radar-sweep-arm {
-  animation-duration: 14s;
+  animation: radar-rotation 14s linear infinite;
+}
+@keyframes radar-rotation {
+  to { transform: rotate(360deg); }
 }
 .system-wire i {
   animation-duration: 4.5s !important;
@@ -142,14 +157,6 @@
 .cyber-rail nav a:hover svg {
   transform: translateY(-2px);
 }
-@keyframes radar-material {
-  from {
-    background-color: #89c9c500;
-  }
-  to {
-    background-color: #89c9c506;
-  }
-}
 @keyframes channel-icon-reveal {
   from {
     opacity: 0;
@@ -187,6 +194,7 @@
   }
 }
 html[data-motion="reduced"] .channel-radar,
+html[data-motion="reduced"] .radar-sweep-arm,
 html[data-motion="reduced"] .channel-readout > svg,
 html[data-motion="reduced"] .dossier-outcome {
   animation: none !important;

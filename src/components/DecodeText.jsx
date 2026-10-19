@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import useReducedMotion from "../utils/useMotionPreference";
 
 // Clean, high-tech glyphs that maintain consistent visual weight
-const CYBER_GLYPHS = "0123456789ABCDEF!#%&*+=<>[]_";
+const CYBER_GLYPHS = "01ABCDEF#$@%&*<>~/[]{}";
 
 /**
  * Senior-Grade Cyber Scramble/Decode Text Component.
@@ -16,12 +16,12 @@ export default function DecodeText({
   className = "",
   speed = 28, // ms per tick
   revealStep = 1, // characters settled per step
+  chars = CYBER_GLYPHS,
 }) {
   const reduced = useReducedMotion();
   const [displayText, setDisplayText] = useState(text);
   const [frontierIndex, setFrontierIndex] = useState(-1);
   const frameRef = useRef(null);
-  const timeoutRef = useRef(null);
 
   useEffect(() => {
     if (!text) {
@@ -38,7 +38,6 @@ export default function DecodeText({
 
     // Cancel any ongoing frame/timeout
     if (frameRef.current) cancelAnimationFrame(frameRef.current);
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
     const target = text;
     const len = target.length;
@@ -48,7 +47,7 @@ export default function DecodeText({
     // Generate random glyph for non-space characters
     const randomGlyph = (origChar) => {
       if (origChar === " " || origChar === "\n" || origChar === "\t") return origChar;
-      return CYBER_GLYPHS[Math.floor(Math.random() * CYBER_GLYPHS.length)];
+      return chars[Math.floor(Math.random() * chars.length)] || origChar;
     };
 
     const updateFrame = (now) => {
@@ -91,12 +90,11 @@ export default function DecodeText({
 
     return () => {
       if (frameRef.current) cancelAnimationFrame(frameRef.current);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [text, reduced, speed, revealStep]);
+  }, [text, reduced, speed, revealStep, chars]);
 
   if (reduced || frontierIndex === -1) {
-    return <span className={`decode-text inline-block ${className}`}>{text}</span>;
+    return <span className={`decode-text inline-block font-mono tabular-nums ${className}`}>{text}</span>;
   }
 
   // Render with styled frontier for a smooth, high-tech glowing edge
@@ -106,17 +104,14 @@ export default function DecodeText({
 
   return (
     <span
-      className={`decode-text inline-block select-none font-feature-tabular ${className}`}
+      className={`decode-text inline-block select-none font-mono tabular-nums ${className}`}
       aria-label={text}
-      style={{
-        fontVariantNumeric: "tabular-nums",
-        willChange: "contents",
-      }}
     >
-      <span>{settledPart}</span>
+      <span aria-hidden="true">{settledPart}</span>
       {frontierChar && (
         <span
           className="text-resonance inline"
+          aria-hidden="true"
           style={{
             textShadow: "0 0 8px rgba(0, 243, 255, 0.75)",
             opacity: 0.95,
@@ -126,7 +121,7 @@ export default function DecodeText({
         </span>
       )}
       {remainingPart && (
-        <span className="opacity-40 text-resonance/60 inline">
+        <span aria-hidden="true" className="opacity-40 text-resonance/60 inline">
           {remainingPart}
         </span>
       )}

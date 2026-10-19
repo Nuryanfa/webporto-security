@@ -1,8 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { animate, createScope, stagger } from "animejs";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import useReducedMotion from "../utils/useMotionPreference";
+import { useOverlayMotion } from "../utils/OverlayMotionContext";
 
 const nodeTelemetry = [
   "IDENTITY // ARCH",
@@ -14,10 +15,19 @@ const nodeTelemetry = [
 export default function NexusScene({ nodes, selected, onSelect }) {
   const root = useRef(null);
   const reduced = useReducedMotion();
+  const overlayActive = useOverlayMotion();
+  const [pageVisible, setPageVisible] = useState(true);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const sx = useSpring(x, { stiffness: 90, damping: 24 });
   const sy = useSpring(y, { stiffness: 90, damping: 24 });
+
+  useEffect(() => {
+    const sync = () => setPageVisible(!document.hidden);
+    document.addEventListener("visibilitychange", sync);
+    sync();
+    return () => document.removeEventListener("visibilitychange", sync);
+  }, []);
 
   useEffect(() => {
     if (reduced) return;
@@ -105,7 +115,7 @@ export default function NexusScene({ nodes, selected, onSelect }) {
               }}
             />
             {/* High-Energy Glowing Data Packet for Selected Route (Continuous Loop) */}
-            {selected === i && !reduced && (
+            {selected === i && !reduced && !overlayActive && pageVisible && (
               <motion.path
                 key={`packet-active-${selected}`}
                 d={d}
@@ -130,28 +140,6 @@ export default function NexusScene({ nodes, selected, onSelect }) {
               />
             )}
             {/* Ambient Low-Energy Data Pulse on Idle Routes */}
-            {selected !== i && !reduced && (
-              <motion.path
-                key={`packet-ambient-${i}`}
-                d={d}
-                pathLength="1"
-                fill="none"
-                stroke="rgba(155, 202, 196, 0.45)"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeDasharray="0.035 0.965"
-                animate={{
-                  strokeDashoffset: [0.035, -1],
-                  opacity: [0, 0.6, 0.6, 0],
-                }}
-                transition={{
-                  duration: 3.8 + i * 0.7,
-                  ease: "linear",
-                  repeat: Infinity,
-                  delay: i * 0.9,
-                }}
-              />
-            )}
           </g>
         ))}
       </svg>

@@ -16,20 +16,14 @@
   border: 0 solid #00f3ff;
   opacity: 0;
   pointer-events: none;
-  transition:
-    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.18s ease;
 }
-.lockon-tl { top: 0; left: 0; border-top-width: 1.5px; border-left-width: 1.5px; transform: translate(-10px, -10px) rotate(-45deg); }
-.lockon-tr { top: 0; right: 0; border-top-width: 1.5px; border-right-width: 1.5px; transform: translate(10px, -10px) rotate(45deg); }
-.lockon-bl { bottom: 0; left: 0; border-bottom-width: 1.5px; border-left-width: 1.5px; transform: translate(-10px, 10px) rotate(45deg); }
-.lockon-br { bottom: 0; right: 0; border-bottom-width: 1.5px; border-right-width: 1.5px; transform: translate(10px, 10px) rotate(-45deg); }
-.lockon-acquiring .lockon-c,
+.lockon-tl { top: 0; left: 0; border-top-width: 1.5px; border-left-width: 1.5px; }
+.lockon-tr { top: 0; right: 0; border-top-width: 1.5px; border-right-width: 1.5px; }
+.lockon-bl { bottom: 0; left: 0; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+.lockon-br { bottom: 0; right: 0; border-bottom-width: 1.5px; border-right-width: 1.5px; }
 .lockon-locked .lockon-c {
   opacity: 1;
-  transform: translate(0, 0) rotate(0);
 }
-.lockon-locked .lockon-c { filter: drop-shadow(0 0 4px rgba(0, 243, 255, 0.7)); }
 .lockon-tag {
   position: absolute;
   left: 6px;
@@ -39,34 +33,63 @@
   white-space: nowrap;
   color: #00f3ff;
   pointer-events: none;
+  opacity: 0;
 }
+.lockon-locked .lockon-tag,
+html[data-motion="reduced"] .lockon-acquiring .lockon-tag { opacity: 1; }
 
 /* ---------- B. Holographic tilt with depth layers ---------- */
 .holo-tilt {
   --tilt-x: 0deg;
   --tilt-y: 0deg;
-  --sheen-x: 50%;
-  --sheen-y: 50%;
+  --holo-x: 50%;
+  --holo-y: 50%;
   position: relative;
   transform-style: preserve-3d;
-  transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s ease !important;
+  transform: perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) scale3d(1, 1, 1);
+  transition: border-color 0.2s ease;
 }
-.holo-tilt.is-tilting { transition: transform 0.08s linear, border-color 0.2s ease !important; }
-.holo-tilt::after {
+.tactical-spotlight-card::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
   opacity: 0;
   background: radial-gradient(
-    240px circle at var(--sheen-x) var(--sheen-y),
-    rgba(0, 243, 255, 0.1),
-    transparent 60%
+    circle at var(--holo-x) var(--holo-y),
+    rgba(0, 240, 255, 0.1),
+    transparent 35%
   );
   transition: opacity 0.3s ease;
 }
-.holo-tilt.is-tilting::after { opacity: 1; }
+.tactical-spotlight-card.is-tilting::after,
+.tactical-spotlight-card:focus-within::after { opacity: 1; }
+.tactical-spotlight-card {
+  border-color: rgba(0, 240, 255, .2);
+}
+.project-telemetry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  color: #91c9c3;
+  font: 9px "JetBrains Mono", monospace;
+  letter-spacing: .1em;
+  white-space: nowrap;
+}
+.telemetry-bars {
+  display: inline-flex;
+  align-items: end;
+  gap: 3px;
+  height: 14px;
+}
+.telemetry-bar {
+  display: block;
+  width: 3px;
+  background: currentColor;
+  transform-origin: bottom;
+}
+.telemetry-online { color: #b4d4c7; }
 /* HUD brackets float in front of the card surface */
 .holo-tilt > .hud-corner { transform: translateZ(18px); }
 
@@ -165,11 +188,11 @@
 html[data-motion="reduced"] .route-content.feed-switch,
 html[data-motion="reduced"] .feed-scan { animation: none; }
 html[data-motion="reduced"] .holo-tilt { transform: none; }
-html[data-motion="reduced"] .lockon-c { transition: none; }
+html[data-motion="reduced"] .lockon-locked .lockon-c { opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
   .route-content.feed-switch, .feed-scan { animation: none; }
   .holo-tilt { transform: none !important; }
-  .lockon-c { transition: none; }
+  .lockon-locked .lockon-c { opacity: 1; }
 }
 @media print {
   .terminal-drawer, .feed-scan, .lockon-tag { display: none !important; }

@@ -1,82 +1,76 @@
-import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import { motion } from "framer-motion";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { gsap, ScrollTrigger } from "../luxe/gsap";
+import { scrollToTop } from "../luxe/lenis";
 import useReducedMotion from "../utils/useMotionPreference";
+
 const names = {
-  "/": "NEXUS",
-  "/archive": "OPERATIONS",
-  "/timeline": "TRACE",
-  "/network": "CHANNEL",
-  "/overview": "OVERVIEW",
+  "/": "Home",
+  "/archive": "Selected work",
+  "/timeline": "Experience",
+  "/network": "Contact",
+  "/overview": "Overview",
 };
+
+/**
+ * Curtain transition: cover the old page, swap routes and reset scroll while
+ * hidden, then lift. Query-only changes (project deep links) swap instantly.
+ * children is a render function receiving the location to display.
+ */
 export default function RouteTransition({ children }) {
-  const { pathname } = useLocation();
+  const location = useLocation();
   const reduced = useReducedMotion();
-  const hasMounted = useRef(false);
-  const content = useRef(null);
-  const [scanKey, setScanKey] = useState(0);
+  const [display, setDisplay] = useState(location);
+  const curtain = useRef(null);
+  const label = useRef(null);
+  const timeline = useRef(null);
 
-  useEffect(() => {
-    hasMounted.current = true;
-  }, []);
-
-  // Feed-switch: brief RGB split + scan slice on route change (skipped on first load)
-  const first = useRef(true);
-  useEffect(() => {
-    if (first.current) {
-      first.current = false;
+  useLayoutEffect(() => {
+    if (location.pathname === display.pathname) {
+      if (location !== display) setDisplay(location);
+      // Returned to the shown page mid-transition: drop the pending swap and lift.
+      if (timeline.current?.isActive()) {
+        timeline.current.kill();
+        gsap.to(curtain.current, { yPercent: -100, duration: 0.6, ease: "expo.inOut" });
+        gsap.set(label.current, { opacity: 0 });
+      }
       return;
     }
-    if (reduced) return;
-    const el = content.current;
-    if (!el) return;
-    el.classList.remove("feed-switch");
-    void el.offsetWidth; // restart animation
-    el.classList.add("feed-switch");
-    setScanKey((k) => k + 1);
-    const id = setTimeout(() => el.classList.remove("feed-switch"), 260);
-    return () => clearTimeout(id);
-  }, [pathname, reduced]);
+    timeline.current?.kill();
+    if (reduced || !curtain.current) {
+      scrollToTop();
+      setDisplay(location);
+      return;
+    }
+    if (label.current) label.current.textContent = names[location.pathname] || "Not found";
+    const tl = gsap.timeline();
+    tl.set(curtain.current, { autoAlpha: 1, yPercent: 100 })
+      .set(label.current, { yPercent: 120, opacity: 1 })
+      .to(curtain.current, { yPercent: 0, duration: 0.62, ease: "expo.inOut" })
+      .to(label.current, { yPercent: 0, duration: 0.55, ease: "expo.out" }, "-=0.25")
+      .add(() => {
+        scrollToTop();
+        setDisplay(location);
+      })
+      .to(label.current, { yPercent: -120, opacity: 0, duration: 0.45, ease: "power3.in" }, "+=0.08")
+      .to(curtain.current, { yPercent: -100, duration: 0.85, ease: "expo.inOut" }, "-=0.2")
+      .set(curtain.current, { autoAlpha: 0 })
+      .add(() => ScrollTrigger.refresh());
+    timeline.current = tl;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location, reduced]);
+
+  useEffect(() => () => timeline.current?.kill(), []);
 
   return (
     <div className="route-stage">
-      <div className="route-content" ref={content}>
-        {children}
+      <div className="route-content">{children(display)}</div>
+      <div ref={curtain} className="lx-curtain" aria-hidden="true">
+        <div className="lx-curtain__glow" />
+        <span className="lx-curtain__mask">
+          <span ref={label} className="lx-curtain__label" />
+        </span>
       </div>
-      {!reduced && scanKey > 0 &&
-        createPortal(
-          <div key={scanKey} className="feed-scan" aria-hidden="true" />,
-          document.body,
-        )}
-      {!reduced && hasMounted.current && createPortal(
-        <motion.div
-          key={`signal-${pathname}`}
-          className="route-signal"
-          aria-hidden="true"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 0.9, 0.9, 0] }}
-          transition={{ duration: 0.46, times: [0, 0.15, 0.62, 1] }}
-        >
-          <div className="route-signal-panel">
-            <svg viewBox="0 0 40 40" aria-hidden="true">
-              <circle className="route-signal-track" cx="20" cy="20" r="14" />
-              <motion.circle
-                className="route-signal-progress"
-                cx="20"
-                cy="20"
-                r="14"
-                initial={{ pathLength: 0, rotate: -90 }}
-                animate={{ pathLength: 1, rotate: -90 }}
-                transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
-              />
-              <path d="M20 14v12M14 20h12" />
-            </svg>
-            <span>{names[pathname] || "INTERFACE"} / CONNECTING</span>
-          </div>
-        </motion.div>,
-        document.body,
-      )}
     </div>
   );
 }

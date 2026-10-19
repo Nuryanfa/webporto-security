@@ -155,6 +155,19 @@ html {
   color: var(--signal);
   font: 9px "JetBrains Mono", monospace;
 }
+.operation-flow {
+  display: block;
+  width: 100%;
+  height: 30px;
+  margin: -10px 0 16px;
+  color: var(--signal);
+  opacity: .65;
+  overflow: visible;
+  pointer-events: none;
+}
+.operation-flow-packet {
+  filter: none;
+}
 .operation-map-detail {
   min-height: 75px;
   padding-left: 14px;
