@@ -5,8 +5,10 @@ import { ArrowUpRight, Github } from "lucide-react";
 import MagneticLink from "../components/MagneticLink";
 import ContentTransition from "../components/ContentTransition";
 import AnimatedPage from "../components/AnimatedPage";
+import DecodeText from "../components/DecodeText";
 import OperationMap from "../components/OperationMap";
-import SplitReveal from "../components/luxe/SplitReveal";
+import EpisodeHeader from "../components/luxe/EpisodeHeader";
+import { statusTone } from "../content/episodes";
 import { trackSpotlight } from "../components/luxe/ProjectCard";
 import useReducedMotion from "../utils/useMotionPreference";
 import { projects } from "../content/projects";
@@ -85,23 +87,18 @@ export default function Archive() {
   return (
     <AnimatedPage>
       <div className="lx-page lx-ops">
-        <header className="lx-page-head">
-          <div className="lx-page-head__top" data-reveal>
-            <span className="lx-index">(Work)</span>
-            <span className="lx-eyebrow">Operations — {projects.length} projects</span>
+        <EpisodeHeader
+          eyebrow={`Target archive — ${projects.length} operations`}
+          extra={
             <span className="lx-kbd-hint">
               <kbd>J</kbd>
-              <kbd>K</kbd> to cycle
+              <kbd>K</kbd> to cycle targets
             </span>
-          </div>
-          <SplitReveal as="h1" type="chars" trigger="intro" delay={0.2} className="lx-display">
-            Work, <em>in depth.</em>
-          </SplitReveal>
-          <p className="lx-page-head__lede" data-reveal>
-            {projects.length} builds across backend, security, DevOps, and product engineering. Select
-            one to inspect its scope, architecture stages, and source.
-          </p>
-        </header>
+          }
+          lede={`${projects.length} builds across backend, security, DevOps, and product engineering. Select a target to inspect its scope, architecture stages, and source.`}
+        >
+          Operations <em>archive.</em>
+        </EpisodeHeader>
 
         <section className="lx-ops__console">
           <div className="lx-ops__index" role="tablist" aria-label="Project selection" data-reveal>
@@ -118,8 +115,7 @@ export default function Archive() {
                   tabIndex={selected ? 0 : -1}
                   onKeyDown={(event) => keyboardSelect(event, index)}
                   onClick={() => selectProject(project)}
-                  className={`lx-ops__tab ${selected ? "is-active" : ""}`}
-                  style={{ "--c": project.color }}
+                  className={`lx-ops__tab tone-${statusTone(project.status)} ${selected ? "is-active" : ""}`}
                 >
                   {selected && (
                     <motion.span
@@ -146,14 +142,22 @@ export default function Archive() {
                 id={`operation-dossier-${active.code}`}
                 role="tabpanel"
                 aria-labelledby={`tab-${active.code}`}
-                className="lx-dossier"
-                style={{ "--c": active.color }}
+                className={`lx-dossier tone-${statusTone(active.status)}`}
               >
                 <div className="lx-dossier__visual" aria-hidden="true" onPointerMove={trackSpotlight} data-stagger>
                   <i className="lx-card__grid" />
-                  <i className="lx-card__bloom" />
+                  <i className="lx-card__scan" />
+                  <span className="lx-reticle is-locked">
+                    <i />
+                    <i />
+                    <i />
+                    <i />
+                  </span>
+                  <span className="lx-dossier__lock">
+                    <DecodeText text={`TARGET LOCKED // ${active.code}`} />
+                  </span>
                   <span className="lx-dossier__code">{active.code}</span>
-                  <Icon className="lx-dossier__icon" size={96} strokeWidth={0.8} />
+                  <Icon className="lx-dossier__icon" size={88} strokeWidth={0.8} />
                   <span className="lx-dossier__counter">
                     {String(activeIndex + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
                   </span>
@@ -176,7 +180,9 @@ export default function Archive() {
                 </p>
 
                 <blockquote className="lx-dossier__outcome" data-stagger>
-                  <span>Current outcome</span>
+                  <span>
+                    <span lang="ja">作戦報告</span> Mission report
+                  </span>
                   <p>{active.outcome}</p>
                 </blockquote>
 

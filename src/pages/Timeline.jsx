@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import AnimatedPage from "../components/AnimatedPage";
-import SplitReveal from "../components/luxe/SplitReveal";
+import EpisodeHeader from "../components/luxe/EpisodeHeader";
 import { gsap, ScrollTrigger, useGSAP } from "../luxe/gsap";
 import useReducedMotion from "../utils/useMotionPreference";
 import { experiences } from "../content/experience";
@@ -47,19 +47,12 @@ export default function Timeline() {
   return (
     <AnimatedPage>
       <div ref={root} className="lx-page lx-trace">
-        <header className="lx-page-head">
-          <div className="lx-page-head__top" data-reveal>
-            <span className="lx-index">(Experience)</span>
-            <span className="lx-eyebrow">Trace — {experiences.length} roles</span>
-          </div>
-          <SplitReveal as="h1" type="chars" trigger="intro" delay={0.2} className="lx-display">
-            Experience, <em>in context.</em>
-          </SplitReveal>
-          <p className="lx-page-head__lede" data-reveal>
-            Three working contexts across backend, fullstack, and DevOps — from a backend
-            internship to delivering production systems today.
-          </p>
-        </header>
+        <EpisodeHeader
+          eyebrow={`Field records — ${experiences.length} deployments`}
+          lede="Three working contexts across backend, fullstack, and DevOps — from a backend internship to delivering production systems today."
+        >
+          Field <em>records.</em>
+        </EpisodeHeader>
 
         <div className="lx-trace__wrap">
         <div className="lx-trace__rail" aria-hidden="true">
@@ -73,7 +66,7 @@ export default function Timeline() {
               </span>
               <div className="lx-trace__head">
                 <span className="lx-trace__num">{String(index + 1).padStart(2, "0")}</span>
-                <span className="lx-status-chip" style={{ "--c": index === 0 ? "#4ef0a0" : "#8f7cff" }}>
+                <span className={`lx-status-chip tone-${index === 0 ? "go" : "info"}`}>
                   <i />
                   {item.coordinate}
                 </span>

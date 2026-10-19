@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
+import { statusTone } from "../../content/episodes";
 
 // Pointer position feeds CSS variables only; no React render per frame.
 export function trackSpotlight(event) {
@@ -8,40 +9,50 @@ export function trackSpotlight(event) {
   event.currentTarget.style.setProperty("--my", `${event.clientY - rect.top}px`);
 }
 
+// A target dossier: brackets close in on hover, like a reticle acquiring lock.
 export default function ProjectCard({ project, index }) {
   const Icon = project.icon;
+  const tone = statusTone(project.status);
   return (
     <Link
       to={`/archive?project=${project.code}`}
-      className="lx-card"
-      style={{ "--c": project.color }}
-      data-cursor="View"
+      className={`lx-card tone-${tone}`}
+      data-cursor="Lock on"
       onPointerMove={trackSpotlight}
       aria-label={`${project.title} — ${project.type.toLowerCase()}, ${project.status.toLowerCase()}`}
     >
+      <span className="lx-card__bar" aria-hidden="true">
+        <span>{project.id}</span>
+        <span>Target file</span>
+        <span>{String(index + 1).padStart(2, "0")}/07</span>
+      </span>
       <div className="lx-card__visual" aria-hidden="true">
         <i className="lx-card__grid" />
-        <i className="lx-card__bloom" />
+        <i className="lx-card__scan" />
+        <span className="lx-reticle">
+          <i />
+          <i />
+          <i />
+          <i />
+        </span>
         <span className="lx-card__code">{project.code}</span>
-        <Icon className="lx-card__icon" size={72} strokeWidth={0.9} />
+        <Icon className="lx-card__icon" size={56} strokeWidth={1} />
       </div>
       <div className="lx-card__body">
-        <div className="lx-card__meta">
-          <span>{String(index + 1).padStart(2, "0")}</span>
-          <span>{project.type}</span>
+        <div className="lx-card__row">
+          <span className="lx-card__type">{project.type}</span>
+          <span className="lx-card__stamp">{project.status}</span>
         </div>
         <h3>{project.title}</h3>
         <p>{project.summary}</p>
         <div className="lx-card__foot">
-          <span className="lx-status-chip">
-            <i />
-            {project.status}
-          </span>
+          <span className="lx-card__tags">{project.tags.slice(0, 3).join(" · ")}</span>
           <span className="lx-card__go" aria-hidden="true">
             <ArrowUpRight size={18} />
           </span>
         </div>
       </div>
+      <i className="lx-card__hazard" aria-hidden="true" />
     </Link>
   );
 }

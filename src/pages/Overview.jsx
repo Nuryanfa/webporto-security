@@ -8,6 +8,7 @@ import { experiences } from "../content/experience";
 import { profile } from "../content/profile";
 import { projects } from "../content/projects";
 import { capabilities } from "../content/capabilities";
+import { statusTone } from "../content/episodes";
 
 const facts = [
   { label: "Selected projects", value: String(projects.length).padStart(2, "0"), note: "Builds & security labs", count: projects.length },
@@ -51,8 +52,13 @@ export default function Overview() {
         <header className="lx-brief__hero">
           <div className="lx-brief__intro">
             <div className="lx-page-head__top" data-reveal>
-              <span className="lx-index">(Overview)</span>
-              <span className="lx-eyebrow">Technical brief</span>
+              <span className="lx-ep-tag">
+                Episode 05 <span lang="ja">第伍話</span>
+              </span>
+              <span className="lx-eyebrow">
+                <span lang="ja">人事記録</span> Personnel file · technical brief
+              </span>
+              <span className="lx-stamp">Declassified</span>
             </div>
             <SplitReveal as="h1" type="chars" trigger="intro" delay={0.2} className="lx-display lx-display--md">
               {profile.name}
@@ -113,7 +119,7 @@ export default function Overview() {
         <BriefSection index="02" title="Selected engineering builds" id="brief-work">
           <ul className="lx-builds">
             {projects.map((project, index) => (
-              <li key={project.id} className="lx-build" style={{ "--c": project.color }} data-reveal>
+              <li key={project.id} className={`lx-build tone-${statusTone(project.status)}`} data-reveal>
                 <span className="lx-build__idx">{String(index + 1).padStart(2, "0")}</span>
                 <div className="lx-build__main">
                   <div className="lx-build__meta">

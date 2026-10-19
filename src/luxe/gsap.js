@@ -7,6 +7,16 @@ import { useGSAP } from "@gsap/react";
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
   gsap.defaults({ ease: "expo.out", duration: 1.1 });
+
+  // Web fonts (the large Mincho face especially) often arrive after the load
+  // event and reflow the page; re-measure triggers whenever a batch finishes.
+  let pending = 0;
+  const remeasure = () => {
+    cancelAnimationFrame(pending);
+    pending = requestAnimationFrame(() => ScrollTrigger.refresh());
+  };
+  document.fonts?.ready.then(remeasure);
+  document.fonts?.addEventListener?.("loadingdone", remeasure);
 }
 
 export const EASE = {

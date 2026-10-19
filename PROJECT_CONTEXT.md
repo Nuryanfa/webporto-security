@@ -51,6 +51,17 @@ Atas permintaan pemilik, seluruh halaman dirombak ke arah **Cyber-luxe**: identi
 - Konten pilar keahlian dan daftar stack dipindah ke `src/content/capabilities.js`.
 - `scripts/smoke-render.mjs` kini menyetel `ssr.resolve.externalConditions: ["module-sync"]`. Tanpa itu, Node 22 + Vite 5 memuat build CJS `react-router-dom` dan smoke test gagal (masalah ini sudah ada sebelum redesign).
 
+## 3b. Eksplorasi "Cyber-anime" (branch `design/cyber-anime`)
+
+Pemilik menyukai cyber-luxe tetapi menginginkan nuansa **anime + cybersecurity** yang lebih kuat. Referensi yang dipilih adalah Evangelion/NERV, tanpa karakter di hero, dengan kanji yang menonjol dan motif terminal, SOC, glitch, serta mecha HUD. Desain cyber-luxe tetap utuh di branch `design/cyber-luxe`.
+
+- Stylesheet tema ada di `src/anime.css` (menggantikan `luxe.css`; prefix `lx-*` tetap dipakai). Palet: hitam, oranye peringatan `#ff7a00`, merah alert, lime, ungu. Font: Shippori Mincho B1 (kanji dan judul), Barlow Condensed (label HUD), Barlow (body), JetBrains Mono.
+- `src/content/episodes.js`: setiap route adalah "episode" (kanji, bacaan, judul Inggris), urutan "next episode" untuk footer, dan `statusTone()` yang memetakan status proyek ke warna.
+- Komponen baru: `HeroCore` (oktahedron + perisai heksagonal dengan riak benturan; klik memicu benturan), `TriadPanel` (tiga inti yang "voting"), `ThreatMap` (feed SOC **simulasi**, berlabel jelas, IP dari rentang dokumentasi RFC 5737), dan `EpisodeHeader`.
+- Preloader berupa boot terminal → ACCESS GRANTED → title card. Transisi route berupa title card hard-cut lalu terpotong per slice. Kursor berbentuk reticle.
+- Hindari nama, logo, atau aset resmi dari franchise; semua istilah seperti "Triad system" dibuat sendiri.
+- `src/luxe/gsap.js` kini memanggil `ScrollTrigger.refresh()` setelah web font selesai dimuat. Sebelumnya, reveal bisa macet pada kunjungan langsung karena font Mincho mengubah layout setelah posisi trigger dihitung.
+
 ## 4. Stack dan arsitektur kode
 
 - React 18 + Vite 5, React Router untuk route, CSS dan Tailwind utilities.

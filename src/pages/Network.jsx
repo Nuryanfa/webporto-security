@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowUpRight, Github, Linkedin, Mail } from "lucide-react";
 import AnimatedPage from "../components/AnimatedPage";
-import SplitReveal from "../components/luxe/SplitReveal";
+import EpisodeHeader from "../components/luxe/EpisodeHeader";
 import { trackSpotlight } from "../components/luxe/ProjectCard";
 import { profile } from "../content/profile";
 
@@ -57,19 +57,12 @@ export default function Network() {
   return (
     <AnimatedPage>
       <div className="lx-page lx-contact">
-        <header className="lx-page-head">
-          <div className="lx-page-head__top" data-reveal>
-            <span className="lx-index">(Contact)</span>
-            <span className="lx-eyebrow">Channel — open</span>
-          </div>
-          <SplitReveal as="h1" type="chars" trigger="intro" delay={0.2} className="lx-display">
-            Let’s open a <em>channel.</em>
-          </SplitReveal>
-          <p className="lx-page-head__lede" data-reveal>
-            For backend, security, and DevOps opportunities, collaborations, or technical
-            conversations. Pick whichever channel suits you.
-          </p>
-        </header>
+        <EpisodeHeader
+          eyebrow="Comms array — channels open"
+          lede="For backend, security, and DevOps opportunities, collaborations, or technical conversations. Pick whichever channel suits you."
+        >
+          Open a <em>channel.</em>
+        </EpisodeHeader>
 
         <div className="lx-contact__grid">
           <ul className="lx-channels">
