@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { ArrowUpRight, Github, Linkedin, Mail } from "lucide-react";
 import AnimatedPage from "../components/AnimatedPage";
 import EpisodeHeader from "../components/luxe/EpisodeHeader";
@@ -74,7 +74,6 @@ export default function Network() {
                   target={channel.external ? "_blank" : undefined}
                   rel={channel.external ? "noreferrer" : undefined}
                   data-cursor={channel.cursor}
-                  aria-label={`${channel.label}: ${channel.value}. ${channel.note}`}
                 >
                   <span className="lx-channel__idx">{String(index + 1).padStart(2, "0")}</span>
                   <span className="lx-channel__icon" aria-hidden="true">
@@ -82,7 +81,18 @@ export default function Network() {
                   </span>
                   <span className="lx-channel__text">
                     <small>{channel.label}</small>
-                    <b>{channel.value}</b>
+                    <b>
+                      {channel.value.split("/").map((part, i, parts) => (
+                        <Fragment key={part}>
+                          {part}
+                          {i < parts.length - 1 && (
+                            <>
+                              /<wbr />
+                            </>
+                          )}
+                        </Fragment>
+                      ))}
+                    </b>
                   </span>
                   <span className="lx-channel__note">{channel.note}</span>
                   <span className="lx-channel__go" aria-hidden="true">

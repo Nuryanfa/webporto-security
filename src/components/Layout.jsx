@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Lenis from "lenis";
-import { AnimatePresence, motion } from "framer-motion";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { ArrowUpRight, Command, TerminalSquare } from "lucide-react";
+import { ArrowUpRight, Command, TerminalSquare, Volume2, VolumeX } from "lucide-react";
 import useMotionPreference from "../utils/useMotionPreference";
 import MotionControl from "./MotionControl";
-import KeymapModal from "./KeymapModal";
-import TerminalDrawer from "./TerminalDrawer";
+// Overlays are loaded the first time they are opened.
+const KeymapModal = lazy(() => import("./KeymapModal"));
+const TerminalDrawer = lazy(() => import("./TerminalDrawer"));
 import LuxeCursor from "./luxe/LuxeCursor";
 import Preloader from "./luxe/Preloader";
 import { profile } from "../content/profile";
@@ -14,7 +14,10 @@ import { episodes, episodeFor, nextEpisode } from "../content/episodes";
 import { OverlayMotionContext } from "../utils/OverlayMotionContext";
 import { gsap, ScrollTrigger } from "../luxe/gsap";
 import { setLenis } from "../luxe/lenis";
-import { playNavigationChirp } from "../utils/audioTelemetry";
+import usePresence from "../luxe/usePresence";
+import useGlider from "../luxe/useGlider";
+import { clearEmergency, isEmergency, subscribeEmergency, triggerEmergency } from "../luxe/emergency";
+import { isSoundEnabled, playTacticalBlip, setSoundEnabled, subscribeSound } from "../utils/audioTelemetry";
 
 const links = ["/", "/archive", "/timeline", "/network"].map((to) => ({ to, ...episodes[to] }));
 
@@ -78,6 +81,63 @@ function HudFrame() {
   );
 }
 
+const KONAMI = ["arrowup", "arrowup", "arrowdown", "arrowdown", "arrowleft", "arrowright", "arrowleft", "arrowright", "b", "a"];
+
+// Pattern-red drill overlay: Konami code or `breach` in the terminal; Esc or 9s clears it.
+function EmergencyLayer() {
+  const active = useSyncExternalStore(subscribeEmergency, isEmergency, () => false);
+  const [allClear, setAllClear] = useState(false);
+  const wasActive = useRef(false);
+
+  useEffect(() => {
+    let progress = 0;
+    const onKey = (event) => {
+      const tag = document.activeElement?.tagName;
+      if (["INPUT", "TEXTAREA"].includes(tag)) return;
+      if (event.key === "Escape" && isEmergency()) clearEmergency();
+      const key = event.key.toLowerCase();
+      progress = key === KONAMI[progress] ? progress + 1 : key === KONAMI[0] ? 1 : 0;
+      if (progress === KONAMI.length) {
+        progress = 0;
+        triggerEmergency();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  useEffect(() => {
+    if (active) playTacticalBlip(220, 0.35);
+    if (wasActive.current && !active) {
+      wasActive.current = false;
+      setAllClear(true);
+      const id = setTimeout(() => setAllClear(false), 2600);
+      return () => clearTimeout(id);
+    }
+    wasActive.current = active;
+  }, [active]);
+
+  if (!active && !allClear) return null;
+  return (
+    <div className={`lx-alert ${active ? "is-red" : "is-clear"}`} role="status" aria-live="assertive">
+      {active && <i className="lx-alert__frame" aria-hidden="true" />}
+      <div className="lx-alert__banner">
+        {active ? (
+          <>
+            <span lang="ja">警告</span> Emergency · pattern red
+            <small>Drill — simulated · Esc to clear</small>
+          </>
+        ) : (
+          <>
+            <span lang="ja">解除</span> All clear
+            <small>Perimeter restored</small>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function Layout({ children }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -89,8 +149,34 @@ export default function Layout({ children }) {
   const [headerHidden, setHeaderHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const isOverlayActive = isKeymapOpen || isTermOpen || isMenuOpen;
+  const [keymapLoaded, setKeymapLoaded] = useState(false);
+  const [termLoaded, setTermLoaded] = useState(false);
+  useEffect(() => {
+    if (isKeymapOpen) setKeymapLoaded(true);
+    if (isTermOpen) setTermLoaded(true);
+  }, [isKeymapOpen, isTermOpen]);
   const lenisRef = useRef(null);
   const menuButton = useRef(null);
+  const navRef = useRef(null);
+  const soundOn = useSyncExternalStore(subscribeSound, isSoundEnabled, () => false);
+  useGlider(navRef, '[aria-current="page"]', [pathname]);
+  const [menuMounted, menuRef] = usePresence(isMenuOpen, {
+    enter: (el) =>
+      gsap
+        .timeline()
+        .fromTo(el, { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 0.6, ease: "expo.inOut" })
+        .from(el.querySelectorAll(".lx-menu__mask > a"), { yPercent: 110, duration: 0.7, stagger: 0.05, ease: "expo.out" }, 0.2)
+        .from(el.querySelector(".lx-menu__foot"), { autoAlpha: 0, y: 12, duration: 0.5 }, 0.45),
+    exit: (el) =>
+      gsap
+        .timeline()
+        .to(el.querySelectorAll(".lx-menu__mask > a"), { yPercent: -110, duration: 0.3, stagger: 0.02, ease: "power3.in" })
+        .to(el, { clipPath: "inset(0 0 100% 0)", duration: 0.45, ease: "expo.inOut" }, 0.1),
+  });
+  const toggleSound = () => {
+    setSoundEnabled(!soundOn);
+    if (!soundOn) playTacticalBlip(1200, 0.05);
+  };
   const current = episodeFor(pathname);
   const next = nextEpisode(pathname);
 
@@ -182,10 +268,7 @@ export default function Layout({ children }) {
       }
       if (isKeymapOpen || e.metaKey || e.ctrlKey || e.altKey) return;
       const routes = { 1: "/", 2: "/archive", 3: "/timeline", 4: "/network", o: "/overview", O: "/overview" };
-      if (routes[e.key]) {
-        playNavigationChirp();
-        navigate(routes[e.key]);
-      }
+      if (routes[e.key]) navigate(routes[e.key]);
     };
     window.addEventListener("keydown", handleGlobalKey);
     return () => window.removeEventListener("keydown", handleGlobalKey);
@@ -201,11 +284,16 @@ export default function Layout({ children }) {
         </div>
         <div className="lx-grain" aria-hidden="true" />
         <HudFrame />
+        <EmergencyLayer />
 
         <Preloader />
         <LuxeCursor />
-        <KeymapModal isOpen={isKeymapOpen} onClose={() => setIsKeymapOpen(false)} />
-        <TerminalDrawer open={isTermOpen} onClose={() => setIsTermOpen(false)} />
+        <Suspense fallback={null}>
+          {(keymapLoaded || isKeymapOpen) && (
+            <KeymapModal isOpen={isKeymapOpen} onClose={() => setIsKeymapOpen(false)} />
+          )}
+          {(termLoaded || isTermOpen) && <TerminalDrawer open={isTermOpen} onClose={() => setIsTermOpen(false)} />}
+        </Suspense>
 
         <a href="#main-content" className="skip-link">
           Skip to content
@@ -225,24 +313,14 @@ export default function Layout({ children }) {
             </span>
           </Link>
 
-          <nav aria-label="Main" className="lx-nav">
+          <nav ref={navRef} aria-label="Main" className="lx-nav">
+            <span className="lx-glider lx-nav__pill" aria-hidden="true" />
             {links.map(({ to, label, kanji, no }) => (
               <NavLink to={to} end key={to} title={`${label} — press ${Number(no)}`}>
-                {({ isActive }) => (
-                  <>
-                    {isActive && (
-                      <motion.span
-                        className="lx-nav__pill"
-                        layoutId="lx-nav-pill"
-                        transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 420, damping: 36 }}
-                      />
-                    )}
-                    <span className="lx-nav__kanji" lang="ja">
-                      {kanji}
-                    </span>
-                    <span className="lx-nav__text">{label}</span>
-                  </>
-                )}
+                <span className="lx-nav__kanji" lang="ja">
+                  {kanji}
+                </span>
+                <span className="lx-nav__text">{label}</span>
               </NavLink>
             ))}
           </nav>
@@ -251,6 +329,16 @@ export default function Layout({ children }) {
             <span className="lx-header__status" title="Local time in Bandung">
               <i /> SYS nominal · {time}
             </span>
+            <button
+              type="button"
+              onClick={toggleSound}
+              className="lx-icon-btn"
+              aria-pressed={soundOn}
+              aria-label={soundOn ? "Mute UI sound" : "Enable UI sound"}
+              title="UI sound"
+            >
+              {soundOn ? <Volume2 size={15} /> : <VolumeX size={15} />}
+            </button>
             <button
               type="button"
               onClick={() => setIsKeymapOpen(true)}
@@ -279,52 +367,30 @@ export default function Layout({ children }) {
           </div>
         </header>
 
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div
-              id="lx-menu"
-              className="lx-menu"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Menu"
-              initial={{ clipPath: "inset(0 0 100% 0)" }}
-              animate={{ clipPath: "inset(0 0 0% 0)" }}
-              exit={{
-                clipPath: "inset(0 0 100% 0)",
-                transition: { duration: 0.45, delay: 0.1, ease: [0.76, 0, 0.24, 1] },
-              }}
-              transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
-            >
-              <span className="lx-menu__stripe" aria-hidden="true" />
-              <nav aria-label="Menu" className="lx-menu__nav">
-                {[...links, { to: "/overview", ...episodes["/overview"] }].map(({ to, label, kanji, no }, index) => (
-                  <motion.div
-                    key={to}
-                    className="lx-menu__mask"
-                    initial={{ y: "110%" }}
-                    animate={{ y: "0%" }}
-                    exit={{ y: "110%", transition: { duration: 0.3, ease: [0.7, 0, 0.84, 0] } }}
-                    transition={{ duration: 0.7, delay: 0.12 + index * 0.05, ease: [0.16, 1, 0.3, 1] }}
-                  >
-                    <NavLink to={to} end onClick={() => setIsMenuOpen(false)}>
-                      <small>EP.{no}</small>
-                      <span lang="ja">{kanji}</span>
-                      <em>{label}</em>
-                    </NavLink>
-                  </motion.div>
-                ))}
-              </nav>
-              <div className="lx-menu__foot">
-                {socials.map(({ href, label }) => (
-                  <a key={label} href={href} target="_blank" rel="noreferrer">
-                    {label} ↗
-                  </a>
-                ))}
-                <span>Bandung · {time}</span>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {menuMounted && (
+          <div ref={menuRef} id="lx-menu" className="lx-menu" role="dialog" aria-modal="true" aria-label="Menu">
+            <span className="lx-menu__stripe" aria-hidden="true" />
+            <nav aria-label="Menu" className="lx-menu__nav">
+              {[...links, { to: "/overview", ...episodes["/overview"] }].map(({ to, label, kanji, no }) => (
+                <div key={to} className="lx-menu__mask">
+                  <NavLink to={to} end onClick={() => setIsMenuOpen(false)}>
+                    <small>EP.{no}</small>
+                    <span lang="ja">{kanji}</span>
+                    <em>{label}</em>
+                  </NavLink>
+                </div>
+              ))}
+            </nav>
+            <div className="lx-menu__foot">
+              {socials.map(({ href, label }) => (
+                <a key={label} href={href} target="_blank" rel="noreferrer">
+                  {label} ↗
+                </a>
+              ))}
+              <span>Bandung · {time}</span>
+            </div>
+          </div>
+        )}
 
         <main id="main-content" className="lx-main" tabIndex={-1}>
           {children}

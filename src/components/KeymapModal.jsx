@@ -1,20 +1,10 @@
-import { useEffect, useState, useSyncExternalStore } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate, useLocation } from "react-router-dom";
-import {
-  Command,
-  X,
-  Volume2,
-  VolumeX,
-  SlidersHorizontal,
-  FolderKanban,
-  CircleDot,
-  Route,
-  Radio,
-  FileText,
-  Printer,
-  CornerDownLeft,
-} from "lucide-react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useNavigate } from "react-router-dom";
+import { Command, X, Volume2, VolumeX, SlidersHorizontal, Printer, Siren } from "lucide-react";
+import { gsap } from "../luxe/gsap";
+import usePresence from "../luxe/usePresence";
+import { episodes } from "../content/episodes";
+import { triggerEmergency } from "../luxe/emergency";
 import {
   isSoundEnabled,
   setSoundEnabled,
@@ -22,274 +12,143 @@ import {
   playTacticalBlip,
   playNavigationChirp,
 } from "../utils/audioTelemetry";
-import {
-  getPreferences,
-  setPreferences,
-  subscribePreferences,
-} from "../utils/experiencePreferences";
+import { getPreferences, setPreferences, subscribePreferences } from "../utils/experiencePreferences";
+
+const ROUTE_KEYS = [
+  ["1", "/"],
+  ["2", "/archive"],
+  ["3", "/timeline"],
+  ["4", "/network"],
+  ["O", "/overview"],
+];
+const MODES = ["system", "full", "reduced"];
 
 export default function KeymapModal({ isOpen, onClose }) {
   const navigate = useNavigate();
-  const location = useLocation();
   const soundActive = useSyncExternalStore(subscribeSound, isSoundEnabled, isSoundEnabled);
   const preferences = useSyncExternalStore(subscribePreferences, getPreferences, getPreferences);
+  const closeButton = useRef(null);
+  const [mounted, root] = usePresence(isOpen, {
+    enter: (el) =>
+      gsap
+        .timeline()
+        .from(el.querySelector(".lx-keymap__backdrop"), { autoAlpha: 0, duration: 0.25 })
+        .from(el.querySelector(".lx-keymap__panel"), { y: 24, autoAlpha: 0, duration: 0.5, ease: "expo.out" }, 0)
+        .from(el.querySelectorAll(".lx-keymap__row"), { x: -12, autoAlpha: 0, duration: 0.4, stagger: 0.03 }, 0.1),
+    exit: (el) =>
+      gsap
+        .timeline()
+        .to(el.querySelector(".lx-keymap__panel"), { y: 16, autoAlpha: 0, duration: 0.2, ease: "power2.in" })
+        .to(el.querySelector(".lx-keymap__backdrop"), { autoAlpha: 0, duration: 0.2 }, 0),
+  });
+
+  const go = (to) => {
+    navigate(to);
+    onClose();
+  };
+  const toggleSound = () => {
+    const next = !soundActive;
+    setSoundEnabled(next);
+    if (next) playTacticalBlip(1200, 0.05);
+  };
+  const cycleMotion = () => {
+    const next = MODES[(MODES.indexOf(preferences.motion) + 1) % MODES.length];
+    setPreferences({ motion: next });
+    playTacticalBlip(750, 0.04);
+  };
+  const drill = () => {
+    onClose();
+    triggerEmergency();
+  };
 
   useEffect(() => {
     if (!isOpen) return;
-
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
-        onClose();
-        return;
+    const previous = document.activeElement;
+    closeButton.current?.focus();
+    const onKey = (event) => {
+      const key = event.key.toLowerCase();
+      if (key === "escape") return onClose();
+      const route = ROUTE_KEYS.find(([k]) => k.toLowerCase() === key);
+      if (route) {
+        playNavigationChirp();
+        return go(route[1]);
       }
-      if (["1", "2", "3", "4", "o", "O", "s", "S", "m", "M", "p", "P"].includes(event.key)) {
-        if (event.key === "1") {
-          playNavigationChirp();
-          navigate("/");
-          onClose();
-        } else if (event.key === "2") {
-          playNavigationChirp();
-          navigate("/archive");
-          onClose();
-        } else if (event.key === "3") {
-          playNavigationChirp();
-          navigate("/timeline");
-          onClose();
-        } else if (event.key === "4") {
-          playNavigationChirp();
-          navigate("/network");
-          onClose();
-        } else if (event.key.toLowerCase() === "o") {
-          playNavigationChirp();
-          navigate("/overview");
-          onClose();
-        } else if (event.key.toLowerCase() === "s") {
-          const next = !soundActive;
-          setSoundEnabled(next);
-          if (next) playTacticalBlip(1200, 0.05);
-        } else if (event.key.toLowerCase() === "m") {
-          const modes = ["system", "full", "reduced"];
-          const currIdx = modes.indexOf(preferences.motion);
-          const nextMode = modes[(currIdx + 1) % modes.length];
-          setPreferences({ motion: nextMode });
-          playTacticalBlip(750, 0.04);
-        } else if (event.key.toLowerCase() === "p") {
-          window.print();
-        }
-      }
+      if (key === "s") toggleSound();
+      else if (key === "m") cycleMotion();
+      else if (key === "p") window.print();
     };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      previous?.focus?.();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, soundActive, preferences]);
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose, navigate, soundActive, preferences]);
+  if (!mounted) return null;
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={onClose}
-            className="absolute inset-0 bg-[#060b10]/80 backdrop-blur-md"
-            aria-hidden="true"
-          />
+    <div ref={root} className="lx-keymap">
+      <div className="lx-keymap__backdrop" onClick={onClose} aria-hidden="true" />
+      <div className="lx-keymap__panel" role="dialog" aria-modal="true" aria-labelledby="lx-keymap-title">
+        <header className="lx-keymap__head">
+          <span id="lx-keymap-title">
+            <Command size={15} /> Command map <span lang="ja">操作一覧</span>
+          </span>
+          <button ref={closeButton} type="button" onClick={onClose} aria-label="Close command map">
+            <X size={16} />
+          </button>
+        </header>
 
-          {/* Modal Card */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="tactical-hud-title"
-            className="relative w-full max-w-xl bg-[#091117] border border-resonance/40 rounded-[2px] p-6 shadow-2xl shadow-cyan-950/40 text-surface-on overflow-hidden"
-          >
-            {/* Tactical HUD Corner Reticles */}
-            <span className="hud-corner hud-tl" />
-            <span className="hud-corner hud-tr" />
-            <span className="hud-corner hud-bl" />
-            <span className="hud-corner hud-br" />
-
-            {/* Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
-              <div className="flex items-center gap-2">
-                <Command size={18} className="text-resonance" />
-                <h2 id="tactical-hud-title" className="font-mono text-sm tracking-wider text-white">
-                  TACTICAL COMMAND INTERFACE // HOTKEYS
-                </h2>
-              </div>
-              <button
-                type="button"
-                onClick={onClose}
-                className="p-1 text-muted hover:text-white hover:bg-white/10 rounded transition-colors"
-                aria-label="Close command interface"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            {/* Quick Navigation Commands */}
-            <div className="space-y-4 mb-6">
-              <span className="font-mono text-[10px] text-resonance/80 tracking-widest block uppercase">
-                01 // Direct Route Relays
-              </span>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <button
-                  type="button"
-                  onClick={() => {
-                    playNavigationChirp();
-                    navigate("/");
-                    onClose();
-                  }}
-                  className="flex items-center justify-between p-2.5 rounded bg-white/[0.02] border border-white/[0.06] hover:border-resonance/50 hover:bg-resonance/[0.05] transition-colors text-left"
-                >
-                  <span className="flex items-center gap-2">
-                    <CircleDot size={14} className="text-resonance" />
-                    <span>Nexus Hub (Home)</span>
-                  </span>
-                  <kbd className="px-1.5 py-0.5 rounded bg-white/10 font-mono text-[10px] text-white">1</kbd>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    playNavigationChirp();
-                    navigate("/archive");
-                    onClose();
-                  }}
-                  className="flex items-center justify-between p-2.5 rounded bg-white/[0.02] border border-white/[0.06] hover:border-resonance/50 hover:bg-resonance/[0.05] transition-colors text-left"
-                >
-                  <span className="flex items-center gap-2">
-                    <FolderKanban size={14} className="text-resonance" />
-                    <span>Operations Matrix</span>
-                  </span>
-                  <kbd className="px-1.5 py-0.5 rounded bg-white/10 font-mono text-[10px] text-white">2</kbd>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    playNavigationChirp();
-                    navigate("/timeline");
-                    onClose();
-                  }}
-                  className="flex items-center justify-between p-2.5 rounded bg-white/[0.02] border border-white/[0.06] hover:border-resonance/50 hover:bg-resonance/[0.05] transition-colors text-left"
-                >
-                  <span className="flex items-center gap-2">
-                    <Route size={14} className="text-resonance" />
-                    <span>Chrono Trace</span>
-                  </span>
-                  <kbd className="px-1.5 py-0.5 rounded bg-white/10 font-mono text-[10px] text-white">3</kbd>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    playNavigationChirp();
-                    navigate("/network");
-                    onClose();
-                  }}
-                  className="flex items-center justify-between p-2.5 rounded bg-white/[0.02] border border-white/[0.06] hover:border-resonance/50 hover:bg-resonance/[0.05] transition-colors text-left"
-                >
-                  <span className="flex items-center gap-2">
-                    <Radio size={14} className="text-resonance" />
-                    <span>Channel / Comms</span>
-                  </span>
-                  <kbd className="px-1.5 py-0.5 rounded bg-white/10 font-mono text-[10px] text-white">4</kbd>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    playNavigationChirp();
-                    navigate("/overview");
-                    onClose();
-                  }}
-                  className="col-span-2 flex items-center justify-between p-2.5 rounded bg-white/[0.02] border border-resonance/30 hover:border-resonance hover:bg-resonance/[0.08] transition-colors text-left"
-                >
-                  <span className="flex items-center gap-2 text-resonance">
-                    <FileText size={14} />
-                    <span className="font-medium">Executive Technical Dossier</span>
-                  </span>
-                  <kbd className="px-1.5 py-0.5 rounded bg-resonance/20 text-resonance font-mono text-[10px]">O</kbd>
-                </button>
-              </div>
-            </div>
-
-            {/* In-Page Action Hotkeys */}
-            <div className="space-y-3 mb-6">
-              <span className="font-mono text-[10px] text-resonance/80 tracking-widest block uppercase">
-                02 // Tactical Controls & Toggles
-              </span>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="flex items-center justify-between p-2 rounded bg-white/[0.015] border border-white/[0.05]">
-                  <span className="text-muted">Target Cycle (Ops)</span>
-                  <div className="flex gap-1 font-mono text-[10px]">
-                    <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-white">J</kbd>
-                    <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-white">K</kbd>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between p-2 rounded bg-white/[0.015] border border-white/[0.05]">
-                  <span className="text-muted">Print Dossier</span>
-                  <kbd className="px-1.5 py-0.5 rounded bg-white/10 font-mono text-[10px] text-white">P</kbd>
-                </div>
-
-                {/* Sound Toggle */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    const next = !soundActive;
-                    setSoundEnabled(next);
-                    if (next) playTacticalBlip(1200, 0.05);
-                  }}
-                  className="flex items-center justify-between p-2 rounded bg-white/[0.015] border border-white/[0.05] hover:border-white/20 transition-colors text-left"
-                >
-                  <span className="flex items-center gap-2 text-white">
-                    {soundActive ? <Volume2 size={13} className="text-resonance" /> : <VolumeX size={13} className="text-muted" />}
-                    <span>Audio Telemetry</span>
-                  </span>
-                  <span className="font-mono text-[10px] text-resonance">
-                    [{soundActive ? "ON" : "OFF"}] <kbd className="ml-1 px-1 py-0.5 bg-white/10 rounded text-white">S</kbd>
-                  </span>
-                </button>
-
-                {/* Motion Toggle */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    const modes = ["system", "full", "reduced"];
-                    const currIdx = modes.indexOf(preferences.motion);
-                    const nextMode = modes[(currIdx + 1) % modes.length];
-                    setPreferences({ motion: nextMode });
-                    playTacticalBlip(750, 0.04);
-                  }}
-                  className="flex items-center justify-between p-2 rounded bg-white/[0.015] border border-white/[0.05] hover:border-white/20 transition-colors text-left"
-                >
-                  <span className="flex items-center gap-2 text-white">
-                    <SlidersHorizontal size={13} className="text-resonance" />
-                    <span>Motion Mode</span>
-                  </span>
-                  <span className="font-mono text-[10px] text-resonance uppercase">
-                    [{preferences.motion}] <kbd className="ml-1 px-1 py-0.5 bg-white/10 rounded text-white">M</kbd>
-                  </span>
-                </button>
-              </div>
-            </div>
-
-            {/* Footer Notice */}
-            <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between font-mono text-[9px] text-muted">
-              <span>PRESS [ESC] OR [?] TO TOGGLE HUD</span>
-              <span className="text-resonance/70">PROTOCOL: RONIN_07</span>
-            </div>
-          </motion.div>
+        <span className="lx-keymap__label">Episodes</span>
+        <div className="lx-keymap__grid">
+          {ROUTE_KEYS.map(([key, to]) => (
+            <button key={to} type="button" className="lx-keymap__row" onClick={() => go(to)}>
+              <span lang="ja">{episodes[to].kanji}</span>
+              <span>{episodes[to].label}</span>
+              <kbd>{key}</kbd>
+            </button>
+          ))}
+          <button type="button" className="lx-keymap__row is-alert" onClick={drill}>
+            <Siren size={15} />
+            <span>Pattern red drill</span>
+            <kbd>↑↑↓↓</kbd>
+          </button>
         </div>
-      )}
-    </AnimatePresence>
+
+        <span className="lx-keymap__label">Controls</span>
+        <div className="lx-keymap__grid">
+          <div className="lx-keymap__row is-static">
+            <span>Cycle targets (Work)</span>
+            <kbd>J</kbd>
+            <kbd>K</kbd>
+          </div>
+          <button type="button" className="lx-keymap__row" onClick={() => window.print()}>
+            <Printer size={15} />
+            <span>Print brief</span>
+            <kbd>P</kbd>
+          </button>
+          <button type="button" className="lx-keymap__row" onClick={toggleSound} aria-pressed={soundActive}>
+            {soundActive ? <Volume2 size={15} /> : <VolumeX size={15} />}
+            <span>UI sound · {soundActive ? "on" : "off"}</span>
+            <kbd>S</kbd>
+          </button>
+          <button type="button" className="lx-keymap__row" onClick={cycleMotion}>
+            <SlidersHorizontal size={15} />
+            <span>Motion · {preferences.motion}</span>
+            <kbd>M</kbd>
+          </button>
+          <div className="lx-keymap__row is-static">
+            <span>Terminal</span>
+            <kbd>`</kbd>
+          </div>
+        </div>
+
+        <footer className="lx-keymap__foot">
+          <span>Esc or ? to close</span>
+          <span>Defense division · NY-07</span>
+        </footer>
+      </div>
+    </div>
   );
 }

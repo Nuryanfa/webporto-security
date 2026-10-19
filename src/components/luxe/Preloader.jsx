@@ -8,7 +8,6 @@ const SEEN_KEY = "lx-intro-seen";
 const BOOT = [
   ["TRIAD DEFENSE SYSTEM", "BOOT"],
   ["loading kernel modules", "OK"],
-  ["mounting /srv/backend", "OK"],
   ["applying firewall ruleset", "OK"],
   ["starting intrusion detection", "OK"],
   ["verifying operator identity", "OK"],
@@ -22,7 +21,10 @@ function alreadySeen() {
   }
 }
 
-// First visit per session: terminal boot → ACCESS GRANTED → title card → open.
+/**
+ * First visit per session: terminal boot → ACCESS GRANTED → title card → open.
+ * About 2s; any key, click or tap fast-forwards it.
+ */
 export default function Preloader() {
   const reduced = useMotionPreference();
   const [visible, setVisible] = useState(() => !alreadySeen());
@@ -35,8 +37,9 @@ export default function Preloader() {
       return;
     }
     lockScroll(true);
+    let tl;
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
+      tl = gsap.timeline({
         onComplete: () => {
           try {
             sessionStorage.setItem(SEEN_KEY, "1");
@@ -44,26 +47,32 @@ export default function Preloader() {
           setVisible(false);
         },
       });
-      // Lines print in quick bursts, the way a real boot log arrives.
-      tl.from(".lx-pre__line", { autoAlpha: 0, duration: 0.01, stagger: 0.13 })
-        .from(".lx-pre__ok", { autoAlpha: 0, duration: 0.01, stagger: 0.13 }, 0.1)
-        .fromTo(".lx-pre__bar i", { scaleX: 0 }, { scaleX: 1, duration: 0.85, ease: "steps(12)" }, 0)
-        .set(".lx-pre__term", { autoAlpha: 0 }, "+=0.12")
+      tl.from(".lx-pre__line", { autoAlpha: 0, duration: 0.01, stagger: 0.09 })
+        .from(".lx-pre__ok", { autoAlpha: 0, duration: 0.01, stagger: 0.09 }, 0.06)
+        .fromTo(".lx-pre__bar i", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "steps(10)" }, 0)
+        .set(".lx-pre__term", { autoAlpha: 0 }, "+=0.08")
         .set(".lx-pre__granted", { autoAlpha: 1 })
-        .fromTo(".lx-pre__granted", { scaleY: 0.02 }, { scaleY: 1, duration: 0.18, ease: "power4.out" })
-        .to(".lx-pre__granted", { autoAlpha: 0, duration: 0.05, repeat: 3, yoyo: true }, "+=0.22")
+        .fromTo(".lx-pre__granted", { scaleY: 0.02 }, { scaleY: 1, duration: 0.16, ease: "power4.out" })
+        .to(".lx-pre__granted", { autoAlpha: 0, duration: 0.04, repeat: 3, yoyo: true }, "+=0.14")
         .set(".lx-pre__granted", { autoAlpha: 0 })
         .set(".lx-pre__card", { autoAlpha: 1 })
-        .from(".lx-pre__card > *", { autoAlpha: 0, duration: 0.01, stagger: 0.09 })
+        .from(".lx-pre__card .lx-pre__mask > *", { yPercent: 110, duration: 0.5, stagger: 0.05, ease: "expo.out" })
         .add(() => {
           lockScroll(false);
           markIntroDone();
-        }, "+=0.45")
-        .to(".lx-pre__panel", { yPercent: (i) => (i ? 100 : -100), duration: 0.85, ease: "expo.inOut" }, "<")
-        .to(".lx-pre__card", { autoAlpha: 0, duration: 0.2 }, "<");
+        }, "+=0.2")
+        .to(".lx-pre__card", { autoAlpha: 0, duration: 0.25 }, "<")
+        .to(".lx-pre__panel", { yPercent: (i) => (i ? 100 : -100), duration: 0.8, ease: "expo.inOut" }, "<");
     }, root);
+
+    // Any input fast-forwards; every callback still fires in order.
+    const skip = () => tl?.timeScale(7);
+    window.addEventListener("keydown", skip);
+    window.addEventListener("pointerdown", skip);
     // No markIntroDone here: StrictMode replays this effect and would release the hero early.
     return () => {
+      window.removeEventListener("keydown", skip);
+      window.removeEventListener("pointerdown", skip);
       ctx.revert();
       lockScroll(false);
     };
@@ -91,12 +100,21 @@ export default function Preloader() {
         <b>Access granted</b>
       </div>
       <div className="lx-pre__card">
-        <span className="lx-title-card__ep">Episode 01</span>
-        <span className="lx-title-card__kanji" lang="ja">
-          起動
+        <span className="lx-pre__mask">
+          <span className="lx-title-card__ep">
+            Episode 01 <span lang="ja">第壱話</span>
+          </span>
         </span>
-        <span className="lx-title-card__en">System Online</span>
+        <span className="lx-pre__mask">
+          <span className="lx-title-card__kanji" lang="ja">
+            起動
+          </span>
+        </span>
+        <span className="lx-pre__mask">
+          <span className="lx-title-card__en">System Online</span>
+        </span>
       </div>
+      <span className="lx-pre__skip">Press any key to skip</span>
     </div>
   );
 }

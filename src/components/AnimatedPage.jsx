@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { gsap, ScrollTrigger, useGSAP } from "../luxe/gsap";
+import { gsap, ScrollTrigger, useGSAP, onStageReady } from "../luxe/gsap";
 import useReducedMotion from "../utils/useMotionPreference";
 
 /**
@@ -14,12 +14,15 @@ export default function AnimatedPage({ children, className = "" }) {
   const reduced = useReducedMotion();
 
   useGSAP(
-    () => {
+    (_, contextSafe) => {
       if (reduced) return;
       const reveal = gsap.utils.toArray("[data-reveal]", root.current);
-      if (reveal.length) {
-        gsap.set(reveal, { autoAlpha: 0, y: 48 });
-        ScrollTrigger.batch(reveal, {
+      // Hide now, but only start revealing once the curtain/preloader is out of the way.
+      if (reveal.length) gsap.set(reveal, { autoAlpha: 0, y: 48 });
+      const cancelStage = onStageReady(
+        contextSafe(() => {
+          if (!reveal.length) return;
+          ScrollTrigger.batch(reveal, {
           start: "top 90%",
           once: true,
           onEnter: (batch) =>
@@ -31,8 +34,9 @@ export default function AnimatedPage({ children, className = "" }) {
               stagger: 0.09,
               overwrite: true,
             }),
-        });
-      }
+          });
+        }),
+      );
 
       gsap.utils.toArray("[data-parallax]", root.current).forEach((el) => {
         const amount = Number(el.dataset.parallax) || 12;
@@ -74,6 +78,7 @@ export default function AnimatedPage({ children, className = "" }) {
           },
         );
       });
+      return cancelStage;
     },
     { scope: root, dependencies: [reduced] },
   );

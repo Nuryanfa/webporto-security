@@ -53,3 +53,54 @@ export const stack = [
   "MITRE ATT&CK",
   "React",
 ];
+
+/*
+ * Loadout: tools grouped by slot. `match` lists the exact tags in projects.js /
+ * experience.js that count as evidence, so every link shown is backed by content.
+ */
+export const loadout = [
+  {
+    slot: "Languages & frameworks",
+    kanji: "言語",
+    tools: [
+      { name: "Go", match: ["Go", "Golang"] },
+      { name: "Python", match: ["Python"] },
+      { name: "React", match: ["React"] },
+      { name: "Node.js", match: ["Node.js", "Express"] },
+      { name: "FastAPI", match: ["FastAPI"] },
+    ],
+  },
+  {
+    slot: "Infrastructure & data",
+    kanji: "基盤",
+    tools: [
+      { name: "Docker", match: ["Docker"] },
+      { name: "PostgreSQL", match: ["PostgreSQL"] },
+      { name: "Redis", match: ["Redis"] },
+      { name: "MongoDB", match: ["MongoDB"] },
+      { name: "gRPC", match: ["gRPC"] },
+    ],
+  },
+  {
+    slot: "Security",
+    kanji: "防衛",
+    tools: [
+      { name: "Wazuh", match: ["Wazuh"] },
+      { name: "Suricata", match: ["Suricata"] },
+      { name: "MikroTik", match: ["MikroTik"] },
+      { name: "MITRE ATT&CK", match: ["MITRE ATT&CK"] },
+      { name: "Cloud KMS · X.509", match: ["Cloud KMS", "X.509"] },
+    ],
+  },
+  {
+    slot: "Delivery & observability",
+    kanji: "運用",
+    tools: [
+      { name: "CI/CD", match: ["CI/CD", "GitLab CI/CD"] },
+      { name: "Prometheus", match: ["Prometheus"] },
+      { name: "OpenTelemetry", match: ["OpenTelemetry"] },
+      { name: "Testing · SQA", match: ["Testing", "SQA"] },
+      { name: "Server setup", match: ["Server setup", "Production delivery"] },
+    ],
+  },
+];

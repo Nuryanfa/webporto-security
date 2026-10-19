@@ -13,12 +13,13 @@ export default function ScrollWords({ as: Tag = "p", children, className = "" })
       const split = SplitText.create(ref.current, {
         type: "words",
         autoSplit: true,
+        aria: "none",
         onSplit(self) {
           return gsap.fromTo(
             self.words,
-            { opacity: 0.14 },
+            { color: "#8a8279" },
             {
-              opacity: 1,
+              color: "#f3eee6",
               ease: "none",
               stagger: 0.08,
               scrollTrigger: {

@@ -9,9 +9,21 @@ export function trackSpotlight(event) {
   event.currentTarget.style.setProperty("--my", `${event.clientY - rect.top}px`);
 }
 
-// A target dossier: brackets close in on hover, like a reticle acquiring lock.
+// Targeting scope: corner brackets close in on the icon, never over text.
+export function Scope({ icon: Icon, size = 44, locked = false }) {
+  return (
+    <span className={`lx-scope ${locked ? "is-locked" : ""}`} aria-hidden="true">
+      <i />
+      <i />
+      <i />
+      <i />
+      <span className="lx-scope__ring" />
+      <Icon className="lx-scope__icon" size={size} strokeWidth={1.1} />
+    </span>
+  );
+}
+
 export default function ProjectCard({ project, index }) {
-  const Icon = project.icon;
   const tone = statusTone(project.status);
   return (
     <Link
@@ -19,7 +31,6 @@ export default function ProjectCard({ project, index }) {
       className={`lx-card tone-${tone}`}
       data-cursor="Lock on"
       onPointerMove={trackSpotlight}
-      aria-label={`${project.title} — ${project.type.toLowerCase()}, ${project.status.toLowerCase()}`}
     >
       <span className="lx-card__bar" aria-hidden="true">
         <span>{project.id}</span>
@@ -29,14 +40,11 @@ export default function ProjectCard({ project, index }) {
       <div className="lx-card__visual" aria-hidden="true">
         <i className="lx-card__grid" />
         <i className="lx-card__scan" />
-        <span className="lx-reticle">
-          <i />
-          <i />
-          <i />
-          <i />
+        <span className="lx-card__id">
+          <small>Codename</small>
+          <span className="lx-card__code">{project.code}</span>
         </span>
-        <span className="lx-card__code">{project.code}</span>
-        <Icon className="lx-card__icon" size={56} strokeWidth={1} />
+        <Scope icon={project.icon} />
       </div>
       <div className="lx-card__body">
         <div className="lx-card__row">

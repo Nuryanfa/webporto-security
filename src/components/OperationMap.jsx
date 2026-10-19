@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { animate, createMotionPath, createScope } from "animejs";
-import { motion } from "framer-motion";
 import { GitBranch } from "lucide-react";
+import { gsap } from "../luxe/gsap";
+import useGlider from "../luxe/useGlider";
 import { projectScenes } from "../content/projectScenes";
 import useReducedMotion from "../utils/useMotionPreference";
 
@@ -10,69 +10,63 @@ export default function OperationMap({ code }) {
   const [selected, setSelected] = useState(0);
   const reduced = useReducedMotion();
   const root = useRef(null);
-  const [visible, setVisible] = useState(false);
+  const stageRow = useRef(null);
+  useGlider(stageRow, '[aria-pressed="true"]', [selected, code]);
 
+  // Draw the path once in view, then send two packets along it while visible.
   useEffect(() => {
     if (reduced || !root.current) return;
+    const el = root.current;
+    const path = el.querySelector(".lx-flow__path");
+    const packets = [...el.querySelectorAll(".lx-flow__packet")];
+    const length = path.getTotalLength();
+    gsap.set(path, { strokeDasharray: `${length} ${length}`, strokeDashoffset: length });
+
+    const loops = packets.map((packet, index) => {
+      const progress = { t: 0 };
+      return gsap.to(progress, {
+        t: 1,
+        duration: 4.6,
+        ease: "sine.inOut",
+        repeat: -1,
+        delay: index * 2.3,
+        paused: true,
+        onUpdate: () => {
+          const point = path.getPointAtLength(progress.t * length);
+          packet.setAttribute("cx", point.x);
+          packet.setAttribute("cy", point.y);
+          packet.setAttribute("opacity", Math.sin(progress.t * Math.PI).toFixed(2));
+        },
+      });
+    });
+
+    let drawn = false;
+    let inView = false;
+    const sync = () => {
+      const paused = !inView || document.hidden || !!document.querySelector('[data-ui-overlay="active"]');
+      loops.forEach((loop) => (paused ? loop.pause() : loop.resume()));
+    };
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
+        inView = entry.isIntersecting;
+        if (inView && !drawn) {
+          drawn = true;
+          gsap.to(path, { strokeDashoffset: 0, duration: 1.1, ease: "power3.out" });
         }
+        sync();
       },
       { threshold: 0.15 },
     );
-    observer.observe(root.current);
-    return () => observer.disconnect();
-  }, [reduced]);
-
-  useEffect(() => {
-    if (!visible || reduced || !root.current) return;
-    const path = root.current.querySelector(".lx-flow__path");
-    const length = path.getTotalLength();
-    path.style.strokeDasharray = String(length);
-    path.style.strokeDashoffset = String(length);
-    const packets = [...root.current.querySelectorAll(".lx-flow__packet")];
-    const scope = createScope({ root: root.current }).add(() => {
-      animate(path, { strokeDashoffset: [length, 0], duration: 1100, ease: "out(3)" });
-    });
-    const loops = packets.map((packet, index) =>
-      animate(packet, {
-        ...createMotionPath(path),
-        opacity: [0, 1, 1, 0],
-        duration: 5200,
-        delay: index * 2600 + 1000,
-        loop: true,
-        ease: "inOut(2)",
-      }),
-    );
-    let inViewport = true;
-    const sync = () => {
-      const paused =
-        !inViewport || document.hidden || !!document.querySelector('[data-ui-overlay="active"]');
-      loops.forEach((animation) => (paused ? animation.pause() : animation.resume()));
-    };
-    const visibility = new IntersectionObserver(([entry]) => {
-      inViewport = entry.isIntersecting;
-      sync();
-    });
-    visibility.observe(root.current);
-    const overlay = new MutationObserver(sync);
-    const shell = document.querySelector(".cyber-shell");
-    if (shell) overlay.observe(shell, { attributes: true, attributeFilter: ["data-ui-overlay"] });
+    observer.observe(el);
     document.addEventListener("visibilitychange", sync);
-    sync();
     return () => {
+      observer.disconnect();
       document.removeEventListener("visibilitychange", sync);
-      overlay.disconnect();
-      visibility.disconnect();
-      loops.forEach((animation) => animation.cancel());
-      scope.revert();
-      path.style.removeProperty("stroke-dasharray");
-      path.style.removeProperty("stroke-dashoffset");
+      loops.forEach((loop) => loop.kill());
+      gsap.killTweensOf(path);
+      gsap.set(path, { clearProps: "strokeDasharray,strokeDashoffset" });
     };
-  }, [visible, reduced]);
+  }, [reduced, code]);
 
   if (!stages.length) return null;
   const current = stages[selected];
@@ -94,7 +88,8 @@ export default function OperationMap({ code }) {
             </>
           )}
         </svg>
-        <div className="lx-flow__stages" role="group" aria-label="Inspect a stage">
+        <div ref={stageRow} className="lx-flow__stages" role="group" aria-label="Inspect a stage">
+          <span className="lx-glider lx-flow__glow" aria-hidden="true" />
           {stages.map((stage, index) => (
             <button
               key={stage.title}
@@ -103,14 +98,6 @@ export default function OperationMap({ code }) {
               aria-pressed={selected === index}
               onClick={() => setSelected(index)}
             >
-              {selected === index && (
-                <motion.span
-                  layoutId={`lx-flow-${code}`}
-                  className="lx-flow__glow"
-                  transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 30 }}
-                  aria-hidden="true"
-                />
-              )}
               <span className="lx-flow__node" aria-hidden="true" />
               <small>Stage 0{index + 1}</small>
               <b>{stage.title}</b>

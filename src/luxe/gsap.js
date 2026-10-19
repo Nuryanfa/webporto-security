@@ -19,32 +19,49 @@ if (typeof window !== "undefined") {
   document.fonts?.addEventListener?.("loadingdone", remeasure);
 }
 
-export const EASE = {
-  out: "expo.out",
-  inOut: "expo.inOut",
-  soft: "power3.out",
-};
+/*
+ * "Stage ready" = the intro preloader has finished AND no route curtain is
+ * covering the page. Entrance reveals wait for it so they play in view.
+ * Events are dispatched in a microtask: GSAP runs timeline callbacks inside
+ * the timeline's context, and listeners must not have their tweens adopted
+ * (and later reverted) by the preloader or curtain.
+ */
+const isServer = typeof window === "undefined";
+let introDone = isServer;
+let curtainDown = false;
 
-// The intro preloader hides the first paint; hero reveals wait for it.
-let introDone = typeof window === "undefined";
-export function isIntroDone() {
-  return introDone;
+function stageReady() {
+  return introDone && !curtainDown;
 }
+function announce() {
+  if (stageReady()) queueMicrotask(() => window.dispatchEvent(new Event("lx:stage-ready")));
+}
+
 export function markIntroDone() {
   if (introDone) return;
   introDone = true;
-  // Dispatch outside the caller's stack: GSAP runs timeline callbacks inside the
-  // timeline's context, and listeners must not have their tweens adopted (and later
-  // reverted) by the preloader.
-  queueMicrotask(() => window.dispatchEvent(new Event("lx:intro-done")));
+  announce();
 }
-export function onIntroDone(callback) {
-  if (introDone) {
+export function setCurtain(down) {
+  curtainDown = down;
+  if (!down) announce();
+}
+
+export function onStageReady(callback) {
+  if (stageReady()) {
     callback();
     return () => {};
   }
-  window.addEventListener("lx:intro-done", callback, { once: true });
-  return () => window.removeEventListener("lx:intro-done", callback);
+  const handler = () => {
+    if (!stageReady()) return;
+    window.removeEventListener("lx:stage-ready", handler);
+    callback();
+  };
+  window.addEventListener("lx:stage-ready", handler);
+  return () => window.removeEventListener("lx:stage-ready", handler);
 }
+
+// Backwards-compatible name used by components written before the curtain gate.
+export const onIntroDone = onStageReady;
 
 export { gsap, ScrollTrigger, SplitText, useGSAP };

@@ -9,7 +9,7 @@ import ScrollWords from "../components/luxe/ScrollWords";
 import Marquee from "../components/luxe/Marquee";
 import ProjectCard from "../components/luxe/ProjectCard";
 import TriadPanel from "../components/luxe/TriadPanel";
-import ThreatMap from "../components/luxe/ThreatMap";
+import Loadout from "../components/luxe/Loadout";
 import { gsap, useGSAP, onIntroDone } from "../luxe/gsap";
 import useMotionPreference from "../utils/useMotionPreference";
 import { profile } from "../content/profile";
@@ -19,7 +19,12 @@ import { capabilities, stack } from "../content/capabilities";
 
 const HeroCore = lazy(() => import("../components/luxe/HeroCore"));
 
-function supportsWebGL() {
+function canRenderCore() {
+  const nav = navigator;
+  if (nav.connection?.saveData) return false;
+  if ((nav.deviceMemory && nav.deviceMemory < 4) || (nav.hardwareConcurrency && nav.hardwareConcurrency < 4)) {
+    return false;
+  }
   try {
     const canvas = document.createElement("canvas");
     return Boolean(canvas.getContext("webgl2") || canvas.getContext("webgl"));
@@ -55,14 +60,25 @@ export default function Home() {
   const reduced = useMotionPreference();
   const [webgl, setWebgl] = useState(false);
 
-  // The 3D scene only exists in the browser; server render keeps a CSS core.
-  useEffect(() => setWebgl(supportsWebGL()), []);
+  // The 3D scene only exists in capable browsers; everything else keeps a CSS core.
+  useEffect(() => {
+    // Load the 3D chunk after first render work settles so it never competes with LCP.
+    const start = () => setWebgl(canRenderCore());
+    if ("requestIdleCallback" in window) {
+      const id = window.requestIdleCallback(start, { timeout: 2000 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const id = setTimeout(start, 900);
+    return () => clearTimeout(id);
+  }, []);
 
   useGSAP(
     (_, contextSafe) => {
       if (reduced) return;
       const cancelIntro = onIntroDone(
         contextSafe(() => {
+          // The lede is the LCP element: it only rises, it is never hidden.
+          gsap.from("[data-hero-rise]", { y: 20, duration: 1.1, delay: 0.5, ease: "expo.out" });
           gsap.from("[data-hero-fade]", {
             autoAlpha: 0,
             y: 24,
@@ -71,24 +87,23 @@ export default function Home() {
             delay: 0.45,
             ease: "expo.out",
           });
-          gsap.from(".lx-hero__kanji", { yPercent: 12, autoAlpha: 0, duration: 1.6, ease: "expo.out", delay: 0.2 });
-          gsap.from(".lx-core-wrap", { autoAlpha: 0, scale: 0.6, duration: 2, ease: "expo.out" });
+          gsap.from(".lx-hero__kanji", { yPercent: 8, autoAlpha: 0, duration: 1.4, ease: "expo.out", delay: 0.2 });
+          gsap.from(".lx-core-wrap", { autoAlpha: 0, scale: 0.7, duration: 1.8, ease: "expo.out" });
           gsap.from(".lx-hero__rule", { scaleX: 0, duration: 1.4, ease: "expo.inOut", delay: 0.3 });
         }),
       );
 
       // Hero recedes as the page scrolls away from it.
       const heroScroll = { trigger: ".lx-hero", start: "top top", end: "bottom top", scrub: true };
-      gsap.to(".lx-hero__content", { yPercent: -12, autoAlpha: 0.15, ease: "none", scrollTrigger: heroScroll });
-      gsap.to(".lx-core-wrap", { yPercent: 20, scale: 0.85, ease: "none", scrollTrigger: heroScroll });
-      gsap.to(".lx-hero__kanji", { yPercent: -18, ease: "none", scrollTrigger: heroScroll });
+      gsap.to(".lx-hero__text", { y: -60, autoAlpha: 0.2, ease: "none", scrollTrigger: heroScroll });
+      gsap.to(".lx-hero__visual", { y: 80, autoAlpha: 0.3, ease: "none", scrollTrigger: heroScroll });
 
       // Desktop: operations scroll sideways while the section is pinned.
       const mm = gsap.matchMedia();
       mm.add("(min-width: 1024px)", () => {
         const track = root.current.querySelector(".lx-work__track");
         const distance = () => Math.max(0, track.scrollWidth - window.innerWidth);
-        const slide = gsap.to(track, {
+        gsap.to(track, {
           x: () => -distance(),
           ease: "none",
           scrollTrigger: {
@@ -100,17 +115,6 @@ export default function Home() {
             invalidateOnRefresh: true,
             onUpdate: (self) => gsap.set(".lx-work__progress i", { scaleX: self.progress }),
           },
-        });
-        gsap.utils.toArray(".lx-work .lx-card").forEach((card) => {
-          gsap.fromTo(
-            card.querySelector(".lx-card__code"),
-            { xPercent: 18 },
-            {
-              xPercent: -12,
-              ease: "none",
-              scrollTrigger: { trigger: card, containerAnimation: slide, start: "left right", end: "right left", scrub: true },
-            },
-          );
         });
       });
       return () => {
@@ -126,35 +130,22 @@ export default function Home() {
       <div ref={root} className="lx-home">
         {/* ── Hero ───────────────────────────────────────────── */}
         <section className="lx-hero" aria-labelledby="hero-title">
-          <div className="lx-core-wrap">
-            {webgl ? (
-              <Suspense fallback={<div className="lx-core-fallback" aria-hidden="true" />}>
-                <HeroCore reduced={reduced} />
-              </Suspense>
-            ) : (
-              <div className="lx-core-fallback" aria-hidden="true" />
-            )}
-          </div>
-          <div className="lx-hero__kanji" lang="ja" aria-hidden="true">
-            防衛
+          <div className="lx-hero__meta" data-hero-fade>
+            <span className="lx-ep-tag">
+              Episode 01 <span lang="ja">第壱話</span> · <span lang="ja">起動</span> System online
+            </span>
+            <span className="lx-alert-chip">
+              <i />
+              Open to backend · security · DevOps roles
+            </span>
           </div>
 
-          <div className="lx-hero__content">
-            <div className="lx-hero__meta" data-hero-fade>
-              <span className="lx-ep-tag">
-                Episode 01 <span lang="ja">第壱話</span> · <span lang="ja">起動</span> System online
-              </span>
-              <span className="lx-alert-chip">
-                <i />
-                Open to backend · security · DevOps roles
-              </span>
-            </div>
-
-            <div className="lx-hero__main">
+          <div className="lx-hero__grid">
+            <div className="lx-hero__text">
               <span className="lx-hero__role" data-hero-fade>
                 <DecodeText text="BACKEND // SECURITY // DEVOPS" />
               </span>
-              <h1 id="hero-title" className="lx-hero__title">
+              <h1 id="hero-title" className="lx-hero__title" aria-label={profile.name}>
                 <SplitReveal as="span" type="chars" trigger="intro" stagger={0.03} className="lx-hero__line">
                   Muhamad
                 </SplitReveal>
@@ -170,39 +161,52 @@ export default function Home() {
                 </SplitReveal>
               </h1>
               <i className="lx-hero__rule" aria-hidden="true" />
+              <p className="lx-hero__lede" data-hero-rise>
+                <strong>
+                  {profile.taglineLead} <em>{profile.taglineAccent}</em>
+                </strong>
+                {profile.positioning}
+              </p>
+              <div className="lx-hero__actions" data-hero-fade>
+                <MagneticLink to="/archive" className="lx-btn lx-btn--primary">
+                  <span lang="ja">作戦</span>
+                  <span>Enter operations</span>
+                  <ArrowUpRight size={18} />
+                </MagneticLink>
+                <MagneticLink to="/network" className="lx-btn lx-btn--ghost">
+                  <span lang="ja">通信</span>
+                  <span>Open channel</span>
+                </MagneticLink>
+              </div>
             </div>
 
-            <div className="lx-hero__bottom">
-              <div className="lx-hero__brief" data-hero-fade>
-                <p className="lx-hero__lede">
-                  <strong>
-                    {profile.taglineLead} <em>{profile.taglineAccent}</em>
-                  </strong>
-                  {profile.positioning}
-                </p>
-                <div className="lx-hero__actions">
-                  <MagneticLink to="/archive" className="lx-btn lx-btn--primary">
-                    <span lang="ja">作戦</span>
-                    <span>Enter operations</span>
-                    <ArrowUpRight size={18} />
-                  </MagneticLink>
-                  <MagneticLink to="/network" className="lx-btn lx-btn--ghost">
-                    <span lang="ja">通信</span>
-                    <span>Open channel</span>
-                  </MagneticLink>
+            <div className="lx-hero__visual">
+              <div className="lx-hero__stage">
+                <div className="lx-core-wrap">
+                  {webgl ? (
+                    <Suspense fallback={<div className="lx-core-fallback" aria-hidden="true" />}>
+                      <HeroCore reduced={reduced} />
+                    </Suspense>
+                  ) : (
+                    <div className="lx-core-fallback" aria-hidden="true" />
+                  )}
                 </div>
+                <span className="lx-hero__kanji" lang="ja" aria-hidden="true">
+                  防衛
+                </span>
               </div>
-              <div data-hero-fade>
+              <div className="lx-hero__triad" data-hero-fade>
                 <TriadPanel />
               </div>
             </div>
+          </div>
 
-            <div className="lx-hero__foot" data-hero-fade>
-              <span className="lx-scroll-cue">
-                <ArrowDown size={14} /> Scroll to engage
-              </span>
-              <span>Bandung, ID — UTC+7</span>
-            </div>
+          <div className="lx-hero__foot" data-hero-fade>
+            <span className="lx-scroll-cue">
+              <ArrowDown size={14} /> Scroll to engage
+            </span>
+            <span>Click anywhere to test the barrier</span>
+            <span>Bandung, ID — UTC+7</span>
           </div>
         </section>
 
@@ -274,21 +278,19 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── Threat telemetry ──────────────────────────────── */}
-        <section className="lx-section lx-soc" aria-labelledby="soc-title">
-          <SectionHead index="03" kanji="脅威" label="Threat telemetry" />
-          <div className="lx-soc__head">
-            <SplitReveal as="h2" id="soc-title" className="lx-h2">
-              The perimeter <em>holds.</em>
+        {/* ── Loadout ───────────────────────────────────────── */}
+        <section className="lx-section lx-gear" aria-labelledby="gear-title">
+          <SectionHead index="03" kanji="装備" label="Loadout" />
+          <div className="lx-gear__head">
+            <SplitReveal as="h2" id="gear-title" className="lx-h2">
+              Equipped <em>loadout.</em>
             </SplitReveal>
             <p data-reveal>
-              A stylised view of the work: probes arrive, the barrier absorbs them, and every event
-              is logged. The feed below is a simulation — the discipline behind it is real.
+              The tools behind the work, grouped by slot. Select one to see exactly which operations
+              and field records it was used in.
             </p>
           </div>
-          <div data-reveal>
-            <ThreatMap />
-          </div>
+          <Loadout />
         </section>
 
         {/* ── Operations (horizontal on desktop) ────────────── */}

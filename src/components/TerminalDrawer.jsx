@@ -1,141 +1,181 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Terminal, X } from "lucide-react";
+import { gsap } from "../luxe/gsap";
+import usePresence from "../luxe/usePresence";
+import { triggerEmergency } from "../luxe/emergency";
 import { profile } from "../content/profile";
 import { projects } from "../content/projects";
-import useReducedMotion from "../utils/useMotionPreference";
-import { playTacticalBlip } from "../utils/audioTelemetry";
+import { experiences } from "../content/experience";
+import { capabilities, loadout } from "../content/capabilities";
+import { episodes } from "../content/episodes";
+import { playTacticalBlip, setSoundEnabled } from "../utils/audioTelemetry";
 
-const ROUTES = {
-  nexus: "/",
+const EPISODE_ROUTES = ["/", "/archive", "/timeline", "/network", "/overview"];
+const ALIASES = {
   home: "/",
+  nexus: "/",
+  work: "/archive",
   operations: "/archive",
   projects: "/archive",
   trace: "/timeline",
-  timeline: "/timeline",
-  channel: "/network",
+  experience: "/timeline",
+  records: "/timeline",
   contact: "/network",
+  channel: "/network",
+  brief: "/overview",
   overview: "/overview",
 };
 
 // Clearly-labelled simulated telemetry (not real production logs).
 const FEED = [
   ["wazuh", "rule 5710 sshd: attempt to login using a non-existent user"],
-  ["suricata", "ET SCAN Potential SSH Scan -> dropped, src=198.51.100.23"],
-  ["aegisgate", "token-bucket refill ok, burst=40 rate=20/s"],
+  ["suricata", "ET SCAN potential SSH scan -> dropped, src=198.51.100.23"],
+  ["aegisgate", "token-bucket refill ok"],
   ["taskforge", "job lease acquired, state pending -> leased"],
   ["securenet", "vlan20 -> vlan30 inter-VLAN policy: deny (default)"],
-  ["ci", "go test ./... ok  (race detector on)"],
-  ["wazuh", "FIM: /etc/passwd checksum verified"],
-  ["suricata", "flow table pruned, 0 alerts in last 60s"],
+  ["ci", "go test ./... ok"],
 ];
 
 const HELP = [
-  "available commands:",
-  "  help               show this list",
-  "  whoami             operator profile",
-  "  projects           list engineering builds",
-  "  stack              core technology stack",
-  "  goto <page>        nexus | operations | trace | channel | overview",
-  "  feed [on|off]      toggle simulated SIEM feed",
-  "  clear              clear output",
-  "  exit               close drawer  (also: Esc or `)",
+  "commands:",
+  "  whoami               operator profile",
+  "  ls operations        list projects        (ls records: experience)",
+  "  open <code>          open a project, e.g. open aegis",
+  "  episode <1-5>        jump to an episode   (goto <page> also works)",
+  "  cat triad.log        capability cores",
+  "  loadout              equipment by slot",
+  "  sound on|off         UI sound",
+  "  feed on|off          simulated SIEM feed",
+  "  breach               run the pattern-red drill",
+  "  clear · exit",
 ];
 
-const ts = () =>
-  new Date().toLocaleTimeString("en-GB", { timeZone: "Asia/Jakarta", hour12: false });
+const ts = () => new Date().toLocaleTimeString("en-GB", { timeZone: "Asia/Jakarta", hour12: false });
+const pad = (n) => String(n).padStart(2, "0");
 
 export default function TerminalDrawer({ open, onClose }) {
   const navigate = useNavigate();
-  const reduced = useReducedMotion();
   const [lines, setLines] = useState([
-    { kind: "sys", text: "RONIN-SHELL v0.7 // type `help` for commands" },
+    { kind: "sys", text: "TRIAD-SHELL v7 · defense division · type `help`" },
   ]);
   const [value, setValue] = useState("");
-  const [feedOn, setFeedOn] = useState(true);
+  const [feedOn, setFeedOn] = useState(false);
   const history = useRef([]);
   const histIdx = useRef(-1);
   const inputRef = useRef(null);
   const bodyRef = useRef(null);
   const feedIdx = useRef(0);
+  const [mounted, root] = usePresence(open, {
+    enter: (el) => gsap.from(el, { yPercent: 100, duration: 0.55, ease: "expo.out" }),
+    exit: (el) => gsap.to(el, { yPercent: 100, duration: 0.35, ease: "power3.in" }),
+  });
 
-  const push = (...items) =>
-    setLines((prev) => [...prev, ...items].slice(-200));
+  const push = (...items) => setLines((prev) => [...prev, ...items].slice(-200));
+  const out = (...texts) => push(...texts.map((text) => ({ kind: "out", text })));
+  const err = (text) => push({ kind: "err", text });
 
-  // Focus input when opened
   useEffect(() => {
-    if (open) {
-      const id = setTimeout(() => inputRef.current?.focus(), reduced ? 0 : 180);
-      return () => clearTimeout(id);
-    }
-  }, [open, reduced]);
+    if (!open) return;
+    const id = setTimeout(() => inputRef.current?.focus(), 120);
+    return () => clearTimeout(id);
+  }, [open]);
 
-  // Simulated feed while open
   useEffect(() => {
     if (!open || !feedOn) return;
     const id = setInterval(() => {
       const [src, msg] = FEED[feedIdx.current++ % FEED.length];
-      push({ kind: "feed", text: `${ts()} [${src}] ${msg}` });
+      push({ kind: "feed", text: `${ts()} [sim:${src}] ${msg}` });
     }, 2400);
     return () => clearInterval(id);
   }, [open, feedOn]);
 
-  // Autoscroll
   useEffect(() => {
     const el = bodyRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [lines, open]);
+  }, [lines, mounted]);
+
+  const route = (to, label) => {
+    out(`routing -> ${label}`);
+    navigate(to);
+  };
 
   const run = (raw) => {
     const input = raw.trim();
     push({ kind: "cmd", text: input });
     if (!input) return;
     const [cmd, ...args] = input.toLowerCase().split(/\s+/);
+    const arg = args.join(" ");
 
     switch (cmd) {
       case "help":
-        push(...HELP.map((text) => ({ kind: "out", text })));
+        out(...HELP);
         break;
       case "whoami":
-        push(
-          { kind: "out", text: profile.name },
-          { kind: "out", text: profile.role },
-          { kind: "out", text: profile.location },
-        );
+        out(`${profile.name} — operator NY-07`, profile.role, profile.positioning, `base: ${profile.location}`);
         break;
-      case "projects":
-        push(
-          ...projects.map((p, i) => ({
-            kind: "out",
-            text: `${String(i + 1).padStart(2, "0")}  ${p.code.padEnd(6)} ${p.title}  [${p.status}]`,
-          })),
-        );
+      case "ls":
+      case "dir":
+        if (!arg || arg.startsWith("op") || arg === "projects") {
+          out(...projects.map((p, i) => `${pad(i + 1)}  ${p.code.padEnd(6)} ${p.title}  [${p.status}]`));
+        } else if (arg.startsWith("rec") || arg === "experience") {
+          out(...experiences.map((e, i) => `${pad(i + 1)}  ${e.coordinate.padEnd(11)} ${e.role} @ ${e.place}`));
+        } else err(`ls: cannot access '${arg}': try operations | records`);
         break;
-      case "stack":
-        push({
-          kind: "out",
-          text: "Go · Linux · Docker · PostgreSQL · Redis · gRPC · Wazuh · Suricata",
-        });
-        break;
-      case "goto": {
-        const target = ROUTES[args[0]];
-        if (!target) {
-          push({ kind: "err", text: `goto: unknown page '${args[0] || ""}'` });
-        } else {
-          push({ kind: "out", text: `routing -> ${target}` });
-          navigate(target);
-        }
+      case "open": {
+        const project = projects.find((p) => p.code.toLowerCase() === arg);
+        if (!project) err(`open: unknown target '${arg}' (see: ls operations)`);
+        else route(`/archive?project=${project.code}`, `${project.title}`);
         break;
       }
+      case "episode":
+      case "ep": {
+        const to = EPISODE_ROUTES[Number(arg) - 1];
+        if (!to) err("episode: choose 1-5");
+        else route(to, `EP.${episodes[to].no} ${episodes[to].kanji} ${episodes[to].en}`);
+        break;
+      }
+      case "goto":
+      case "cd": {
+        const to = ALIASES[arg];
+        if (!to) err(`goto: unknown page '${arg}'`);
+        else route(to, episodes[to].en);
+        break;
+      }
+      case "cat":
+        if (arg === "triad.log") {
+          out(
+            ...capabilities.flatMap((c, i) => [
+              `[core-${pad(i + 1)}] ${c.kanji} ${c.verb.toUpperCase()} — ${c.title}: 可決 APPROVED`,
+              `          proven in: ${c.proof}`,
+            ]),
+            "consensus 3/3 — deploy authorized",
+          );
+        } else err(`cat: ${arg || "(missing file)"}: no such file (try triad.log)`);
+        break;
+      case "loadout":
+      case "stack":
+        out(...loadout.map((slot) => `${slot.kanji} ${slot.slot.padEnd(26)} ${slot.tools.map((t) => t.name).join(" · ")}`));
+        break;
+      case "sound":
+        if (arg === "on" || arg === "off") {
+          setSoundEnabled(arg === "on");
+          out(`ui sound: ${arg}`);
+        } else err("sound: use on | off");
+        break;
       case "feed":
-        if (args[0] === "off") setFeedOn(false);
-        else if (args[0] === "on") setFeedOn(true);
-        else {
-          push({ kind: "out", text: `simulated feed: ${feedOn ? "on" : "off"}` });
-          break;
-        }
-        push({ kind: "out", text: `simulated feed: ${args[0]}` });
+        if (arg === "on" || arg === "off") {
+          setFeedOn(arg === "on");
+          out(`simulated feed: ${arg}`);
+        } else out(`simulated feed: ${feedOn ? "on" : "off"}`);
+        break;
+      case "breach":
+      case "alert":
+        out("警告 pattern red — drill initiated (simulation)");
+        triggerEmergency();
+        break;
+      case "sudo":
+        err("permission denied: this incident will be reported. (nice try)");
         break;
       case "clear":
         setLines([]);
@@ -145,7 +185,7 @@ export default function TerminalDrawer({ open, onClose }) {
         onClose();
         break;
       default:
-        push({ kind: "err", text: `${cmd}: command not found` });
+        err(`${cmd}: command not found — try help`);
     }
   };
 
@@ -171,58 +211,38 @@ export default function TerminalDrawer({ open, onClose }) {
     }
   };
 
+  if (!mounted) return null;
+
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.section
-          className="terminal-drawer"
-          role="dialog"
-          aria-label="Tactical terminal"
-          initial={reduced ? false : { y: "100%" }}
-          animate={{ y: 0 }}
-          exit={reduced ? { opacity: 0 } : { y: "100%" }}
-          transition={
-            reduced
-              ? { duration: 0 }
-              : { type: "spring", stiffness: 260, damping: 30 }
-          }
-        >
-          <header className="terminal-bar">
-            <span>
-              <Terminal size={13} /> RONIN-SHELL // bdg-node-0x7F
-            </span>
-            <span className="terminal-bar-hint">
-              simulated feed {feedOn ? "ON" : "OFF"} · Esc to close
-            </span>
-            <button type="button" onClick={onClose} aria-label="Close terminal">
-              <X size={14} />
-            </button>
-          </header>
-          <div
-            className="terminal-body"
-            ref={bodyRef}
-            onClick={() => inputRef.current?.focus()}
-          >
-            {lines.map((l, i) => (
-              <div key={i} className={`t-line t-${l.kind}`}>
-                {l.kind === "cmd" ? `$ ${l.text}` : l.text}
-              </div>
-            ))}
-            <label className="t-prompt">
-              <span>$</span>
-              <input
-                ref={inputRef}
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                onKeyDown={onKeyDown}
-                spellCheck={false}
-                autoComplete="off"
-                aria-label="Terminal command input"
-              />
-            </label>
+    <section ref={root} className="terminal-drawer lx-term" role="dialog" aria-label="Terminal">
+      <header className="lx-term__bar">
+        <span>
+          <Terminal size={13} /> TRIAD-SHELL // bdg-node-07
+        </span>
+        <span className="lx-term__hint">feed {feedOn ? "on" : "off"} · Esc to close</span>
+        <button type="button" onClick={onClose} aria-label="Close terminal">
+          <X size={14} />
+        </button>
+      </header>
+      <div className="lx-term__body" ref={bodyRef} onClick={() => inputRef.current?.focus()}>
+        {lines.map((line, i) => (
+          <div key={i} className={`lx-term__line is-${line.kind}`}>
+            {line.kind === "cmd" ? `$ ${line.text}` : line.text}
           </div>
-        </motion.section>
-      )}
-    </AnimatePresence>
+        ))}
+        <label className="lx-term__prompt">
+          <span>$</span>
+          <input
+            ref={inputRef}
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onKeyDown={onKeyDown}
+            spellCheck={false}
+            autoComplete="off"
+            aria-label="Terminal command input"
+          />
+        </label>
+      </div>
+    </section>
   );
 }

@@ -94,34 +94,24 @@ export default function DecodeText({
   }, [text, reduced, speed, revealStep, chars]);
 
   if (reduced || frontierIndex === -1) {
-    return <span className={`decode-text inline-block font-mono tabular-nums ${className}`}>{text}</span>;
+    return <span className={`decode-text ${className}`}>{text}</span>;
   }
 
-  // Render with styled frontier for a smooth, high-tech glowing edge
+  // Settled glyphs, a highlighted frontier, then the still-scrambled remainder.
   const settledPart = displayText.slice(0, frontierIndex);
   const frontierChar = displayText.slice(frontierIndex, frontierIndex + 2);
   const remainingPart = displayText.slice(frontierIndex + 2);
 
   return (
-    <span
-      className={`decode-text inline-block select-none font-mono tabular-nums ${className}`}
-      aria-label={text}
-    >
+    <span className={`decode-text ${className}`} aria-label={text}>
       <span aria-hidden="true">{settledPart}</span>
       {frontierChar && (
-        <span
-          className="text-resonance inline"
-          aria-hidden="true"
-          style={{
-            textShadow: "0 0 8px rgba(0, 243, 255, 0.75)",
-            opacity: 0.95,
-          }}
-        >
+        <span className="decode-text__edge" aria-hidden="true">
           {frontierChar}
         </span>
       )}
       {remainingPart && (
-        <span aria-hidden="true" className="opacity-40 text-resonance/60 inline">
+        <span className="decode-text__rest" aria-hidden="true">
           {remainingPart}
         </span>
       )}

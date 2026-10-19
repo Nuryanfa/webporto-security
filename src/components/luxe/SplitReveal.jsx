@@ -44,6 +44,8 @@ export default function SplitReveal({
           mask: "lines",
           autoSplit: true,
           ignore: type === "lines" ? undefined : "em",
+          // aria-label is only valid on headings; elsewhere the parent heading names the text.
+          aria: /^h[1-6]$/.test(Tag) ? "auto" : "hidden",
           linesClass: "lx-split-line",
           onSplit(self) {
             gsap.set(el, { autoAlpha: 1 });

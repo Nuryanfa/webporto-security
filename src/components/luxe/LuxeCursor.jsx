@@ -53,6 +53,10 @@ export default function LuxeCursor() {
       shown = false;
       el.classList.remove("is-visible");
     };
+    // Embedded browsers do not always fire pointerleave; leaving the window clears it too.
+    const out = (event) => {
+      if (!event.relatedTarget) hide();
+    };
     const down = () => el.classList.add("is-down");
     const up = () => el.classList.remove("is-down");
 
@@ -60,6 +64,7 @@ export default function LuxeCursor() {
     window.addEventListener("scroll", scroll, { passive: true });
     document.documentElement.addEventListener("pointerleave", hide);
     window.addEventListener("blur", hide);
+    document.addEventListener("mouseout", out);
     window.addEventListener("pointerdown", down);
     window.addEventListener("pointerup", up);
     return () => {
@@ -68,6 +73,7 @@ export default function LuxeCursor() {
       cancelAnimationFrame(frame);
       document.documentElement.removeEventListener("pointerleave", hide);
       window.removeEventListener("blur", hide);
+      document.removeEventListener("mouseout", out);
       window.removeEventListener("pointerdown", down);
       window.removeEventListener("pointerup", up);
     };

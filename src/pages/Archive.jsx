@@ -1,5 +1,4 @@
-import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ArrowUpRight, Github } from "lucide-react";
 import MagneticLink from "../components/MagneticLink";
@@ -9,8 +8,8 @@ import DecodeText from "../components/DecodeText";
 import OperationMap from "../components/OperationMap";
 import EpisodeHeader from "../components/luxe/EpisodeHeader";
 import { statusTone } from "../content/episodes";
-import { trackSpotlight } from "../components/luxe/ProjectCard";
-import useReducedMotion from "../utils/useMotionPreference";
+import { trackSpotlight, Scope } from "../components/luxe/ProjectCard";
+import useGlider from "../luxe/useGlider";
 import { projects } from "../content/projects";
 import { playTacticalBlip } from "../utils/audioTelemetry";
 
@@ -27,7 +26,8 @@ export default function Archive() {
   const code = params.get("project") || rememberedProject();
   const active = projects.find((project) => project.code === code) || projects[0];
   const activeIndex = projects.indexOf(active);
-  const reduced = useReducedMotion();
+  const indexRef = useRef(null);
+  useGlider(indexRef, '[aria-selected="true"]', [active.code]);
 
   useEffect(() => {
     try {
@@ -82,7 +82,6 @@ export default function Archive() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeIndex]);
 
-  const Icon = active.icon;
 
   return (
     <AnimatedPage>
@@ -101,7 +100,11 @@ export default function Archive() {
         </EpisodeHeader>
 
         <section className="lx-ops__console">
-          <div className="lx-ops__index" role="tablist" aria-label="Project selection" data-reveal>
+          <div
+            ref={indexRef}
+            className={`lx-ops__index tone-${statusTone(active.status)}`}
+            role="tablist" aria-label="Project selection" data-reveal>
+            <span className="lx-glider lx-ops__glider" aria-hidden="true" />
             {projects.map((project, index) => {
               const selected = active.id === project.id;
               return (
@@ -117,14 +120,6 @@ export default function Archive() {
                   onClick={() => selectProject(project)}
                   className={`lx-ops__tab tone-${statusTone(project.status)} ${selected ? "is-active" : ""}`}
                 >
-                  {selected && (
-                    <motion.span
-                      className="lx-ops__tab-bg"
-                      layoutId="lx-ops-selection"
-                      transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 320, damping: 32 }}
-                      aria-hidden="true"
-                    />
-                  )}
                   <span className="lx-ops__tab-idx">{String(index + 1).padStart(2, "0")}</span>
                   <span className="lx-ops__tab-title">
                     {project.title}
@@ -144,32 +139,37 @@ export default function Archive() {
                 aria-labelledby={`tab-${active.code}`}
                 className={`lx-dossier tone-${statusTone(active.status)}`}
               >
-                <div className="lx-dossier__visual" aria-hidden="true" onPointerMove={trackSpotlight} data-stagger>
-                  <i className="lx-card__grid" />
-                  <i className="lx-card__scan" />
-                  <span className="lx-reticle is-locked">
-                    <i />
-                    <i />
-                    <i />
-                    <i />
-                  </span>
-                  <span className="lx-dossier__lock">
+                <div className="lx-scan" aria-hidden="true" onPointerMove={trackSpotlight} data-stagger>
+                  <div className="lx-scan__bar">
                     <DecodeText text={`TARGET LOCKED // ${active.code}`} />
-                  </span>
-                  <span className="lx-dossier__code">{active.code}</span>
-                  <Icon className="lx-dossier__icon" size={88} strokeWidth={0.8} />
-                  <span className="lx-dossier__counter">
-                    {String(activeIndex + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
-                  </span>
-                </div>
-
-                <div className="lx-dossier__meta" data-stagger>
-                  <span>{active.id}</span>
-                  <span>{active.type}</span>
-                  <span className="lx-status-chip">
-                    <i />
-                    {active.status}
-                  </span>
+                    <span>
+                      {String(activeIndex + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <div className="lx-scan__body">
+                    <i className="lx-card__grid" />
+                    <i className="lx-card__scan" />
+                    <span className="lx-scan__id">
+                      <small>Codename</small>
+                      <span className="lx-scan__code">{active.code}</span>
+                      <span className="lx-scan__type">{active.type}</span>
+                    </span>
+                    <Scope icon={active.icon} size={64} locked />
+                  </div>
+                  <dl className="lx-scan__readout">
+                    <div>
+                      <dt>Operation</dt>
+                      <dd>{active.id}</dd>
+                    </div>
+                    <div>
+                      <dt>Status</dt>
+                      <dd className="lx-scan__status">{active.status}</dd>
+                    </div>
+                    <div>
+                      <dt>Primary stack</dt>
+                      <dd>{active.tags.slice(0, 3).join(" · ")}</dd>
+                    </div>
+                  </dl>
                 </div>
 
                 <h2 className="lx-dossier__title" data-stagger>

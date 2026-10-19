@@ -62,6 +62,20 @@ Pemilik menyukai cyber-luxe tetapi menginginkan nuansa **anime + cybersecurity**
 - Hindari nama, logo, atau aset resmi dari franchise; semua istilah seperti "Triad system" dibuat sendiri.
 - `src/luxe/gsap.js` kini memanggil `ScrollTrigger.refresh()` setelah web font selesai dimuat. Sebelumnya, reveal bisa macet pada kunjungan langsung karena font Mincho mengubah layout setelah posisi trigger dihitung.
 
+## 3c. Refinement cyber-anime (19 Oktober 2026, sore)
+
+- **Section 3 diganti dari ThreatMap menjadi Loadout** (`components/luxe/Loadout.jsx`, data `loadout` di `content/capabilities.js`). Setiap tool hanya menautkan project/pengalaman yang tag-nya cocok di file konten, jadi tidak ada klaim yang ditulis tangan.
+- **Satu library animasi.** Framer Motion, Anime.js, tsParticles, dan Tailwind dihapus. Penggantinya: `luxe/usePresence.js` (mount/unmount ber-animasi), `luxe/useGlider.js` (highlight yang meluncur), dan GSAP untuk semua animasi. `index.css` kini berisi reset minimal, dan tujuh file CSS lama serta 29 komponen mati dihapus.
+- **Gating "stage ready" (`onStageReady` di `luxe/gsap.js`).** Reveal halaman menunggu preloader selesai dan tirai route terbuka.
+- **Transisi route berupa panel miring berarah tunggal (kanan → kiri) dengan title card bermask.** Konten lama dan baru dianimasikan dengan **opacity, bukan autoAlpha**. `visibility` diwariskan, sehingga tween di halaman baru yang dibuat saat konten disembunyikan akan merekam "hidden" sebagai state awal; inilah penyebab hero Home tak terlihat setelah navigasi.
+- **Reset scroll dimiliki RouteTransition.** TabTitleUpdater tidak lagi memanggil `scrollTo`, yang sebelumnya membuat halaman melompat sebelum tirai menutup.
+- **Kartu project dan dossier memakai tata letak "codename + scope"** (`Scope` di ProjectCard): bracket hanya membingkai ikon. Dossier Work berupa scan panel bertingkat (bar / codename + scope / readout).
+- **Hero berupa grid dua kolom.** Di ≤1023px, `.lx-hero__visual` memakai `display: contents` agar urutannya menjadi inti → teks → TRIAD.
+- **Easter egg mode EMERGENCY** (`luxe/emergency.js`): Konami code, `breach` di terminal, atau tombol di command map; Esc atau 9 detik untuk menghentikan. Terminal memiliki perintah bertema (`whoami`, `ls operations|records`, `open <code>`, `cat triad.log`, `episode <n>`, `loadout`, `sound`, `breach`).
+- **Gambar OG per episode** ada di `public/og/*.png`, dibuat dari `scripts/og-template.mjs` dengan browser headless; render ulang jika judul episode berubah. `scripts/prerender-routes.mjs` (bagian dari `npm run build`) menulis `dist/<route>.html` dengan meta per route; `vercel.json` memakai `cleanUrls`.
+- **Performa.** Font Google dimuat async, ada boot shell statis di `#root`, route dan overlay di-code-split dengan prefetch saat idle, dan HeroCore dimuat saat idle (CSS fallback untuk save-data/perangkat lemah). Lighthouse lokal (build produksi): desktop 85, mobile 49 (FCP 1,7 dtk; LCP 7,4 dtk karena SPA tanpa prerender HTML). Langkah berikutnya bila diperlukan: prerender HTML Home saat build.
+- **Alat uji.** Patchright menjalankan `page.evaluate` di isolated world, sehingga state modul aplikasi tidak terlihat dari sana. Untuk men-debug state GSAP, tulis ke atribut DOM.
+
 ## 4. Stack dan arsitektur kode
 
 - React 18 + Vite 5, React Router untuk route, CSS dan Tailwind utilities.
@@ -95,7 +109,7 @@ Hierarki yang diinginkan: hero mendapat entrance sinematik; navigasi tetap subti
 ## 7. Guardrail untuk pekerjaan berikutnya
 
 1. Pertahankan routing, struktur `src/content/`, keyboard navigation, terminal drawer, keymap modal, skip link, focus state, serta reduced motion.
-2. GSAP, Three.js, dan R3F kini resmi dipakai (lihat 3a). Gunakan `src/luxe/gsap.js` dan `useGSAP` agar semua animasi ter-revert saat unmount. Anime.js v4 masih dipakai `OperationMap` dan `LockOn`; jangan memakai API v3.
+2. GSAP, Three.js, dan R3F kini resmi dipakai (lihat 3a). Gunakan `src/luxe/gsap.js` dan `useGSAP` agar semua animasi ter-revert saat unmount. Di branch `design/cyber-anime`, GSAP adalah satu-satunya library animasi (Framer Motion dan Anime.js sudah dihapus); jangan menambahkannya kembali.
 3. Uji desktop, tablet, mobile, keyboard-only, dan reduced motion secara visual sebelum menyebut motion final. Periksa overlay, deep link, route back/forward, dan scroll internal drawer.
 4. Audit klaim portfolio terhadap repository aktual dan minta detail tanggal/hasil kerja yang belum diberikan; jangan mengarang metrik atau status production.
 5. Lanjutkan pengukuran Core Web Vitals, biaya canvas/blur, tautan eksternal, metadata SEO, dan robots/sitemap bila diperlukan. Jangan menyimpulkan seluruhnya sudah tuntas hanya dari build.

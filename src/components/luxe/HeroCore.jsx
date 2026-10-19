@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
+import { isEmergency } from "../../luxe/emergency";
 
 /*
  * Defense core: a faceted octahedron inside a hexagonal barrier.
@@ -102,6 +103,7 @@ function Defense({ reduced, compact }) {
   const dust = useRef(null);
   const nextHit = useRef(0);
   const slot = useRef(0);
+  const { gl } = useThree();
 
   const coreUniforms = useMemo(() => ({ uTime: { value: 0 }, uAlert: { value: 0 } }), []);
   const shieldUniforms = useMemo(
@@ -138,9 +140,11 @@ function Defense({ reduced, compact }) {
   useEffect(() => {
     const strike = (event) => {
       if (event.button !== 0) return;
-      const x = (event.clientX / window.innerWidth) * 2 - 1;
-      const y = -((event.clientY / window.innerHeight) * 2 - 1);
-      const dir = new THREE.Vector3(x * 1.4, y * 1.4, 1).normalize();
+      // Aim relative to the canvas so the ripple lands where the pointer is.
+      const rect = gl.domElement.getBoundingClientRect();
+      const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      const y = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
+      const dir = new THREE.Vector3(x * 1.6, y * 1.6, 1).normalize();
       hit(dir, shieldUniforms.uTime.value);
     };
     window.addEventListener("pointerdown", strike);
@@ -155,11 +159,12 @@ function Defense({ reduced, compact }) {
       shieldUniforms.uTime.value += dt;
     }
     const t = shieldUniforms.uTime.value;
-    coreUniforms.uAlert.value = Math.max(0, coreUniforms.uAlert.value - dt * 1.6);
+    const alarm = isEmergency();
+    coreUniforms.uAlert.value = alarm ? 1 : Math.max(0, coreUniforms.uAlert.value - dt * 1.6);
 
-    // Ambient probes: something keeps testing the perimeter.
+    // Ambient probes keep testing the perimeter; a pattern-red drill turns them into a barrage.
     if (!reduced && t > nextHit.current) {
-      nextHit.current = t + 1.1 + Math.random() * 1.6;
+      nextHit.current = t + (alarm ? 0.16 + Math.random() * 0.12 : 1.1 + Math.random() * 1.6);
       const a = Math.random() * Math.PI * 2;
       hit(new THREE.Vector3(Math.cos(a), (Math.random() - 0.5) * 1.2, Math.abs(Math.sin(a)) + 0.4).normalize(), t);
     }
