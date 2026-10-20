@@ -1,25 +1,44 @@
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { gsap } from "../luxe/gsap";
 import useReducedMotion from "../utils/useMotionPreference";
 
-const RouterLink = motion.create(Link);
+// Link or anchor that leans slightly toward a fine pointer.
 export default function MagneticLink({ to, children, ...props }) {
+  const ref = useRef(null);
   const reduced = useReducedMotion();
-  const x = useMotionValue(0), y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 240, damping: 22, mass: 0.4 });
-  const sy = useSpring(y, { stiffness: 240, damping: 22, mass: 0.4 });
-  const reset = () => { x.set(0); y.set(0); };
-  const Component = to ? RouterLink : motion.a;
-  return <Component {...props} {...(to ? { to } : {})}
-    style={{ x: reduced ? 0 : sx, y: reduced ? 0 : sy }}
-    onPointerMove={event => {
-      if (reduced || event.pointerType !== "mouse") return;
-      const r = event.currentTarget.getBoundingClientRect();
-      x.set(((event.clientX - r.left) / r.width - 0.5) * 6);
-      y.set(((event.clientY - r.top) / r.height - 0.5) * 4);
-    }}
-    onPointerLeave={reset} onBlur={reset}
-    whileTap={reduced ? undefined : { scale: 0.98 }}>
-    {children}
-  </Component>;
+  const movers = useRef(null);
+
+  useEffect(() => {
+    if (reduced || !ref.current) return;
+    movers.current = {
+      x: gsap.quickTo(ref.current, "x", { duration: 0.5, ease: "power3" }),
+      y: gsap.quickTo(ref.current, "y", { duration: 0.5, ease: "power3" }),
+    };
+    const el = ref.current;
+    return () => {
+      movers.current = null;
+      gsap.set(el, { clearProps: "transform" });
+    };
+  }, [reduced]);
+
+  const move = (event) => {
+    if (!movers.current || event.pointerType !== "mouse") return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    movers.current.x(((event.clientX - rect.left) / rect.width - 0.5) * 8);
+    movers.current.y(((event.clientY - rect.top) / rect.height - 0.5) * 6);
+  };
+  const reset = () => {
+    movers.current?.x(0);
+    movers.current?.y(0);
+  };
+
+  const shared = { ref, onPointerMove: move, onPointerLeave: reset, onBlur: reset, ...props };
+  return to ? (
+    <Link to={to} {...shared}>
+      {children}
+    </Link>
+  ) : (
+    <a {...shared}>{children}</a>
+  );
 }

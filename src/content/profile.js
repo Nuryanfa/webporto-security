@@ -6,4 +6,6 @@ export const profile = {
   positioning:
     "I build backend systems, define security boundaries, and improve the delivery paths that keep software reliable.",
   location: "Bandung, Indonesia",
+  // Used by the Contact local-time panel.
+  timezone: { utcOffset: 7, label: "WIB" },
 };

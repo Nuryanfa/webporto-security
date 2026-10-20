@@ -1,5 +1,4 @@
 import { useEffect, useRef, useSyncExternalStore } from "react";
-import { SlidersHorizontal } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import {
   getPreferences,
@@ -45,12 +44,11 @@ export default function MotionControl() {
         }
       }}
     >
-      <summary aria-label="Motion settings">
-        <SlidersHorizontal size={15} />
-        <span>Motion</span>
+      <summary className="lx-ctl" aria-label={`Motion: ${options.find((o) => o.value === motion)?.label}`}>
+        Motion <b>{options.find((o) => o.value === motion)?.label}</b>
       </summary>
       <div className="motion-control-menu" role="group" aria-label="Motion preference">
-        <span>DISPLAY MOTION</span>
+        <span>Display motion</span>
         {options.map((option) => (
           <button
             type="button"

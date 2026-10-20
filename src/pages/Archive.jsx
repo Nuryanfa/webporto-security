@@ -1,14 +1,15 @@
-import { motion } from "framer-motion";
-import MagneticLink from "../components/MagneticLink";
-import MotionHeading from "../components/MotionHeading";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
-import ContentTransition from "../components/ContentTransition";
 import { ArrowUpRight, Github } from "lucide-react";
-import useReducedMotion from "../utils/useMotionPreference";
+import MagneticLink from "../components/MagneticLink";
+import ContentTransition from "../components/ContentTransition";
 import AnimatedPage from "../components/AnimatedPage";
 import DecodeText from "../components/DecodeText";
 import OperationMap from "../components/OperationMap";
+import EpisodeHeader from "../components/luxe/EpisodeHeader";
+import { statusTone } from "../content/episodes";
+import { trackSpotlight, Scope } from "../components/luxe/ProjectCard";
+import useGlider from "../luxe/useGlider";
 import { projects } from "../content/projects";
 import { playTacticalBlip } from "../utils/audioTelemetry";
 
@@ -23,9 +24,10 @@ function rememberedProject() {
 export default function Archive() {
   const [params, setParams] = useSearchParams();
   const code = params.get("project") || rememberedProject();
-  const active =
-    projects.find((project) => project.code === code) || projects[0];
-  const reduced = useReducedMotion();
+  const active = projects.find((project) => project.code === code) || projects[0];
+  const activeIndex = projects.indexOf(active);
+  const indexRef = useRef(null);
+  useGlider(indexRef, '[aria-selected="true"]', [active.code]);
 
   useEffect(() => {
     try {
@@ -35,201 +37,183 @@ export default function Archive() {
 
   const selectProject = (project) => {
     playTacticalBlip(920, 0.035);
-    setParams({ project: project.code });
+    setParams({ project: project.code }, { preventScrollReset: true });
+  };
+
+  const focusProject = (index) => {
+    selectProject(projects[index]);
+    document.getElementById(`tab-${projects[index].code}`)?.focus();
   };
 
   const keyboardSelect = (event, index) => {
     let next;
-    if (["ArrowRight", "ArrowDown"].includes(event.key))
-      next = (index + 1) % projects.length;
+    if (["ArrowRight", "ArrowDown"].includes(event.key)) next = (index + 1) % projects.length;
     if (["ArrowLeft", "ArrowUp"].includes(event.key))
       next = (index - 1 + projects.length) % projects.length;
     if (event.key === "Home") next = 0;
     if (event.key === "End") next = projects.length - 1;
     if (next === undefined) return;
     event.preventDefault();
-    selectProject(projects[next]);
-    document.getElementById(`tab-${projects[next].code}`)?.focus();
+    focusProject(next);
   };
 
-  // Vim-style J/K fast target switching
+  // Vim-style J/K target switching
   useEffect(() => {
     const handleVimKeys = (e) => {
       const tag = document.activeElement?.tagName;
       if (
         ["INPUT", "TEXTAREA", "SELECT"].includes(tag) ||
-        document.activeElement?.isContentEditable
+        document.activeElement?.isContentEditable ||
+        e.metaKey ||
+        e.ctrlKey
       ) {
         return;
       }
-      const currIdx = projects.findIndex((p) => p.code === active.code);
-      if (currIdx === -1) return;
-
       if (e.key === "j" || e.key === "J") {
         e.preventDefault();
-        const next = (currIdx + 1) % projects.length;
-        selectProject(projects[next]);
-        document.getElementById(`tab-${projects[next].code}`)?.focus();
+        focusProject((activeIndex + 1) % projects.length);
       } else if (e.key === "k" || e.key === "K") {
         e.preventDefault();
-        const prev = (currIdx - 1 + projects.length) % projects.length;
-        selectProject(projects[prev]);
-        document.getElementById(`tab-${projects[prev].code}`)?.focus();
+        focusProject((activeIndex - 1 + projects.length) % projects.length);
       }
     };
-
     window.addEventListener("keydown", handleVimKeys);
     return () => window.removeEventListener("keydown", handleVimKeys);
-  }, [active.code]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeIndex]);
+
 
   return (
     <AnimatedPage>
-      <div className="operation-shell">
-        <header className="operation-header">
-          <div>
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
-              <span className="eyebrow flex items-center gap-2">
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-resonance animate-pulse" />
-                17 / Operation matrix // target acquisition
-              </span>
-              <span className="hidden sm:inline-block font-mono text-[9px] text-muted border border-white/10 px-2 py-0.5 rounded bg-white/[0.02]">
-                KEYS: [J / K] CYCLE TARGETS
-              </span>
-            </div>
-            <MotionHeading>
-              SELECT
-              <br />A TARGET.
-            </MotionHeading>
-          </div>
-          <p>
-            {projects.length} selected builds across backend, security, DevOps, and product
-            engineering. Select one to inspect its current scope, schematic, and source.
-          </p>
-        </header>
+      <div className="lx-page lx-ops">
+        <EpisodeHeader
+          eyebrow={`Target archive — ${projects.length} operations`}
+          extra={
+            <span className="lx-kbd-hint">
+              <kbd>J</kbd>
+              <kbd>K</kbd> to cycle targets
+            </span>
+          }
+          lede={`${projects.length} builds across backend, security, DevOps, and product engineering. Select a target to inspect its scope, architecture stages, and source.`}
+        >
+          Operations <em>archive.</em>
+        </EpisodeHeader>
 
-        <p className="operation-mobile-hint">
-          Swipe to browse all {projects.length} projects
-        </p>
-
-        <section className="operation-console">
+        <section className="lx-ops__console">
           <div
-            className="operation-selector"
-            role="tablist"
-            aria-label="Project selection"
-          >
-            {projects.map((project, index) => (
-              <button
-                id={`tab-${project.code}`}
-                aria-controls={`operation-dossier-${project.code}`}
-                key={project.id}
-                role="tab"
-                aria-selected={active.id === project.id}
-                tabIndex={active.id === project.id ? 0 : -1}
-                onKeyDown={(event) => keyboardSelect(event, index)}
-                onClick={() => selectProject(project)}
-                className={`operation-tab relative ${active.id === project.id ? "is-active" : ""}`}
-                style={{ "--signal": project.color }}
-              >
-                {/* Tactical HUD Corner Brackets */}
-                <span className="hud-corner hud-tl" aria-hidden="true" />
-                <span className="hud-corner hud-tr" aria-hidden="true" />
-                <span className="hud-corner hud-bl" aria-hidden="true" />
-                <span className="hud-corner hud-br" aria-hidden="true" />
-
-                {active.id === project.id && (
-                  <motion.span
-                    className="project-selection-glow"
-                    layoutId="project-selection"
-                    transition={
-                      reduced
-                        ? { duration: 0 }
-                        : { type: "spring", stiffness: 210, damping: 28 }
-                    }
-                    aria-hidden="true"
-                  />
-                )}
-                <span className="operation-index">0{index + 1}</span>
-                <project.icon size={18} />
-                <span>
-                  <b>{project.code}</b>
-                  <small>{project.type}</small>
-                </span>
-                <i>{project.status}</i>
-              </button>
-            ))}
+            ref={indexRef}
+            className="lx-ops__index"
+            role="tablist" aria-label="Project selection" data-reveal>
+            <span className="lx-glider lx-ops__glider" aria-hidden="true" />
+            {projects.map((project, index) => {
+              const selected = active.id === project.id;
+              return (
+                <button
+                  id={`tab-${project.code}`}
+                  aria-controls={`operation-dossier-${project.code}`}
+                  key={project.id}
+                  role="tab"
+                  type="button"
+                  aria-selected={selected}
+                  tabIndex={selected ? 0 : -1}
+                  onKeyDown={(event) => keyboardSelect(event, index)}
+                  onClick={() => selectProject(project)}
+                  className={`lx-ops__tab tone-${statusTone(project.status)} ${selected ? "is-active" : ""}`}
+                >
+                  <span className="lx-ops__tab-idx">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="lx-ops__tab-title">
+                    {project.title}
+                    <small>{project.type}</small>
+                  </span>
+                  <i className="lx-ops__tab-dot" aria-hidden="true" />
+                </button>
+              );
+            })}
           </div>
 
-          <div className="operation-viewport relative">
-            {/* Holographic Tactical Target Reticle */}
-            <div className="target-reticle pointer-events-none" aria-hidden="true">
-              <svg viewBox="0 0 400 400" className="w-full h-full opacity-30 text-resonance">
-                <circle cx="200" cy="200" r="185" stroke="currentColor" strokeWidth="1" strokeDasharray="3 8" className="spin-slow" />
-                <circle cx="200" cy="200" r="140" stroke="currentColor" strokeWidth="1.2" strokeDasharray="60 30" className="spin-slow-reverse" />
-                <circle cx="200" cy="200" r="80" stroke="currentColor" strokeWidth="0.8" strokeDasharray="2 4" />
-                <line x1="200" y1="15" x2="200" y2="85" stroke="currentColor" strokeWidth="1" />
-                <line x1="200" y1="315" x2="200" y2="385" stroke="currentColor" strokeWidth="1" />
-                <line x1="15" y1="200" x2="85" y2="200" stroke="currentColor" strokeWidth="1" />
-                <line x1="315" y1="200" x2="385" y2="200" stroke="currentColor" strokeWidth="1" />
-                <circle cx="200" cy="200" r="4" fill="currentColor" opacity="0.8" />
-              </svg>
-            </div>
-
+          <div className="lx-ops__stage">
             <ContentTransition id={active.id}>
               <article
                 id={`operation-dossier-${active.code}`}
                 role="tabpanel"
                 aria-labelledby={`tab-${active.code}`}
-                className="operation-dossier relative"
-                style={{ "--signal": active.color }}
+                className="lx-dossier"
               >
-                {/* Dossier Corner Accents */}
-                <span className="hud-corner hud-tl" aria-hidden="true" />
-                <span className="hud-corner hud-tr" aria-hidden="true" />
-
-                <div className="dossier-top flex items-center justify-between">
-                  <span className="font-mono text-xs text-resonance/80">
-                    TARGET // {active.id} // {active.type}
-                  </span>
-                  <span className="cyber-telemetry-badge" style={{ color: active.color, borderColor: `${active.color}44` }}>
-                    <i style={{ backgroundColor: active.color, boxShadow: `0 0 8px ${active.color}` }} />
-                    {active.status}
-                  </span>
-                </div>
-
-                <h2>
-                  <DecodeText text={active.title} />
-                </h2>
-
-                <p className="dossier-summary">{active.summary}</p>
-
-                <div className="dossier-outcome">
-                  <span>MISSION OUTPUT</span>
-                  <p>{active.outcome}</p>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  {active.tags.map((tag) => (
-                    <span className="tech-tag" key={tag}>
-                      {tag}
+                <div className="lx-scan" aria-hidden="true" onPointerMove={trackSpotlight} data-stagger>
+                  <div className="lx-scan__bar">
+                    <DecodeText text={`TARGET LOCKED // ${active.code}`} />
+                    <span>
+                      {String(activeIndex + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
                     </span>
-                  ))}
+                  </div>
+                  <div className="lx-scan__body">
+                    <i className="lx-card__grid" />
+                    <i className="lx-card__scan" />
+                    <span className="lx-scan__id">
+                      <small>Codename</small>
+                      <span className="lx-scan__code">{active.code}</span>
+                      <span className="lx-scan__type">{active.type}</span>
+                    </span>
+                    <Scope icon={active.icon} size={64} locked />
+                  </div>
+                  <dl className="lx-scan__readout">
+                    <div>
+                      <dt>Operation</dt>
+                      <dd>{active.id}</dd>
+                    </div>
+                    <div>
+                      <dt>Status</dt>
+                      <dd className={`lx-scan__status tone-${statusTone(active.status)}`}>{active.status}</dd>
+                    </div>
+                    <div>
+                      <dt>Primary stack</dt>
+                      <dd>{active.tags.slice(0, 3).join(" · ")}</dd>
+                    </div>
+                  </dl>
                 </div>
 
-                <OperationMap key={active.code} code={active.code} />
+                <h2 className="lx-dossier__title" data-stagger>
+                  {active.title}
+                </h2>
+                <p className="lx-dossier__summary" data-stagger>
+                  {active.summary}
+                </p>
 
-                <div className="project-actions">
+                <blockquote className="lx-dossier__outcome" data-stagger>
+                  <span>
+                    <span lang="ja">作戦報告</span> Mission report
+                  </span>
+                  <p>{active.outcome}</p>
+                </blockquote>
+
+                <ul className="lx-tags" aria-label="Technologies" data-stagger>
+                  {active.tags.map((tag) => (
+                    <li key={tag}>{tag}</li>
+                  ))}
+                </ul>
+
+                <div data-stagger>
+                  <OperationMap key={active.code} code={active.code} />
+                </div>
+
+                <div className="lx-dossier__actions" data-stagger>
                   <MagneticLink
                     href={active.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="dossier-link"
+                    className="lx-btn lx-btn--primary"
                   >
-                    <Github size={17} />
-                    {active.code === "X509"
-                      ? "GitHub profile"
-                      : "Open repository"}
-                    <ArrowUpRight size={16} />
+                    <Github size={18} />
+                    <span>{active.code === "X509" ? "GitHub profile" : "Open repository"}</span>
+                    <ArrowUpRight size={18} />
                   </MagneticLink>
+                  <button
+                    type="button"
+                    className="lx-btn lx-btn--ghost"
+                    onClick={() => focusProject((activeIndex + 1) % projects.length)}
+                  >
+                    <span>Next: {projects[(activeIndex + 1) % projects.length].title}</span>
+                  </button>
                 </div>
               </article>
             </ContentTransition>
