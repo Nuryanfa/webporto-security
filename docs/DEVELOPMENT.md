@@ -61,7 +61,7 @@ For interface changes, also inspect:
 
 ## Vercel deployment
 
-The canonical site URL in the current metadata is **https://www.nuryanfa.my.id/**.
+The canonical site URL in the current metadata is **https://nuryanfa.vercel.app/**.
 
 | Setting | Value |
 | --- | --- |

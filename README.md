@@ -7,13 +7,13 @@
 
 A personal portfolio connecting backend engineering, defensive security, and reliable software delivery through a cybersecurity × anime-inspired interface.
 
-[Explore the live portfolio](https://www.nuryanfa.my.id/) · [Quick overview](https://www.nuryanfa.my.id/overview) · [Selected work](https://www.nuryanfa.my.id/archive) · [Contact](https://www.nuryanfa.my.id/network)
+[Explore the live portfolio](https://nuryanfa.vercel.app/) · [Quick overview](https://nuryanfa.vercel.app/overview) · [Selected work](https://nuryanfa.vercel.app/archive) · [Contact](https://nuryanfa.vercel.app/network)
 
 </div>
 
 ---
 
-[![Portfolio homepage showing the interactive Nexus, portrait, and navigation nodes](docs/images/portfolio-desktop.png)](https://www.nuryanfa.my.id/)
+[![Portfolio homepage showing the interactive Nexus, portrait, and navigation nodes](docs/images/portfolio-desktop.png)](https://nuryanfa.vercel.app/)
 
 <details>
 <summary>View the mobile experience</summary>
@@ -34,11 +34,11 @@ The experience uses an interactive **Nexus** as its entry point: select a node t
 
 | Section | What you will find |
 | --- | --- |
-| [Nexus](https://www.nuryanfa.my.id/) | Interactive identity, projects, experience, and contact nodes |
-| [Operations](https://www.nuryanfa.my.id/archive) | Seven selected projects, scope and status labels, source links, and three-stage concept maps |
-| [Trace](https://www.nuryanfa.my.id/timeline) | DevOps, fullstack, and backend experience |
-| [Channel](https://www.nuryanfa.my.id/network) | Email, GitHub, and LinkedIn contact channels |
-| [Quick overview](https://www.nuryanfa.my.id/overview) | A concise summary of work, experience, and ways to connect |
+| [Nexus](https://nuryanfa.vercel.app/) | Interactive identity, projects, experience, and contact nodes |
+| [Operations](https://nuryanfa.vercel.app/archive) | Seven selected projects, scope and status labels, source links, and three-stage concept maps |
+| [Trace](https://nuryanfa.vercel.app/timeline) | DevOps, fullstack, and backend experience |
+| [Channel](https://nuryanfa.vercel.app/network) | Email, GitHub, and LinkedIn contact channels |
+| [Quick overview](https://nuryanfa.vercel.app/overview) | A concise summary of work, experience, and ways to connect |
 
 ## Selected engineering work
 
@@ -62,7 +62,7 @@ Concept maps on the site explain project themes; they are not live infrastructur
 - **Fullstack Developer — SI MANTAP:** university application features and student guidance workflows.
 - **Backend Engineer Intern — Digitak Labs:** API development, relational data design, and GitLab delivery workflows.
 
-[Explore the experience timeline →](https://www.nuryanfa.my.id/timeline)
+[Explore the experience timeline →](https://nuryanfa.vercel.app/timeline)
 
 ## Interface and interaction
 
