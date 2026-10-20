@@ -28,7 +28,7 @@ export default function ProjectCard({ project, index }) {
   return (
     <Link
       to={`/archive?project=${project.code}`}
-      className={`lx-card tone-${tone}`}
+      className="lx-card"
       data-cursor="Lock on"
       onPointerMove={trackSpotlight}
     >
@@ -49,7 +49,7 @@ export default function ProjectCard({ project, index }) {
       <div className="lx-card__body">
         <div className="lx-card__row">
           <span className="lx-card__type">{project.type}</span>
-          <span className="lx-card__stamp">{project.status}</span>
+          <span className={`lx-card__stamp tone-${tone}`}>{project.status}</span>
         </div>
         <h3>{project.title}</h3>
         <p>{project.summary}</p>

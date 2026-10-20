@@ -102,7 +102,7 @@ export default function Archive() {
         <section className="lx-ops__console">
           <div
             ref={indexRef}
-            className={`lx-ops__index tone-${statusTone(active.status)}`}
+            className="lx-ops__index"
             role="tablist" aria-label="Project selection" data-reveal>
             <span className="lx-glider lx-ops__glider" aria-hidden="true" />
             {projects.map((project, index) => {
@@ -137,7 +137,7 @@ export default function Archive() {
                 id={`operation-dossier-${active.code}`}
                 role="tabpanel"
                 aria-labelledby={`tab-${active.code}`}
-                className={`lx-dossier tone-${statusTone(active.status)}`}
+                className="lx-dossier"
               >
                 <div className="lx-scan" aria-hidden="true" onPointerMove={trackSpotlight} data-stagger>
                   <div className="lx-scan__bar">
@@ -163,7 +163,7 @@ export default function Archive() {
                     </div>
                     <div>
                       <dt>Status</dt>
-                      <dd className="lx-scan__status">{active.status}</dd>
+                      <dd className={`lx-scan__status tone-${statusTone(active.status)}`}>{active.status}</dd>
                     </div>
                     <div>
                       <dt>Primary stack</dt>

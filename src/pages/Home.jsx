@@ -131,10 +131,12 @@ export default function Home() {
         {/* ── Hero ───────────────────────────────────────────── */}
         <section className="lx-hero" aria-labelledby="hero-title">
           <div className="lx-hero__meta" data-hero-fade>
-            <span className="lx-ep-tag">
-              Episode 01 <span lang="ja">第壱話</span> · <span lang="ja">起動</span> System online
+            <span className="lx-statusline">
+              <b>EP.01</b>
+              <span lang="ja">第壱話 · 起動</span>
+              <span>System online</span>
             </span>
-            <span className="lx-alert-chip">
+            <span className="lx-statusline lx-statusline--go">
               <i />
               Open to backend · security · DevOps roles
             </span>
@@ -254,25 +256,33 @@ export default function Home() {
           <div className="lx-caps__grid">
             {capabilities.map((item, index) => (
               <article key={item.id} className="lx-cap" style={{ "--c": item.color }} data-reveal>
-                <span className="lx-cap__bg" lang="ja" aria-hidden="true">
-                  {item.kanji}
-                </span>
-                <div className="lx-cap__top">
-                  <span>Core · 0{index + 1}</span>
-                  <span className="lx-cap__vote">
-                    <span lang="ja">可決</span> Approved
+                <header className="lx-cap__head">
+                  <span className="lx-cap__num">Core 0{index + 1}</span>
+                  <span className="lx-cap__area">{item.area}</span>
+                </header>
+                <div className="lx-cap__body">
+                  <span className="lx-cap__glyph" aria-hidden="true">
+                    <span lang="ja">{item.kanji}</span>
+                    <small>{item.verb}</small>
                   </span>
+                  <div className="lx-cap__copy">
+                    <h3>{item.title}</h3>
+                    <p>{item.body}</p>
+                  </div>
                 </div>
-                <span className="lx-cap__kanji" lang="ja">
-                  {item.kanji}
-                </span>
-                <span className="lx-cap__verb">{item.verb}</span>
-                <h3>{item.title}</h3>
-                <p>{item.body}</p>
-                <span className="lx-cap__proof">
-                  <small>Proven in</small>
-                  {item.proof}
-                </span>
+                <footer className="lx-cap__proof">
+                  <span>Proven in</span>
+                  <ul>
+                    {item.evidence.map((ev) => (
+                      <li key={ev.label}>
+                        <Link to={ev.to}>
+                          {ev.label}
+                          <ArrowUpRight size={13} aria-hidden="true" />
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </footer>
               </article>
             ))}
           </div>

@@ -1,8 +1,8 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment } from "react";
 import { ArrowUpRight, Github, Linkedin, Mail } from "lucide-react";
 import AnimatedPage from "../components/AnimatedPage";
 import EpisodeHeader from "../components/luxe/EpisodeHeader";
-import { trackSpotlight } from "../components/luxe/ProjectCard";
+import Availability from "../components/luxe/Availability";
 import { profile } from "../content/profile";
 
 // The address is only used in the mailto link; it is never rendered as text.
@@ -40,20 +40,7 @@ const channels = [
   },
 ];
 
-function useClock() {
-  const [time, setTime] = useState("--:--:--");
-  useEffect(() => {
-    const update = () =>
-      setTime(new Date().toLocaleTimeString("en-GB", { timeZone: "Asia/Jakarta", hour12: false }));
-    update();
-    const id = setInterval(update, 1000);
-    return () => clearInterval(id);
-  }, []);
-  return time;
-}
-
 export default function Network() {
-  const time = useClock();
   return (
     <AnimatedPage>
       <div className="lx-page lx-contact">
@@ -103,21 +90,13 @@ export default function Network() {
             ))}
           </ul>
 
-          <aside className="lx-contact__aside" data-reveal onPointerMove={trackSpotlight}>
-            <div className="lx-radar" aria-hidden="true">
-              <i className="lx-radar__ring" />
-              <i className="lx-radar__ring" />
-              <i className="lx-radar__ring" />
-              <i className="lx-radar__sweep" />
-              <i className="lx-radar__blip lx-radar__blip--a" />
-              <i className="lx-radar__blip lx-radar__blip--b" />
-              <i className="lx-radar__blip lx-radar__blip--c" />
-            </div>
+          <aside className="lx-contact__aside" data-reveal>
+            <Availability />
             <dl className="lx-contact__facts">
               <div>
                 <dt>Status</dt>
                 <dd>
-                  <span className="lx-status">
+                  <span className="lx-statusline lx-statusline--go">
                     <i />
                     Open to opportunities
                   </span>
@@ -126,10 +105,6 @@ export default function Network() {
               <div>
                 <dt>Based in</dt>
                 <dd>{profile.location}</dd>
-              </div>
-              <div>
-                <dt>Local time</dt>
-                <dd className="lx-contact__clock">{time} · UTC+7</dd>
               </div>
               <div>
                 <dt>Focus</dt>

@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Lenis from "lenis";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { ArrowUpRight, Command, TerminalSquare, Volume2, VolumeX } from "lucide-react";
+import { ArrowUpRight, TerminalSquare } from "lucide-react";
 import useMotionPreference from "../utils/useMotionPreference";
 import MotionControl from "./MotionControl";
 // Overlays are loaded the first time they are opened.
@@ -314,7 +314,7 @@ export default function Layout({ children }) {
           </Link>
 
           <nav ref={navRef} aria-label="Main" className="lx-nav">
-            <span className="lx-glider lx-nav__pill" aria-hidden="true" />
+            <span className="lx-glider lx-nav__bar" aria-hidden="true" />
             {links.map(({ to, label, kanji, no }) => (
               <NavLink to={to} end key={to} title={`${label} — press ${Number(no)}`}>
                 <span className="lx-nav__kanji" lang="ja">
@@ -332,25 +332,23 @@ export default function Layout({ children }) {
             <button
               type="button"
               onClick={toggleSound}
-              className="lx-icon-btn"
+              className="lx-ctl"
               aria-pressed={soundOn}
-              aria-label={soundOn ? "Mute UI sound" : "Enable UI sound"}
               title="UI sound"
             >
-              {soundOn ? <Volume2 size={15} /> : <VolumeX size={15} />}
+              Sound <b>{soundOn ? "On" : "Off"}</b>
             </button>
             <button
               type="button"
               onClick={() => setIsKeymapOpen(true)}
-              className="lx-icon-btn"
-              aria-label="Keyboard shortcuts"
+              className="lx-ctl"
               title="Keyboard shortcuts (?)"
             >
-              <Command size={15} />
+              Keys <kbd>?</kbd>
             </button>
             <MotionControl />
-            <Link to="/overview" className="lx-pill-link">
-              <span lang="ja">概要</span> Brief
+            <Link to="/overview" className="lx-ctl lx-ctl--brief">
+              Brief <span lang="ja">概要</span> <ArrowUpRight size={13} aria-hidden="true" />
             </Link>
             <button
               ref={menuButton}
