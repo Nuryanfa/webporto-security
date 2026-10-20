@@ -1,6 +1,6 @@
 // Per-route metadata, shared by the client (TabTitleUpdater) and the build-time
 // prerender script that writes one HTML file per route for link previews.
-export const siteUrl = "https://www.nuryanfa.my.id";
+export const siteUrl = "https://nuryanfa.vercel.app";
 
 export const pages = {
   "/": {
