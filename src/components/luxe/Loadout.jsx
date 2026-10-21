@@ -6,14 +6,18 @@ import { loadout } from "../../content/capabilities";
 import { projects } from "../../content/projects";
 import { experiences } from "../../content/experience";
 import { statusTone } from "../../content/episodes";
+import { allBadges, formatBadgeDate, googleSkills } from "../../content/credentials";
 import { playTacticalBlip } from "../../utils/audioTelemetry";
 
 // Every link shown is derived from tags in the content files, never hand-written.
 function evidenceFor(tool) {
   const hit = (tags) => tags.some((tag) => tool.match.includes(tag));
+  const badges =
+    tool.badges === "all" ? allBadges : allBadges.filter((badge) => (tool.badges || []).includes(badge.title));
   return {
     ops: projects.filter((p) => hit(p.tags)),
     records: experiences.filter((e) => hit(e.tags)),
+    badges,
   };
 }
 
@@ -50,7 +54,7 @@ export default function Loadout() {
               {index
                 .filter((tool) => tool.si === si)
                 .map((tool) => {
-                  const count = tool.ops.length + tool.records.length;
+                  const count = tool.ops.length + tool.records.length + tool.badges.length;
                   return (
                     <li key={tool.name}>
                       <button
@@ -88,9 +92,17 @@ export default function Loadout() {
             {current.name}
           </h3>
           <p className="lx-readout__meta" data-stagger>
-            Deployed in {current.ops.length} operation{current.ops.length === 1 ? "" : "s"}
-            {current.records.length > 0 &&
-              ` · ${current.records.length} field record${current.records.length === 1 ? "" : "s"}`}
+            {current.ops.length + current.records.length + current.badges.length === 0
+              ? "Lab & self-study — no public project yet"
+              : [
+                  current.ops.length && `${current.ops.length} operation${current.ops.length === 1 ? "" : "s"}`,
+                  current.records.length &&
+                    `${current.records.length} field record${current.records.length === 1 ? "" : "s"}`,
+                  current.badges.length &&
+                    `${current.badges.length} verified badge${current.badges.length === 1 ? "" : "s"}`,
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
           </p>
           <ul className="lx-readout__list" data-stagger>
             {current.ops.map((p) => (
@@ -115,7 +127,22 @@ export default function Loadout() {
                 </Link>
               </li>
             ))}
+            {current.badges.slice(0, 6).map((badge) => (
+              <li key={badge.title}>
+                <a href={googleSkills.url} target="_blank" rel="noreferrer" className="tone-go">
+                  <span className="lx-readout__code">BADGE</span>
+                  <span className="lx-readout__title">{badge.title}</span>
+                  <small>{formatBadgeDate(badge.date)}</small>
+                  <ArrowUpRight size={15} aria-hidden="true" />
+                </a>
+              </li>
+            ))}
           </ul>
+          {current.badges.length > 6 && (
+            <a className="lx-readout__more" href={googleSkills.url} target="_blank" rel="noreferrer" data-stagger>
+              +{current.badges.length - 6} more on Google Skills <ArrowUpRight size={13} aria-hidden="true" />
+            </a>
+          )}
         </ContentTransition>
       </aside>
     </div>

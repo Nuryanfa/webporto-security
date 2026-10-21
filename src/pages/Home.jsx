@@ -46,6 +46,35 @@ export function SectionHead({ index, kanji, label }) {
   );
 }
 
+// Caution-tape segments; `kind` picks the visual treatment.
+const tape = [
+  { kind: "sign", text: "Caution" },
+  { kind: "jp", jp: "立入禁止", text: "Restricted zone" },
+  { kind: "area", text: "Area NY-07", jp: "エリア" },
+  { kind: "jp", jp: "防衛線", text: "Defense line holding" },
+  { kind: "plain", text: "Unauthorized access will be traced" },
+];
+
+function TapeSegment({ item }) {
+  if (item.kind === "sign") return <b className="lx-tape__sign">{item.text}</b>;
+  if (item.kind === "area")
+    return (
+      <span className="lx-tape__area">
+        {item.text}
+        <small lang="ja">{item.jp}</small>
+      </span>
+    );
+  return (
+    <span className="lx-tape__text">
+      {item.jp && <span lang="ja">{item.jp}</span>}
+      {item.text}
+      <i className="lx-tape__chev" aria-hidden="true">
+        ››
+      </i>
+    </span>
+  );
+}
+
 const warnings = [
   "警告 Warning",
   "Unauthorized access will be traced",
@@ -95,8 +124,8 @@ export default function Home() {
 
       // Hero recedes as the page scrolls away from it.
       const heroScroll = { trigger: ".lx-hero", start: "top top", end: "bottom top", scrub: true };
-      gsap.to(".lx-hero__text", { y: -60, autoAlpha: 0.2, ease: "none", scrollTrigger: heroScroll });
-      gsap.to(".lx-hero__visual", { y: 80, autoAlpha: 0.3, ease: "none", scrollTrigger: heroScroll });
+      // The whole hero recedes as one block so its columns stay aligned.
+      gsap.to(".lx-hero__grid", { y: -60, autoAlpha: 0.15, ease: "none", scrollTrigger: heroScroll });
 
       // Desktop: operations scroll sideways while the section is pinned.
       const mm = gsap.matchMedia();
@@ -138,14 +167,14 @@ export default function Home() {
             </span>
             <span className="lx-statusline lx-statusline--go">
               <i />
-              Open to backend · security · DevOps roles
+              Open to backend · security · DevOps · cloud roles
             </span>
           </div>
 
           <div className="lx-hero__grid">
             <div className="lx-hero__text">
               <span className="lx-hero__role" data-hero-fade>
-                <DecodeText text="BACKEND // SECURITY // DEVOPS" />
+                <DecodeText text="BACKEND // SECURITY // DEVOPS // CLOUD" />
               </span>
               <h1 id="hero-title" className="lx-hero__title" aria-label={profile.name}>
                 <SplitReveal as="span" type="chars" trigger="intro" stagger={0.03} className="lx-hero__line">
@@ -214,7 +243,18 @@ export default function Home() {
 
         {/* ── Warning band ──────────────────────────────────── */}
         <section className="lx-band" aria-label="Status ticker and technology stack">
-          <Marquee items={warnings} speed={34} className="lx-marquee--alert" />
+          {/* Caution-tape zone: two crossed tapes, the front one running right. */}
+          <div className="lx-zone">
+            <Marquee items={warnings} speed={46} decorative className="lx-marquee--alert lx-tape lx-tape--back" />
+            <Marquee
+              items={tape}
+              reverse
+              speed={26}
+              label="Caution: restricted zone, defense line holding"
+              renderItem={(item) => <TapeSegment item={item} />}
+              className="lx-marquee--alert lx-tape lx-tape--front"
+            />
+          </div>
           <Marquee items={stack} reverse speed={48} className="lx-marquee--outline" />
         </section>
 
@@ -275,10 +315,17 @@ export default function Home() {
                   <ul>
                     {item.evidence.map((ev) => (
                       <li key={ev.label}>
-                        <Link to={ev.to}>
-                          {ev.label}
-                          <ArrowUpRight size={13} aria-hidden="true" />
-                        </Link>
+                        {ev.href ? (
+                          <a href={ev.href} target="_blank" rel="noreferrer">
+                            {ev.label}
+                            <ArrowUpRight size={13} aria-hidden="true" />
+                          </a>
+                        ) : (
+                          <Link to={ev.to}>
+                            {ev.label}
+                            <ArrowUpRight size={13} aria-hidden="true" />
+                          </Link>
+                        )}
                       </li>
                     ))}
                   </ul>

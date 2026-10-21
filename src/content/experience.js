@@ -13,7 +13,7 @@ export const experiences = [
       { icon: GitBranch, text: "Team code workflow and CI/CD pipelines" },
       { icon: Activity, text: "Web application delivery to production" },
     ],
-    tags: ["DevOps", "CI/CD", "Server setup", "Production delivery"],
+    tags: ["DevOps", "CI/CD", "Server setup", "Production delivery", "Cloud & VPS hosting"],
   },
   {
     id: "SIMANTAP",

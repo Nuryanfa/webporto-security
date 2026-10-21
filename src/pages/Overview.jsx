@@ -9,6 +9,7 @@ import { profile } from "../content/profile";
 import { projects } from "../content/projects";
 import { capabilities } from "../content/capabilities";
 import { statusTone } from "../content/episodes";
+import { formatBadgeDate, googleSkills } from "../content/credentials";
 
 const facts = [
   { label: "Selected projects", value: String(projects.length).padStart(2, "0"), note: "Builds & security labs", count: projects.length },
@@ -173,7 +174,40 @@ export default function Overview() {
           </ul>
         </BriefSection>
 
-        <BriefSection index="04" title="Contact" id="brief-contact">
+        <BriefSection index="04" title="Credentials" id="brief-credentials">
+          <div className="lx-creds" data-reveal>
+            <header className="lx-creds__head">
+              <div>
+                <h3>Google Cloud skill badges</h3>
+                <p>
+                  {googleSkills.total} badges earned on Google Skills · {googleSkills.league}. Highlighted
+                  below are the cloud skill badges — hands-on labs completed in Google Cloud projects.
+                </p>
+              </div>
+              <a className="lx-btn lx-btn--ghost" href={googleSkills.url} target="_blank" rel="noreferrer">
+                <span>Verify profile</span>
+                <ArrowUpRight size={17} />
+              </a>
+            </header>
+            <div className="lx-creds__groups">
+              {googleSkills.groups.map((group) => (
+                <section key={group.id} className="lx-creds__group" aria-label={group.title}>
+                  <h4>{group.title}</h4>
+                  <ul>
+                    {group.badges.map((badge) => (
+                      <li key={badge.title}>
+                        <span>{badge.title}</span>
+                        <time dateTime={badge.date}>{formatBadgeDate(badge.date)}</time>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ))}
+            </div>
+          </div>
+        </BriefSection>
+
+        <BriefSection index="05" title="Contact" id="brief-contact">
           <div className="lx-brief__contact" data-reveal onPointerMove={trackSpotlight}>
             <div>
               <h3>Open for engineering roles &amp; collaborations.</h3>

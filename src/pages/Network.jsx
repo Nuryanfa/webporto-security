@@ -1,5 +1,6 @@
 import { Fragment } from "react";
-import { ArrowUpRight, Github, Linkedin, Mail } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, Github, Linkedin, Mail } from "lucide-react";
+import { googleSkills } from "../content/credentials";
 import AnimatedPage from "../components/AnimatedPage";
 import EpisodeHeader from "../components/luxe/EpisodeHeader";
 import Availability from "../components/luxe/Availability";
@@ -36,6 +37,16 @@ const channels = [
     note: "Professional network",
     href: "https://www.linkedin.com/in/muhamad-nur-yanfa-069036368",
     cursor: "Connect",
+    external: true,
+  },
+  {
+    key: "skills",
+    icon: BadgeCheck,
+    label: "Google Skills",
+    value: `${googleSkills.total} skill badges`,
+    note: "Verified Google Cloud labs",
+    href: googleSkills.url,
+    cursor: "Verify",
     external: true,
   },
 ];

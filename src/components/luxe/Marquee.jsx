@@ -6,7 +6,15 @@ import useMotionPreference from "../../utils/useMotionPreference";
  * Infinite ticker whose speed and direction respond to scroll velocity.
  * Content is rendered twice; the track loops at -50%.
  */
-export default function Marquee({ items, reverse = false, speed = 38, className = "" }) {
+export default function Marquee({
+  items,
+  reverse = false,
+  speed = 38,
+  decorative = false,
+  className = "",
+  renderItem,
+  label,
+}) {
   const root = useRef(null);
   const reduced = useMotionPreference();
 
@@ -33,7 +41,8 @@ export default function Marquee({ items, reverse = false, speed = 38, className 
           gsap.to(track, {
             skewX: gsap.utils.clamp(-6, 6, self.getVelocity() / -320),
             duration: 0.4,
-            overwrite: true,
+            // "auto" only replaces earlier skew tweens; `true` would also kill the scrolling loop.
+            overwrite: "auto",
           });
         },
         onLeave: () => loop.pause(),
@@ -49,15 +58,25 @@ export default function Marquee({ items, reverse = false, speed = 38, className 
     { scope: root, dependencies: [reduced] },
   );
 
-  const row = items.map((item, i) => (
-    <span className="lx-marquee__item" key={`${item}-${i}`}>
-      {item}
-      <i aria-hidden="true">✦</i>
-    </span>
-  ));
+  const row = items.map((item, i) =>
+    renderItem ? (
+      <span className="lx-marquee__item" key={i}>
+        {renderItem(item)}
+      </span>
+    ) : (
+      <span className="lx-marquee__item" key={`${item}-${i}`}>
+        {item}
+        <i aria-hidden="true">✦</i>
+      </span>
+    ),
+  );
 
   return (
-    <div ref={root} className={`lx-marquee ${className}`} aria-label={items.join(", ")} role="marquee">
+    <div
+      ref={root}
+      className={`lx-marquee ${className}`}
+      {...(decorative ? { "aria-hidden": true } : { role: "marquee", "aria-label": label || items.join(", ") })}
+    >
       <div className="lx-marquee__track" aria-hidden="true">
         <div className="lx-marquee__row">{row}</div>
         <div className="lx-marquee__row">{row}</div>

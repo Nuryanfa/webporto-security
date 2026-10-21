@@ -37,11 +37,17 @@ export const capabilities = [
     icon: Layers,
     kanji: "運用",
     verb: "Operate",
-    area: "DevOps & Infrastructure",
-    title: "Reliable Software Delivery",
-    body: "Production server deployment, container orchestration via Docker, automated CI/CD pipeline authoring, and telemetry observability using OpenTelemetry and Prometheus.",
+    area: "DevOps & Cloud",
+    title: "Cloud & Software Delivery",
+    body: "Deploying and running workloads on Google Cloud, Azure, and VPS hosts — compute, networking, firewall rules, and IAM — plus Docker, automated CI/CD pipelines, and observability with OpenTelemetry and Prometheus.",
     proof: "Nuansa Teknologi Indonesia (current)",
-    evidence: [{ label: "DevOps at NTI", to: "/timeline" }],
+    evidence: [
+      { label: "DevOps at NTI", to: "/timeline" },
+      {
+        label: "Google Skills · 23 badges",
+        href: "https://www.skills.google/public_profiles/7e1b2448-d30c-499f-a889-034966a54a1b",
+      },
+    ],
     color: "#b6ff3b",
   },
 ];
@@ -60,6 +66,8 @@ export const stack = [
   "MikroTik",
   "CI/CD",
   "MITRE ATT&CK",
+  "Google Cloud",
+  "Azure",
   "React",
 ];
 
@@ -105,11 +113,52 @@ export const loadout = [
     slot: "Delivery & observability",
     kanji: "運用",
     tools: [
-      { name: "CI/CD", match: ["CI/CD", "GitLab CI/CD"] },
+      { name: "CI/CD", match: ["CI/CD", "GitLab CI/CD"], badges: ["Implement CI/CD Pipelines on Google Cloud"] },
       { name: "Prometheus", match: ["Prometheus"] },
+      { name: "Cloud Monitoring", match: [], badges: ["Monitoring in Google Cloud"] },
       { name: "OpenTelemetry", match: ["OpenTelemetry"] },
       { name: "Testing · SQA", match: ["Testing", "SQA"] },
       { name: "Server setup", match: ["Server setup", "Production delivery"] },
+    ],
+  },
+  {
+    slot: "Cloud platforms",
+    kanji: "雲",
+    tools: [
+      { name: "Google Cloud", match: ["Cloud KMS", "Google Cloud"], badges: "all" },
+      {
+        name: "Network & IAM",
+        match: ["Cloud networking"],
+        badges: [
+          "Privileged Access with IAM",
+          "Connecting Cloud Networks with NCC",
+          "Arcade Simulator: Network Security Engineer",
+        ],
+      },
+      {
+        name: "Compute & load balancing",
+        match: ["Cloud & VPS hosting"],
+        badges: ["Implementing Cloud Load Balancing for Compute Engine"],
+      },
+      {
+        name: "Serverless & API Gateway",
+        match: [],
+        badges: ["Deploy and Secure Serverless APIs with API Gateway"],
+      },
+      {
+        name: "Cloud data · BigQuery",
+        match: [],
+        badges: [
+          "Create and Manage Cloud Spanner Instances",
+          "Store, Process, and Manage Data on Google Cloud - Command Line",
+          "Create a Streaming Data Lake on Cloud Storage",
+          "Create a Secure Data Lake on Cloud Storage",
+          "Derive Insights from BigQuery Data",
+          "Perform Predictive Data Analysis in BigQuery",
+        ],
+      },
+      { name: "VPS hosting", match: ["Cloud & VPS hosting"] },
+      { name: "Azure", match: ["Azure"] },
     ],
   },
 ];
