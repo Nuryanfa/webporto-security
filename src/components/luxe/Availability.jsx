@@ -71,8 +71,8 @@ export default function Availability() {
       {now && shift !== 0 && <Track name="Your time" hour={visitorHour} />}
 
       <p className="lx-avail__note">
-        {now ? describeShift(shift, zone) : "Bandung, Indonesia (UTC+7)."} Email is the fastest way to reach me
-        across time zones.
+        {now ? describeShift(shift, zone) : "Bandung, Indonesia (UTC+7)."} GitHub and LinkedIn are open any
+        time; email for a direct conversation.
       </p>
     </div>
   );

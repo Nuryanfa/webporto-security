@@ -1,7 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ArrowUpRight, Check, Printer } from "lucide-react";
 import AnimatedPage from "../components/AnimatedPage";
+import { gsap, useGSAP, onStageReady } from "../luxe/gsap";
+import useMotionPreference from "../utils/useMotionPreference";
 import SplitReveal from "../components/luxe/SplitReveal";
 import { trackSpotlight } from "../components/luxe/ProjectCard";
 import { experiences } from "../content/experience";
@@ -17,6 +19,8 @@ const facts = [
   { label: "Core stack", value: "Go × Linux", note: "Docker · PostgreSQL · Redis · gRPC" },
   { label: "Defense", value: "DevSecOps", note: "Wazuh · Suricata · MITRE ATT&CK" },
 ];
+
+const roles = ["Backend", "Security", "DevOps · Cloud"];
 
 function BriefSection({ index, title, children, id }) {
   return (
@@ -34,6 +38,20 @@ function BriefSection({ index, title, children, id }) {
 }
 
 export default function Overview() {
+  const hero = useRef(null);
+  const reduced = useMotionPreference();
+
+  useGSAP(
+    (_, contextSafe) => {
+      if (reduced) return;
+      gsap.set(".lx-agent__band", { xPercent: -105 });
+      return onStageReady(
+        contextSafe(() => gsap.to(".lx-agent__band", { xPercent: 0, duration: 0.6, delay: 0.1, ease: "power4.out" })),
+      );
+    },
+    { scope: hero, dependencies: [reduced] },
+  );
+
   useEffect(() => {
     const handleKey = (e) => {
       const tag = document.activeElement?.tagName;
@@ -50,7 +68,7 @@ export default function Overview() {
   return (
     <AnimatedPage>
       <div className="lx-page lx-brief">
-        <header className="lx-brief__hero">
+        <header ref={hero} className="lx-brief__hero">
           <div className="lx-brief__intro">
             <div className="lx-page-head__top" data-reveal>
               <span className="lx-ep-tag">
@@ -61,9 +79,20 @@ export default function Overview() {
               </span>
               <span className="lx-stamp">Declassified</span>
             </div>
-            <SplitReveal as="h1" type="chars" trigger="intro" delay={0.2} className="lx-display lx-display--md">
-              {profile.name}
-            </SplitReveal>
+            {/* Agent intro: the name on a slanted band, role chips underneath. */}
+            <div className="lx-agent">
+              <i className="lx-agent__band" aria-hidden="true" />
+              <SplitReveal as="h1" type="chars" trigger="intro" delay={0.35} className="lx-display lx-display--md">
+                {profile.name}
+              </SplitReveal>
+            </div>
+            <ul className="lx-agent__chips" aria-label="Roles" data-reveal>
+              {roles.map((role) => (
+                <li key={role}>
+                  <span>{role}</span>
+                </li>
+              ))}
+            </ul>
             <p className="lx-page-head__lede" data-reveal>
               <strong>{profile.role}.</strong> {profile.positioning}
             </p>
@@ -95,7 +124,7 @@ export default function Overview() {
               <dt>{fact.label}</dt>
               <dd>
                 <b data-count={fact.count}>{fact.value}</b>
-                <small>{fact.note}</small>
+                <small data-redact>{fact.note}</small>
               </dd>
             </div>
           ))}
@@ -111,7 +140,9 @@ export default function Overview() {
                 </div>
                 <h3>{item.title}</h3>
                 <p>{item.body}</p>
-                <span className="lx-pillar__proof">Proven in: {item.proof}</span>
+                <span className="lx-pillar__proof">
+                  Proven in: <span data-redact>{item.proof}</span>
+                </span>
               </article>
             ))}
           </div>
@@ -158,7 +189,9 @@ export default function Overview() {
                 <div className="lx-role__head">
                   <span className="lx-role__when">{experience.coordinate}</span>
                   <h3>{experience.role}</h3>
-                  <span className="lx-role__place">{experience.place}</span>
+                  <span className="lx-role__place">
+                    <span data-redact>{experience.place}</span>
+                  </span>
                 </div>
                 <p>{experience.description}</p>
                 <ul className="lx-role__events">
@@ -212,8 +245,8 @@ export default function Overview() {
             <div>
               <h3>Open for engineering roles &amp; collaborations.</h3>
               <p>
-                Backend engineering, security architecture, and DevOps infrastructure. Reach out by
-                email or through a professional network.
+                Backend engineering, security architecture, and DevOps / cloud infrastructure. See the
+                source on GitHub, connect on LinkedIn, or get in touch directly.
               </p>
             </div>
             <div className="lx-brief__actions">
@@ -221,8 +254,12 @@ export default function Overview() {
                 <span>Contact</span>
                 <ArrowUpRight size={18} />
               </Link>
-              <a href="https://github.com/Nuryanfa" target="_blank" rel="noreferrer" className="lx-btn lx-btn--ghost">
+              <a href={profile.links.github} target="_blank" rel="noreferrer" className="lx-btn lx-btn--ghost">
                 <span>GitHub</span>
+                <ArrowUpRight size={18} />
+              </a>
+              <a href={profile.links.linkedin} target="_blank" rel="noreferrer" className="lx-btn lx-btn--ghost">
+                <span>LinkedIn</span>
                 <ArrowUpRight size={18} />
               </a>
             </div>

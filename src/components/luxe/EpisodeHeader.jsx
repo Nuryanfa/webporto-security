@@ -16,8 +16,14 @@ export default function EpisodeHeader({ eyebrow, children, lede, extra }) {
         {extra}
       </div>
       <div className="lx-page-head__title">
-        <span className="lx-page-head__kanji" lang="ja" aria-hidden="true" data-reveal>
-          {episode.kanji}
+        <span
+          className="lx-page-head__kanji"
+          lang="ja"
+          aria-hidden="true"
+          data-reveal
+          style={{ "--n": [...episode.kanji].length }}
+        >
+          <span>{episode.kanji}</span>
         </span>
         <div>
           <span className="lx-page-head__reading" data-reveal>

@@ -1,10 +1,10 @@
 // Anime framing for each route: every page is an "episode" with a kanji title card.
 export const episodes = {
-  "/": { no: "01", ep: "第壱話", kanji: "起動", reading: "KIDŌ", en: "System Online", label: "Home" },
-  "/archive": { no: "02", ep: "第弐話", kanji: "作戦", reading: "SAKUSEN", en: "Operations", label: "Work" },
-  "/timeline": { no: "03", ep: "第参話", kanji: "経歴", reading: "KEIREKI", en: "Trace", label: "Experience" },
-  "/network": { no: "04", ep: "第四話", kanji: "通信", reading: "TSŪSHIN", en: "Channel", label: "Contact" },
-  "/overview": { no: "05", ep: "第伍話", kanji: "概要", reading: "GAIYŌ", en: "Brief", label: "Overview" },
+  "/": { no: "01", ep: "第壱話", kanji: "起動", reading: "KIDŌ", en: "System Online", label: "Home", subtitle: "Operator NY-07, standing by." },
+  "/archive": { no: "02", ep: "第弐話", kanji: "作戦", reading: "SAKUSEN", en: "Operations", label: "Work", subtitle: "Seven operations on file. Select a target." },
+  "/timeline": { no: "03", ep: "第参話", kanji: "経歴", reading: "KEIREKI", en: "Trace", label: "Experience", subtitle: "Field records decrypted." },
+  "/network": { no: "04", ep: "第四話", kanji: "通信", reading: "TSŪSHIN", en: "Channel", label: "Contact", subtitle: "Channel open. Awaiting your signal." },
+  "/overview": { no: "05", ep: "第伍話", kanji: "概要", reading: "GAIYŌ", en: "Brief", label: "Overview", subtitle: "Personnel file declassified." },
 };
 
 export const lostEpisode = {

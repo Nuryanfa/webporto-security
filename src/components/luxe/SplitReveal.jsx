@@ -7,11 +7,12 @@ function byDocumentOrder(a, b) {
 }
 
 /**
- * Masked text reveal. Server render and reduced motion show plain text;
+ * Masked text reveal: pieces slide in on a slant from the left and settle with
+ * a small overshoot. Server render and reduced motion show plain text;
  * the split only exists in the browser, so content stays indexable.
  *
  * trigger: "mount" (immediately), "intro" (after the preloader), "scroll".
- * <em> accents stay whole so their gradient fill survives, and rise as one unit.
+ * <em> accents stay whole so their gradient fill survives, and slide as one unit.
  */
 export default function SplitReveal({
   as: Tag = "div",
@@ -20,7 +21,7 @@ export default function SplitReveal({
   trigger = "scroll",
   delay = 0,
   stagger,
-  duration = 1.25,
+  duration = 0.75,
   start = "top 88%",
   className = "",
   ...rest
@@ -52,13 +53,15 @@ export default function SplitReveal({
             const pieces = type === "chars" ? self.chars : type === "words" ? self.words : self.lines;
             const accents = type === "lines" ? [] : [...el.querySelectorAll("em")];
             const targets = [...pieces, ...accents].sort(byDocumentOrder);
-            const fallbackStagger = type === "chars" ? 0.022 : type === "words" ? 0.045 : 0.1;
+            const fallbackStagger = type === "chars" ? 0.03 : type === "words" ? 0.06 : 0.09;
             return gsap.from(targets, {
-              yPercent: 118,
-              rotate: type === "lines" ? 0 : 4,
+              // Lines are full-width blocks, so they travel a fixed distance instead.
+              ...(type === "lines" ? { x: -90 } : { xPercent: type === "chars" ? -70 : -40 }),
+              skewX: 16,
+              autoAlpha: 0,
               duration,
               delay,
-              ease: "expo.out",
+              ease: "back.out(1.6)",
               stagger: stagger ?? fallbackStagger,
               scrollTrigger:
                 trigger === "scroll" ? { trigger: el, start, once: true } : undefined,

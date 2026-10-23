@@ -11,15 +11,6 @@ const email = "nuryanfa93@gmail.com";
 
 const channels = [
   {
-    key: "email",
-    icon: Mail,
-    label: "Email",
-    value: "Start a conversation",
-    note: "Opens your email app",
-    href: `mailto:${email}`,
-    cursor: "Write",
-  },
-  {
     key: "github",
     icon: Github,
     label: "GitHub",
@@ -38,6 +29,15 @@ const channels = [
     href: "https://www.linkedin.com/in/muhamad-nur-yanfa-069036368",
     cursor: "Connect",
     external: true,
+  },
+  {
+    key: "email",
+    icon: Mail,
+    label: "Email",
+    value: "Start a conversation",
+    note: "Opens your email app",
+    href: `mailto:${email}`,
+    cursor: "Write",
   },
   {
     key: "skills",

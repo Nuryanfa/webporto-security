@@ -3,16 +3,17 @@ import { useLocation } from "react-router-dom";
 import { gsap, ScrollTrigger, setCurtain } from "../luxe/gsap";
 import { scrollToTop } from "../luxe/lenis";
 import { episodeFor } from "../content/episodes";
+import TitleCard from "./luxe/TitleCard";
 import useReducedMotion from "../utils/useMotionPreference";
 import { playNavigationChirp } from "../utils/audioTelemetry";
 
 /**
- * Episode transition with one continuous direction of travel:
- *   1. the old page lifts and fades while skewed panels sweep in from the right
- *      (an orange lead panel, then the black card panel);
- *   2. the title card rises out of a mask; routes swap and scroll resets unseen;
- *   3. the card drops away and the panels keep travelling left, uncovering the
- *      new page, whose entrance reveals start as it comes into view.
+ * Episode transition as a CRT channel switch:
+ *   1. the old page collapses to a bright horizontal line, which shrinks away;
+ *   2. on the dark screen the title card rises out of a mask; routes swap and
+ *      scroll resets unseen;
+ *   3. the card drops away, the line returns and the new page opens out of it,
+ *      whose entrance reveals start as it comes into view.
  * Query-only changes (project deep links) swap instantly.
  * children is a render function receiving the location to display.
  */
@@ -51,36 +52,45 @@ export default function RouteTransition({ children }) {
     const q = gsap.utils.selector(el);
     const content = stage.current;
 
+    // The page squashes towards the middle of the viewport, wherever it is scrolled.
+    const centre = (y) => `50% ${y + window.innerHeight / 2}px`;
+    const off = 0.004;
+
     const tl = gsap.timeline({ defaults: { ease: "expo.inOut" } });
     tl.set(el, { autoAlpha: 1 })
-      .set(q(".lx-curtain__panel"), { xPercent: 110 })
+      .set(q(".lx-curtain__panel--lead"), { autoAlpha: 0 })
+      .set(q(".lx-curtain__panel--main"), { xPercent: 0, autoAlpha: 0 })
       .set(q(".lx-curtain__mask > *"), { yPercent: 110 })
       .set(q(".lx-curtain__rule"), { scaleX: 0, transformOrigin: "left center" })
-      // 1. Cover
-      .to(content, { y: -36, opacity: 0.25, duration: 0.6, ease: "power3.in" }, 0)
-      .to(q(".lx-curtain__panel--lead"), { xPercent: 0, duration: 0.7 }, 0)
-      .to(q(".lx-curtain__panel--main"), { xPercent: 0, duration: 0.7 }, 0.07)
+      .set(q(".lx-curtain__line"), { scaleX: 0, autoAlpha: 1 })
+      .set(content, { transformOrigin: centre(window.scrollY) })
+      // 1. Switch off
+      .to(content, { scaleY: off, duration: 0.32, ease: "power3.in" }, 0)
+      .to(q(".lx-curtain__line"), { scaleX: 1, duration: 0.2, ease: "power3.out" }, 0.22)
+      .set(q(".lx-curtain__panel--main"), { autoAlpha: 1 }, 0.32)
+      .to(q(".lx-curtain__line"), { scaleX: 0, duration: 0.26, ease: "power3.in" }, 0.42)
       // 2. Title card
-      .to(q(".lx-curtain__mask > *"), { yPercent: 0, duration: 0.7, ease: "expo.out", stagger: 0.06 }, 0.48)
-      .to(q(".lx-curtain__rule"), { scaleX: 1, duration: 0.7, ease: "expo.out" }, 0.55)
+      .to(q(".lx-curtain__mask > *"), { yPercent: 0, duration: 0.7, ease: "expo.out", stagger: 0.06 }, 0.6)
+      .to(q(".lx-curtain__rule"), { scaleX: 1, duration: 0.7, ease: "expo.out" }, 0.66)
       .add(() => {
         scrollToTop();
-        // Opacity, not autoAlpha: visibility is inherited, and tweens created on the new
-        // page while it is hidden would record "hidden" as their starting state.
-        gsap.set(content, { y: 56, opacity: 0 });
+        // Transform only, never autoAlpha: visibility is inherited, and tweens created
+        // on the new page while it is hidden would record "hidden" as their start state.
+        gsap.set(content, { scaleY: off, transformOrigin: centre(0) });
         setDisplay(location);
-      }, 0.62)
-      // 3. Reveal, still travelling left
-      .to(q(".lx-curtain__mask > *"), { yPercent: -110, duration: 0.45, ease: "power3.in", stagger: 0.03 }, 1.1)
-      .to(q(".lx-curtain__rule"), { scaleX: 0, transformOrigin: "right", duration: 0.4, ease: "power3.in" }, 1.1)
-      .to(q(".lx-curtain__panel--main"), { xPercent: -110, duration: 0.8 }, 1.3)
-      .to(q(".lx-curtain__panel--lead"), { xPercent: -110, duration: 0.8 }, 1.36)
-      .add(() => setCurtain(false), 1.45)
-      .to(content, { y: 0, opacity: 1, duration: 1.1, ease: "expo.out" }, 1.45)
+      }, 0.74)
+      // 3. Switch on
+      .to(q(".lx-curtain__mask > *"), { yPercent: -110, duration: 0.45, ease: "power3.in", stagger: 0.03 }, 1.2)
+      .to(q(".lx-curtain__rule"), { scaleX: 0, transformOrigin: "right", duration: 0.4, ease: "power3.in" }, 1.2)
+      .to(q(".lx-curtain__line"), { scaleX: 1, duration: 0.22, ease: "power3.out" }, 1.5)
+      .set(q(".lx-curtain__panel--main"), { autoAlpha: 0 }, 1.72)
+      .add(() => setCurtain(false), 1.72)
+      .to(content, { scaleY: 1, duration: 0.55, ease: "expo.out" }, 1.72)
+      .to(q(".lx-curtain__line"), { autoAlpha: 0, duration: 0.3, ease: "power2.out" }, 1.74)
       .set(el, { autoAlpha: 0 })
       .set(q(".lx-curtain__rule"), { transformOrigin: "left" })
       .add(() => {
-        gsap.set(content, { clearProps: "transform,opacity" });
+        gsap.set(content, { clearProps: "transform,transformOrigin" });
         ScrollTrigger.refresh();
       });
     timeline.current = tl;
@@ -103,20 +113,9 @@ export default function RouteTransition({ children }) {
       <div ref={curtain} className="lx-curtain" aria-hidden="true">
         <i className="lx-curtain__panel lx-curtain__panel--lead" />
         <i className="lx-curtain__panel lx-curtain__panel--main" />
+        <i className="lx-curtain__line" />
         <div className="lx-curtain__card">
-          <span className="lx-curtain__mask">
-            <span className="lx-title-card__ep">
-              Episode {card.no} <span lang="ja">{card.ep}</span>
-            </span>
-          </span>
-          <span className="lx-curtain__mask">
-            <span className="lx-title-card__kanji" lang="ja">
-              {card.kanji}
-            </span>
-          </span>
-          <span className="lx-curtain__mask">
-            <span className="lx-title-card__en">{card.en}</span>
-          </span>
+          <TitleCard episode={card} maskClass="lx-curtain__mask" />
           <span className="lx-curtain__rule" />
         </div>
       </div>

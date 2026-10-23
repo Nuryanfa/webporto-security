@@ -2,6 +2,8 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { gsap, markIntroDone } from "../../luxe/gsap";
 import { lockScroll } from "../../luxe/lenis";
 import useMotionPreference from "../../utils/useMotionPreference";
+import TitleCard from "./TitleCard";
+import { episodes } from "../../content/episodes";
 
 const SEEN_KEY = "lx-intro-seen";
 
@@ -53,7 +55,8 @@ export default function Preloader() {
         .set(".lx-pre__term", { autoAlpha: 0 }, "+=0.08")
         .set(".lx-pre__granted", { autoAlpha: 1 })
         .fromTo(".lx-pre__granted", { scaleY: 0.02 }, { scaleY: 1, duration: 0.16, ease: "power4.out" })
-        .to(".lx-pre__granted", { autoAlpha: 0, duration: 0.04, repeat: 3, yoyo: true }, "+=0.14")
+        .from(".lx-pre__pattern", { autoAlpha: 0, duration: 0.01 }, "+=0.08")
+        .to(".lx-pre__granted", { autoAlpha: 0, duration: 0.04, repeat: 3, yoyo: true }, "+=0.32")
         .set(".lx-pre__granted", { autoAlpha: 0 })
         .set(".lx-pre__card", { autoAlpha: 1 })
         .from(".lx-pre__card .lx-pre__mask > *", { yPercent: 110, duration: 0.5, stagger: 0.05, ease: "expo.out" })
@@ -98,21 +101,10 @@ export default function Preloader() {
       <div className="lx-pre__granted">
         <span lang="ja">認証完了</span>
         <b>Access granted</b>
+        <small className="lx-pre__pattern">Pattern: orange — operator confirmed</small>
       </div>
       <div className="lx-pre__card">
-        <span className="lx-pre__mask">
-          <span className="lx-title-card__ep">
-            Episode 01 <span lang="ja">第壱話</span>
-          </span>
-        </span>
-        <span className="lx-pre__mask">
-          <span className="lx-title-card__kanji" lang="ja">
-            起動
-          </span>
-        </span>
-        <span className="lx-pre__mask">
-          <span className="lx-title-card__en">System Online</span>
-        </span>
+        <TitleCard episode={episodes["/"]} maskClass="lx-pre__mask" />
       </div>
       <span className="lx-pre__skip">Press any key to skip</span>
     </div>

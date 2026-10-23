@@ -1,21 +1,24 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, ArrowDown } from "lucide-react";
+import { ArrowUpRight, ArrowDown, Github, Linkedin } from "lucide-react";
 import AnimatedPage from "../components/AnimatedPage";
 import MagneticLink from "../components/MagneticLink";
-import DecodeText from "../components/DecodeText";
 import SplitReveal from "../components/luxe/SplitReveal";
-import ScrollWords from "../components/luxe/ScrollWords";
 import Marquee from "../components/luxe/Marquee";
 import ProjectCard from "../components/luxe/ProjectCard";
 import TriadPanel from "../components/luxe/TriadPanel";
 import Loadout from "../components/luxe/Loadout";
+import Monologue from "../components/luxe/Monologue";
+import HeroSubtitle from "../components/luxe/Subtitle";
 import { gsap, useGSAP, onIntroDone } from "../luxe/gsap";
 import useMotionPreference from "../utils/useMotionPreference";
 import { profile } from "../content/profile";
 import { projects } from "../content/projects";
 import { experiences } from "../content/experience";
 import { capabilities, stack } from "../content/capabilities";
+
+// Home shows the first three operations; the archive holds the rest.
+const featured = projects.slice(0, 3);
 
 const HeroCore = lazy(() => import("../components/luxe/HeroCore"));
 
@@ -118,7 +121,7 @@ export default function Home() {
           });
           gsap.from(".lx-hero__kanji", { yPercent: 8, autoAlpha: 0, duration: 1.4, ease: "expo.out", delay: 0.2 });
           gsap.from(".lx-core-wrap", { autoAlpha: 0, scale: 0.7, duration: 1.8, ease: "expo.out" });
-          gsap.from(".lx-hero__rule", { scaleX: 0, duration: 1.4, ease: "expo.inOut", delay: 0.3 });
+          gsap.from(".lx-hero .lx-agent__band", { xPercent: -105, duration: 0.6, delay: 0.1, ease: "power4.out" });
         }),
       );
 
@@ -173,9 +176,9 @@ export default function Home() {
 
           <div className="lx-hero__grid">
             <div className="lx-hero__text">
-              <span className="lx-hero__role" data-hero-fade>
-                <DecodeText text="BACKEND // SECURITY // DEVOPS // CLOUD" />
-              </span>
+              {/* Agent intro: the name on a slanted band, role chips underneath. */}
+              <div className="lx-agent lx-agent--hero">
+                <i className="lx-agent__band" aria-hidden="true" />
               <h1 id="hero-title" className="lx-hero__title" aria-label={profile.name}>
                 <SplitReveal as="span" type="chars" trigger="intro" stagger={0.03} className="lx-hero__line">
                   Muhamad
@@ -191,7 +194,14 @@ export default function Home() {
                   Nur Yanfa
                 </SplitReveal>
               </h1>
-              <i className="lx-hero__rule" aria-hidden="true" />
+              </div>
+              <ul className="lx-agent__chips" aria-label="Roles" data-hero-fade>
+                {["Backend", "Security", "DevOps · Cloud"].map((role) => (
+                  <li key={role}>
+                    <span>{role}</span>
+                  </li>
+                ))}
+              </ul>
               <p className="lx-hero__lede" data-hero-rise>
                 <strong>
                   {profile.taglineLead} <em>{profile.taglineAccent}</em>
@@ -204,9 +214,23 @@ export default function Home() {
                   <span>Enter operations</span>
                   <ArrowUpRight size={18} />
                 </MagneticLink>
-                <MagneticLink to="/network" className="lx-btn lx-btn--ghost">
-                  <span lang="ja">通信</span>
-                  <span>Open channel</span>
+                <MagneticLink
+                  href={profile.links.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="lx-btn lx-btn--ghost"
+                >
+                  <Github size={17} aria-hidden="true" />
+                  <span>GitHub</span>
+                </MagneticLink>
+                <MagneticLink
+                  href={profile.links.linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="lx-btn lx-btn--ghost"
+                >
+                  <Linkedin size={17} aria-hidden="true" />
+                  <span>LinkedIn</span>
                 </MagneticLink>
               </div>
             </div>
@@ -236,7 +260,7 @@ export default function Home() {
             <span className="lx-scroll-cue">
               <ArrowDown size={14} /> Scroll to engage
             </span>
-            <span>Click anywhere to test the barrier</span>
+            <HeroSubtitle fallback="Click anywhere to test the barrier" />
             <span>Bandung, ID — UTC+7</span>
           </div>
         </section>
@@ -258,44 +282,23 @@ export default function Home() {
           <Marquee items={stack} reverse speed={48} className="lx-marquee--outline" />
         </section>
 
-        {/* ── Directive ─────────────────────────────────────── */}
-        <section className="lx-section lx-directive" aria-labelledby="directive-title">
-          <SectionHead index="01" kanji="指令" label="Directive" />
-          <h2 id="directive-title" className="sr-only">
-            Directive
-          </h2>
-          <div className="lx-directive__grid">
-            <ScrollWords className="lx-statement">
-              I build backend systems, define security boundaries, and improve the delivery paths
-              that keep software reliable. Go on the server, Linux underneath — and security
-              considered from the first commit, not bolted on at the end.
-            </ScrollWords>
-            <dl className="lx-stats">
-              <div data-reveal>
-                <dt>Operations on file</dt>
-                <dd data-count={projects.length}>{String(projects.length).padStart(2, "0")}</dd>
-              </div>
-              <div data-reveal>
-                <dt>Field records</dt>
-                <dd data-count={experiences.length}>{String(experiences.length).padStart(2, "0")}</dd>
-              </div>
-              <div data-reveal>
-                <dt>Core stack</dt>
-                <dd className="lx-stats__text">Go × Linux</dd>
-              </div>
-            </dl>
-          </div>
-        </section>
+        {/* ── Monologue ─────────────────────────────────────── */}
+        <Monologue />
 
         {/* ── Capabilities ──────────────────────────────────── */}
         <section className="lx-section lx-caps" aria-labelledby="caps-title">
-          <SectionHead index="02" kanji="三位一体" label="Capabilities" />
+          <SectionHead index="01" kanji="三位一体" label="Capabilities" />
           <SplitReveal as="h2" id="caps-title" className="lx-h2">
             Three cores. <em>One system.</em>
           </SplitReveal>
           <div className="lx-caps__grid">
             {capabilities.map((item, index) => (
-              <article key={item.id} className="lx-cap" style={{ "--c": item.color }} data-reveal>
+              <article
+                key={item.id}
+                className="lx-cap"
+                style={{ "--c": item.color }}
+                data-reveal={index % 2 ? "right" : ""}
+              >
                 <header className="lx-cap__head">
                   <span className="lx-cap__num">Core 0{index + 1}</span>
                   <span className="lx-cap__area">{item.area}</span>
@@ -337,7 +340,7 @@ export default function Home() {
 
         {/* ── Loadout ───────────────────────────────────────── */}
         <section className="lx-section lx-gear" aria-labelledby="gear-title">
-          <SectionHead index="03" kanji="装備" label="Loadout" />
+          <SectionHead index="02" kanji="装備" label="Loadout" />
           <div className="lx-gear__head">
             <SplitReveal as="h2" id="gear-title" className="lx-h2">
               Equipped <em>loadout.</em>
@@ -354,7 +357,7 @@ export default function Home() {
         <section className="lx-work" aria-labelledby="work-title">
           <div className="lx-work__track">
             <div className="lx-work__intro">
-              <span className="lx-index">04</span>
+              <span className="lx-index">03</span>
               <span className="lx-work__kanji" lang="ja">
                 作戦
               </span>
@@ -362,17 +365,17 @@ export default function Home() {
                 Operations <em>on file.</em>
               </SplitReveal>
               <p data-reveal>
-                {projects.length} builds across backend, security, DevOps, and product engineering —
-                each labelled honestly, from released to prototype.
+                Three of {projects.length} builds across backend, security, DevOps, and product
+                engineering — each labelled honestly, from released to prototype.
               </p>
               <Link to="/archive" className="lx-link-arrow" data-reveal>
-                Open the full archive <ArrowUpRight size={16} />
+                Open all {projects.length} in the archive <ArrowUpRight size={16} />
               </Link>
               <div className="lx-work__progress" aria-hidden="true">
                 <i />
               </div>
             </div>
-            {projects.map((project, index) => (
+            {featured.map((project, index) => (
               <ProjectCard key={project.id} project={project} index={index} />
             ))}
           </div>
@@ -380,7 +383,7 @@ export default function Home() {
 
         {/* ── Records ───────────────────────────────────────── */}
         <section className="lx-section lx-exp" aria-labelledby="exp-title">
-          <SectionHead index="05" kanji="経歴" label="Field records" />
+          <SectionHead index="04" kanji="経歴" label="Field records" />
           <SplitReveal as="h2" id="exp-title" className="lx-h2">
             Learning <em>in the field.</em>
           </SplitReveal>

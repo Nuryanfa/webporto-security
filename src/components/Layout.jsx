@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Lenis from "lenis";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { ArrowUpRight, TerminalSquare } from "lucide-react";
+import { ArrowUpRight, Github, Linkedin, Mail, TerminalSquare } from "lucide-react";
 import useMotionPreference from "../utils/useMotionPreference";
 import MotionControl from "./MotionControl";
 // Overlays are loaded the first time they are opened.
@@ -17,13 +17,13 @@ import { setLenis } from "../luxe/lenis";
 import usePresence from "../luxe/usePresence";
 import useGlider from "../luxe/useGlider";
 import { clearEmergency, isEmergency, subscribeEmergency, triggerEmergency } from "../luxe/emergency";
-import { isSoundEnabled, playTacticalBlip, setSoundEnabled, subscribeSound } from "../utils/audioTelemetry";
+import { playTacticalBlip } from "../utils/audioTelemetry";
 
 const links = ["/", "/archive", "/timeline", "/network"].map((to) => ({ to, ...episodes[to] }));
 
 const socials = [
-  { href: "https://github.com/Nuryanfa", label: "GitHub" },
-  { href: "https://www.linkedin.com/in/muhamad-nur-yanfa-069036368", label: "LinkedIn" },
+  { href: profile.links.github, label: "GitHub" },
+  { href: profile.links.linkedin, label: "LinkedIn" },
 ];
 
 function useJakartaTime(withSeconds = false) {
@@ -158,7 +158,6 @@ export default function Layout({ children }) {
   const lenisRef = useRef(null);
   const menuButton = useRef(null);
   const navRef = useRef(null);
-  const soundOn = useSyncExternalStore(subscribeSound, isSoundEnabled, () => false);
   useGlider(navRef, '[aria-current="page"]', [pathname]);
   const [menuMounted, menuRef] = usePresence(isMenuOpen, {
     enter: (el) =>
@@ -173,10 +172,6 @@ export default function Layout({ children }) {
         .to(el.querySelectorAll(".lx-menu__mask > a"), { yPercent: -110, duration: 0.3, stagger: 0.02, ease: "power3.in" })
         .to(el, { clipPath: "inset(0 0 100% 0)", duration: 0.45, ease: "expo.inOut" }, 0.1),
   });
-  const toggleSound = () => {
-    setSoundEnabled(!soundOn);
-    if (!soundOn) playTacticalBlip(1200, 0.05);
-  };
   const current = episodeFor(pathname);
   const next = nextEpisode(pathname);
 
@@ -326,18 +321,14 @@ export default function Layout({ children }) {
           </nav>
 
           <div className="lx-header__tools">
-            <span className="lx-header__status" title="Local time in Bandung">
-              <i /> SYS nominal · {time}
-            </span>
-            <button
-              type="button"
-              onClick={toggleSound}
-              className="lx-ctl"
-              aria-pressed={soundOn}
-              title="UI sound"
-            >
-              Sound <b>{soundOn ? "On" : "Off"}</b>
-            </button>
+            <a className="lx-ctl lx-ctl--icon" href={profile.links.github} target="_blank" rel="noreferrer">
+              <Github size={15} aria-hidden="true" />
+              <span>GitHub</span>
+            </a>
+            <a className="lx-ctl lx-ctl--icon" href={profile.links.linkedin} target="_blank" rel="noreferrer">
+              <Linkedin size={15} aria-hidden="true" />
+              <span>LinkedIn</span>
+            </a>
             <button
               type="button"
               onClick={() => setIsKeymapOpen(true)}
@@ -395,6 +386,36 @@ export default function Layout({ children }) {
         </main>
 
         <footer className="lx-footer">
+          {/* Handoff: every page ends on the primary action before the next-episode tease. */}
+          <section className="lx-handoff" aria-labelledby="lx-handoff-title">
+            <h2 id="lx-handoff-title" className="lx-handoff__title">
+              See the work behind the episodes.
+            </h2>
+            <div className="lx-handoff__links">
+              <a className="lx-handoff__link" href={profile.links.github} target="_blank" rel="noreferrer">
+                <Github size={28} strokeWidth={1.5} aria-hidden="true" />
+                <span>
+                  <b>GitHub</b>
+                  <small>Source for every project on this site</small>
+                </span>
+                <ArrowUpRight size={22} aria-hidden="true" />
+              </a>
+              <a className="lx-handoff__link" href={profile.links.linkedin} target="_blank" rel="noreferrer">
+                <Linkedin size={28} strokeWidth={1.5} aria-hidden="true" />
+                <span>
+                  <b>LinkedIn</b>
+                  <small>Experience, background and contact</small>
+                </span>
+                <ArrowUpRight size={22} aria-hidden="true" />
+              </a>
+            </div>
+            {pathname !== "/network" && (
+              <Link to="/network" className="lx-handoff__mail">
+                <Mail size={15} aria-hidden="true" /> Prefer email? Open the contact page
+              </Link>
+            )}
+          </section>
+
           <Link to={next.to} className="lx-next" data-cursor="Next">
             <span className="lx-next__label">
               <span lang="ja">次回予告</span> Next episode
@@ -402,8 +423,14 @@ export default function Layout({ children }) {
             <span className="lx-next__ep">
               Episode {next.no} <span lang="ja">{next.ep}</span>
             </span>
-            <span className="lx-next__kanji" lang="ja">
-              {next.kanji}
+            {/* CRT screen previewing the next episode's channel. */}
+            <span className="lx-next__screen">
+              <span className="lx-next__ch" aria-hidden="true">
+                CH.{next.no}
+              </span>
+              <span className="lx-next__kanji" lang="ja">
+                {next.kanji}
+              </span>
             </span>
             <span className="lx-next__en">
               {next.en}
