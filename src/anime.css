@@ -4284,3 +4284,46 @@ html[data-motion="reduced"] [data-redact]::after { display: none; }
   .lx-next__screen { width: 100%; }
   .lx-agent--hero { padding: 34px 0 24px; }
 }
+
+/* ==========================================================================
+   ZZZ finish — loadout, keymap, terminal, 404
+   ========================================================================== */
+
+/* Loadout: ink-outline slots, tool chips that lift, readout with a slanted tab. */
+.lx-slot,
+.lx-readout {
+  border: var(--lx-ink-edge);
+  background: var(--lx-panel);
+  clip-path: none;
+}
+.lx-slot__head { border-bottom-color: color-mix(in srgb, var(--lx-ink) 18%, transparent); }
+.lx-tool {
+  border: 2px solid color-mix(in srgb, var(--lx-ink) 22%, transparent);
+  clip-path: none;
+  box-shadow: 0 0 0 var(--lx-pop-2);
+  transition: transform 0.2s var(--lx-pop), box-shadow 0.2s var(--lx-pop), background 0.2s, border-color 0.2s, color 0.2s;
+}
+.lx-tool:hover { border-color: var(--lx-ink); background: var(--lx-panel-2); transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--lx-pop-2); }
+.lx-tool[aria-pressed="true"] { border-color: var(--lx-orange); box-shadow: 4px 4px 0 var(--lx-pop-2); transform: translate(-2px, -2px); }
+.lx-readout { margin-top: 14px; overflow: visible; }
+.lx-readout__bar {
+  width: fit-content;
+  gap: 18px;
+  margin: -14px 0 0 14px;
+  padding-inline: 16px;
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+}
+.lx-readout__name { font-size: clamp(34px, 3vw, 48px); }
+
+/* Keymap and terminal: ink frame on a hard lime shadow. */
+.lx-keymap__panel {
+  border: var(--lx-ink-edge);
+  clip-path: none;
+  box-shadow: 10px 10px 0 var(--lx-pop-2);
+}
+.lx-keymap__row { border-width: 2px; }
+.lx-keymap__row:hover { border-color: var(--lx-ink); }
+.lx-term { border: var(--lx-ink-edge); border-bottom: 0; box-shadow: 0 -6px 0 var(--lx-pop-2); }
+
+/* 404: the code speaks the heading voice; the kanji keeps the Eva mood. */
+.lx-404__code { font-family: var(--lx-cond); font-style: italic; letter-spacing: -0.01em; }
