@@ -9,7 +9,6 @@ import useReducedMotion from "../utils/useMotionPreference";
  * - [data-parallax="n"] drifts by n% of its height while scrolling past
  * - [data-clip]         unmasks from the left (images and media)
  * - [data-count="n"]    counts up to n once visible (server render shows n)
- * - [data-redact]       starts behind a redaction bar that pulls away once visible
  */
 export default function AnimatedPage({ children, className = "" }) {
   const root = useRef(null);
@@ -78,23 +77,6 @@ export default function AnimatedPage({ children, className = "" }) {
         });
       });
 
-      // Bars cover the text until stage-ready, then declassify one by one in view.
-      const redacted = gsap.utils.toArray("[data-redact]", root.current);
-      if (redacted.length) gsap.set(redacted, { "--redact": 1 });
-      const cancelRedact = onStageReady(
-        contextSafe(() => {
-          redacted.forEach((el, i) => {
-            gsap.to(el, {
-              "--redact": 0,
-              duration: 0.55,
-              delay: (i % 4) * 0.12,
-              ease: "steps(6)",
-              scrollTrigger: { trigger: el, start: "top 85%", once: true },
-            });
-          });
-        }),
-      );
-
       gsap.utils.toArray("[data-clip]", root.current).forEach((el) => {
         gsap.fromTo(
           el,
@@ -107,10 +89,7 @@ export default function AnimatedPage({ children, className = "" }) {
           },
         );
       });
-      return () => {
-        cancelStage();
-        cancelRedact();
-      };
+      return () => cancelStage();
     },
     { scope: root, dependencies: [reduced] },
   );

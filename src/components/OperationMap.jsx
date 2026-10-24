@@ -35,7 +35,7 @@ export default function OperationMap({ code }) {
   return (
     <section ref={root} className="lx-flow" aria-label={`${code} architecture`}>
       <div className="lx-flow__head">
-        <span className="lx-eyebrow">Architecture</span>
+        <h3 className="lx-eyebrow">Architecture</h3>
         <span className="lx-flow__hint">Request path · {stages.length} stages</span>
       </div>
 

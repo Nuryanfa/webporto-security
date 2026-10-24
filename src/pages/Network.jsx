@@ -56,7 +56,7 @@ export default function Network() {
     <AnimatedPage>
       <div className="lx-page lx-contact">
         <EpisodeHeader
-          eyebrow="Comms array — channels open"
+          eyebrow="GitHub · LinkedIn · Email"
           lede="For backend, security, and DevOps opportunities, collaborations, or technical conversations. Pick whichever channel suits you."
         >
           Open a <em>channel.</em>

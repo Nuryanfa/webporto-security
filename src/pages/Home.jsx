@@ -211,7 +211,7 @@ export default function Home() {
               <div className="lx-hero__actions" data-hero-fade>
                 <MagneticLink to="/archive" className="lx-btn lx-btn--primary">
                   <span lang="ja">作戦</span>
-                  <span>Enter operations</span>
+                  <span>View my work</span>
                   <ArrowUpRight size={18} />
                 </MagneticLink>
                 <MagneticLink
@@ -368,14 +368,14 @@ export default function Home() {
                 作戦
               </span>
               <SplitReveal as="h2" id="work-title" className="lx-h2">
-                Operations <em>on file.</em>
+                Selected <em>work.</em>
               </SplitReveal>
               <p data-reveal>
                 Three of {projects.length} builds across backend, security, DevOps, and product
                 engineering — each labelled honestly, from released to prototype.
               </p>
               <Link to="/archive" className="lx-link-arrow" data-reveal>
-                Open all {projects.length} in the archive <ArrowUpRight size={16} />
+                See all {projects.length} projects <ArrowUpRight size={16} />
               </Link>
               <div className="lx-work__progress" aria-hidden="true">
                 <i />
@@ -389,7 +389,7 @@ export default function Home() {
 
         {/* ── Records ───────────────────────────────────────── */}
         <section className="lx-section lx-exp" aria-labelledby="exp-title">
-          <SectionHead index="04" kanji="経歴" label="Field records" />
+          <SectionHead index="04" kanji="経歴" label="Experience" />
           <SplitReveal as="h2" id="exp-title" className="lx-h2">
             Learning <em>in the field.</em>
           </SplitReveal>

@@ -3529,7 +3529,7 @@ html[data-motion="reduced"] .lx-tape::after { animation: none; }
 }
 
 /* ==========================================================================
-   EVA PASS — compressed title cards, monologue frames, subtitles, redaction
+   EVA PASS — compressed title cards, monologue frames, subtitles
    ========================================================================== */
 
 /* Title card: L composition. Kanji block compressed to 80% width, its reading
@@ -3682,30 +3682,12 @@ html[data-motion="reduced"] .lx-tape::after { animation: none; }
   100% { opacity: 0; }
 }
 
-/* Redaction bars: --redact goes 1 → 0 as the detail is declassified. */
-[data-redact] {
-  --redact: 0;
-  position: relative;
-  display: inline-block;
-}
-[data-redact]::after {
-  content: "";
-  position: absolute;
-  inset: -1px -3px;
-  background: var(--lx-ink);
-  transform: scaleX(var(--redact));
-  transform-origin: right center;
-  pointer-events: none;
-}
-
 @media (max-width: 767px) {
   .lx-title-card__kanji { font-size: clamp(88px, 30vw, 160px); }
   .lx-title-card__en { font-size: clamp(26px, 8vw, 44px); }
   .lx-mono__list { grid-template-columns: 1fr; }
 }
-html[data-motion="reduced"] [data-redact]::after { display: none; }
 @media print {
-  [data-redact]::after,
   .lx-subtitle { display: none !important; }
 }
 
@@ -4439,3 +4421,32 @@ html[data-motion="reduced"] .lx-tv__live i { animation: none; }
   transform: rotate(-4deg);
   box-shadow: 4px 4px 0 var(--lx-pop-2);
 }
+
+/* ==========================================================================
+   Usability fixes — touch targets, dossier order
+   ========================================================================== */
+
+/* Touch screens: every small text link gets a 44px hit area without growing the text. */
+@media (pointer: coarse), (max-width: 767px) {
+  .lx-footer__grid > div { gap: 0; }
+  .lx-footer__grid a,
+  .lx-footer__grid button,
+  .lx-handoff__mail,
+  .lx-link-arrow,
+  .lx-cap__proof a,
+  .lx-channel,
+  .lx-readout__list a,
+  .lx-tool,
+  .lx-brand,
+  .skip-link { min-height: 44px; }
+  .lx-cap__proof ul { gap: 0 16px; }
+  .lx-cap__proof a { padding-bottom: 0; border-bottom: 0; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--c) 60%, transparent); text-underline-offset: 4px; }
+  .lx-handoff__mail { margin-top: 8px; }
+}
+
+/* Work: the scan panel now follows the summary, so it can be compact. */
+.lx-dossier__actions { margin-top: 24px; }
+.lx-dossier .lx-scan { margin-top: 36px; }
+.lx-dossier .lx-scan__body { min-height: clamp(150px, 14vw, 200px); padding-block: 18px; }
+.lx-dossier .lx-scan .lx-scope { --size: clamp(110px, 10vw, 150px); }
+.lx-flow__head .lx-eyebrow { margin: 0; }

@@ -124,7 +124,7 @@ export default function Overview() {
               <dt>{fact.label}</dt>
               <dd>
                 <b data-count={fact.count}>{fact.value}</b>
-                <small data-redact>{fact.note}</small>
+                <small>{fact.note}</small>
               </dd>
             </div>
           ))}
@@ -141,7 +141,7 @@ export default function Overview() {
                 <h3>{item.title}</h3>
                 <p>{item.body}</p>
                 <span className="lx-pillar__proof">
-                  Proven in: <span data-redact>{item.proof}</span>
+                  Proven in: {item.proof}
                 </span>
               </article>
             ))}
@@ -189,9 +189,7 @@ export default function Overview() {
                 <div className="lx-role__head">
                   <span className="lx-role__when">{experience.coordinate}</span>
                   <h3>{experience.role}</h3>
-                  <span className="lx-role__place">
-                    <span data-redact>{experience.place}</span>
-                  </span>
+                  <span className="lx-role__place">{experience.place}</span>
                 </div>
                 <p>{experience.description}</p>
                 <ul className="lx-role__events">

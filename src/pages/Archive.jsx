@@ -87,7 +87,7 @@ export default function Archive() {
     <AnimatedPage>
       <div className="lx-page lx-ops">
         <EpisodeHeader
-          eyebrow={`Target archive — ${projects.length} operations`}
+          eyebrow={`${projects.length} projects · select one to inspect`}
           extra={
             <span className="lx-kbd-hint">
               <kbd>J</kbd>
@@ -96,7 +96,7 @@ export default function Archive() {
           }
           lede={`${projects.length} builds across backend, security, DevOps, and product engineering. Select a target to inspect its scope, architecture stages, and source.`}
         >
-          Operations <em>archive.</em>
+          Selected <em>work.</em>
         </EpisodeHeader>
 
         <section className="lx-ops__console">
@@ -139,6 +139,33 @@ export default function Archive() {
                 aria-labelledby={`tab-${active.code}`}
                 className="lx-dossier"
               >
+                <h2 className="lx-dossier__title" data-stagger>
+                  {active.title}
+                </h2>
+                <p className="lx-dossier__summary" data-stagger>
+                  {active.summary}
+                </p>
+
+                {/* What a reviewer needs first: name, summary, source. The scan panel follows. */}
+                <div className="lx-dossier__actions" data-stagger>
+                  <MagneticLink
+                    href={active.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="lx-btn lx-btn--primary"
+                  >
+                    <Github size={18} />
+                    <span>{active.code === "X509" ? "GitHub profile" : "Open repository"}</span>
+                    <ArrowUpRight size={18} />
+                  </MagneticLink>
+                  <button
+                    type="button"
+                    className="lx-btn lx-btn--ghost"
+                    onClick={() => focusProject((activeIndex + 1) % projects.length)}
+                  >
+                    <span>Next: {projects[(activeIndex + 1) % projects.length].title}</span>
+                  </button>
+                </div>
                 <div className="lx-scan" aria-hidden="true" onPointerMove={trackSpotlight} data-stagger>
                   <div className="lx-scan__bar">
                     <DecodeText text={`TARGET LOCKED // ${active.code}`} />
@@ -172,13 +199,6 @@ export default function Archive() {
                   </dl>
                 </div>
 
-                <h2 className="lx-dossier__title" data-stagger>
-                  {active.title}
-                </h2>
-                <p className="lx-dossier__summary" data-stagger>
-                  {active.summary}
-                </p>
-
                 <blockquote className="lx-dossier__outcome" data-stagger>
                   <span>
                     <span lang="ja">作戦報告</span> Mission report
@@ -196,25 +216,6 @@ export default function Archive() {
                   <OperationMap key={active.code} code={active.code} />
                 </div>
 
-                <div className="lx-dossier__actions" data-stagger>
-                  <MagneticLink
-                    href={active.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="lx-btn lx-btn--primary"
-                  >
-                    <Github size={18} />
-                    <span>{active.code === "X509" ? "GitHub profile" : "Open repository"}</span>
-                    <ArrowUpRight size={18} />
-                  </MagneticLink>
-                  <button
-                    type="button"
-                    className="lx-btn lx-btn--ghost"
-                    onClick={() => focusProject((activeIndex + 1) % projects.length)}
-                  >
-                    <span>Next: {projects[(activeIndex + 1) % projects.length].title}</span>
-                  </button>
-                </div>
               </article>
             </ContentTransition>
           </div>

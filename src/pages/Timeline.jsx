@@ -48,10 +48,10 @@ export default function Timeline() {
     <AnimatedPage>
       <div ref={root} className="lx-page lx-trace">
         <EpisodeHeader
-          eyebrow={`Field records — ${experiences.length} deployments`}
+          eyebrow={`${experiences.length} roles · newest first`}
           lede="Three working contexts across backend, fullstack, and DevOps — from a backend internship to delivering production systems today."
         >
-          Field <em>records.</em>
+          Work <em>experience.</em>
         </EpisodeHeader>
 
         <div className="lx-trace__wrap">
