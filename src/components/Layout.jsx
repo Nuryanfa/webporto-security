@@ -8,6 +8,7 @@ import MotionControl from "./MotionControl";
 const KeymapModal = lazy(() => import("./KeymapModal"));
 const TerminalDrawer = lazy(() => import("./TerminalDrawer"));
 import LuxeCursor from "./luxe/LuxeCursor";
+import VhsTape from "./luxe/VhsTape";
 import Preloader from "./luxe/Preloader";
 import { profile } from "../content/profile";
 import { episodes, episodeFor, nextEpisode } from "../content/episodes";
@@ -392,9 +393,7 @@ export default function Layout({ children }) {
               <span className="lx-next__ch" aria-hidden="true">
                 CH.{next.no}
               </span>
-              <span className="lx-next__kanji" lang="ja">
-                {next.kanji}
-              </span>
+              <VhsTape title={`EP.${next.no}`} subtitle={next.en} sticker="▶ Next" />
             </span>
             <span className="lx-next__en">
               {next.en}

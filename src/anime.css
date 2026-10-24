@@ -1544,13 +1544,6 @@ body {
   color: var(--lx-orange);
 }
 .lx-next__label [lang="ja"] { margin-right: 10px; font-size: 18px; letter-spacing: 0.1em; }
-.lx-next__kanji {
-  grid-area: kanji;
-  font-size: clamp(110px, 17vw, 280px);
-  font-weight: 800;
-  line-height: 0.95;
-  transition: color 0.4s, transform 0.6s var(--lx-ease);
-}
 .lx-next__ep {
   grid-area: ep;
   font: 700 clamp(14px, 1.3vw, 18px)/1 var(--lx-cond);
@@ -1568,7 +1561,6 @@ body {
   text-transform: uppercase;
 }
 .lx-next__en svg { transition: transform 0.5s var(--lx-ease); color: var(--lx-orange); }
-.lx-next:hover .lx-next__kanji { color: var(--lx-orange); transform: translateX(10px); }
 .lx-next:hover .lx-next__en svg { transform: rotate(45deg); }
 .lx-footer__grid {
   display: grid;
@@ -4147,12 +4139,6 @@ html[data-motion="reduced"] .lx-tape::after { animation: none; }
     repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.3) 0 1px, transparent 1px 3px),
     radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.75));
 }
-.lx-next__kanji {
-  font-size: clamp(80px, 10vw, 150px);
-  color: transparent;
-  -webkit-text-stroke: 2px var(--lx-orange);
-}
-.lx-next:hover .lx-next__kanji { color: var(--lx-orange); transform: none; }
 .lx-next__ch {
   position: absolute;
   top: 10px;
@@ -4423,57 +4409,7 @@ html[data-motion="reduced"] .lx-tv__live i { animation: none; }
   height: 60vh;
   overflow: hidden;
 }
-.lx-pre__tape {
-  position: relative;
-  margin-top: 26px;
-  aspect-ratio: 16 / 10;
-  padding: 7% 7% 0;
-  border: 2px solid var(--lx-ink);
-  border-radius: 14px;
-  background: #2b2b34;
-  box-shadow: 8px 8px 0 var(--lx-pop-2);
-}
-.lx-pre__label {
-  position: relative;
-  display: grid;
-  padding: 10px 14px 18px;
-  background:
-    repeating-linear-gradient(-45deg, var(--lx-bg) 0 8px, var(--lx-orange) 8px 16px) bottom / 100% 10px no-repeat,
-    var(--lx-orange);
-  color: var(--lx-bg);
-}
-.lx-pre__label b { font: italic 800 clamp(34px, 7vw, 56px)/0.9 var(--lx-cond); }
-.lx-pre__label small { font: 800 clamp(10px, 1.8vw, 14px)/1.2 var(--lx-cond); letter-spacing: 0.14em; text-transform: uppercase; }
-.lx-pre__label em {
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  padding: 4px 8px;
-  background: var(--lx-pop-2);
-  font: 800 12px/1 var(--lx-cond);
-  font-style: normal;
-  letter-spacing: 0.1em;
-  transform: rotate(-4deg);
-}
-.lx-pre__window {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  width: 62%;
-  margin: 8% auto 0;
-  padding: 6px 0;
-  border-radius: 8px;
-  background: #08080a;
-}
-.lx-pre__window i {
-  width: clamp(36px, 8vw, 54px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  border: clamp(8px, 1.6vw, 11px) solid #2a160b;
-  background: conic-gradient(var(--lx-ink) 0 15deg, transparent 15deg 120deg, var(--lx-ink) 120deg 135deg, transparent 135deg 240deg, var(--lx-ink) 240deg 255deg, transparent 255deg) var(--lx-ink-3);
-  animation: lx-reel 1.2s linear infinite;
-}
-@keyframes lx-reel { to { transform: rotate(-360deg); } }
+.lx-pre__tape { margin-top: 26px; }
 .lx-pre__vcr {
   position: relative;
   z-index: 1;
@@ -4543,4 +4479,77 @@ html[data-motion="reduced"] .lx-tv__live i { animation: none; }
 }
 .lx-pre__card { z-index: 2; }
 .lx-pre__skip { z-index: 4; }
-html[data-motion="reduced"] .lx-pre__window i { animation: none; }
+
+/* Shared VHS cassette (intro + next-episode card); sizes from its own width. */
+.lx-vhs {
+  container-type: inline-size;
+  position: relative;
+  aspect-ratio: 16 / 10;
+  padding: 7% 7% 0;
+  border: 2px solid var(--lx-ink);
+  border-radius: 14px;
+  background: #2b2b34;
+  box-shadow: 8px 8px 0 var(--lx-pop-2);
+}
+.lx-vhs__label {
+  position: relative;
+  display: grid;
+  padding: 2.4cqi 3.2cqi 4.4cqi;
+  background:
+    repeating-linear-gradient(-45deg, var(--lx-bg) 0 2cqi, var(--lx-orange) 2cqi 4cqi) bottom / 100% 2.4cqi no-repeat,
+    var(--lx-orange);
+  color: var(--lx-bg);
+}
+.lx-vhs__label b { font: italic 800 13cqi/0.9 var(--lx-cond); white-space: nowrap; }
+.lx-vhs__label small {
+  font: 800 4.6cqi/1.2 var(--lx-cond);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.lx-vhs__label em {
+  position: absolute;
+  top: 2.4cqi;
+  right: 2.8cqi;
+  padding: 1cqi 2cqi;
+  background: var(--lx-pop-2);
+  font: 800 3cqi/1 var(--lx-cond);
+  font-style: normal;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transform: rotate(-4deg);
+}
+.lx-vhs__window {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 62%;
+  margin: 8% auto 0;
+  padding: 1.4cqi 0;
+  border-radius: 8px;
+  background: #08080a;
+}
+.lx-vhs__window i {
+  width: 12cqi;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2.4cqi solid #2a160b;
+  background: conic-gradient(var(--lx-ink) 0 15deg, transparent 15deg 120deg, var(--lx-ink) 120deg 135deg, transparent 135deg 240deg, var(--lx-ink) 240deg 255deg, transparent 255deg) var(--lx-ink-3);
+  animation: lx-reel 1.2s linear infinite;
+}
+html[data-motion="reduced"] .lx-vhs__window i { animation: none; }
+
+/* Next episode: the tape idles in the screen; hovering plays it. */
+.lx-next__screen { place-items: center; padding: 8% 10%; }
+.lx-next__screen .lx-vhs {
+  width: 100%;
+  box-shadow: 5px 5px 0 var(--lx-pop-2);
+  transform: rotate(-3deg);
+  transition: transform 0.3s var(--lx-pop);
+}
+.lx-next__screen .lx-vhs__window i { animation-play-state: paused; }
+.lx-next:hover .lx-vhs,
+.lx-next:focus-visible .lx-vhs { transform: rotate(0deg) translateY(-4px); }
+.lx-next:hover .lx-vhs__window i,
+.lx-next:focus-visible .lx-vhs__window i { animation-play-state: running; animation-duration: 0.5s; }
+.lx-next__ch { z-index: 2; }

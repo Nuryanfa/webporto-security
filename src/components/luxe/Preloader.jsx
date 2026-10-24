@@ -3,6 +3,7 @@ import { gsap, markIntroDone } from "../../luxe/gsap";
 import { lockScroll } from "../../luxe/lenis";
 import useMotionPreference from "../../utils/useMotionPreference";
 import TitleCard from "./TitleCard";
+import VhsTape from "./VhsTape";
 import { episodes } from "../../content/episodes";
 
 const SEEN_KEY = "lx-intro-seen";
@@ -88,17 +89,7 @@ export default function Preloader() {
         <div className="lx-pre__deck">
           {/* Clip region starts at the slot: the tape vanishes as it slides in. */}
           <div className="lx-pre__feed">
-            <div className="lx-pre__tape">
-              <span className="lx-pre__label">
-                <b>NY-07</b>
-                <small>Backend · Security · DevOps</small>
-                <em>▶ REC</em>
-              </span>
-              <span className="lx-pre__window">
-                <i />
-                <i />
-              </span>
-            </div>
+            <VhsTape className="lx-pre__tape" title="NY-07" subtitle="Backend · Security · DevOps" sticker="▶ REC" />
           </div>
           <div className="lx-pre__vcr">
             <span className="lx-pre__slot" />
