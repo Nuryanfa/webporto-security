@@ -54,8 +54,8 @@ const tape = [
   { kind: "sign", text: "Caution" },
   { kind: "jp", jp: "立入禁止", text: "Restricted zone" },
   { kind: "area", text: "Area NY-07", jp: "エリア" },
-  { kind: "jp", jp: "防衛線", text: "Defense line holding" },
-  { kind: "plain", text: "Unauthorized access will be traced" },
+  { kind: "jp", jp: "作業中", text: "Work in progress" },
+  { kind: "plain", text: "Proceed with curiosity" },
 ];
 
 function TapeSegment({ item }) {
@@ -80,9 +80,9 @@ function TapeSegment({ item }) {
 
 const warnings = [
   "警告 Warning",
-  "Unauthorized access will be traced",
-  "防衛線 Defense line holding",
-  "Pattern: secure",
+  "Proceed with curiosity",
+  "作業中 Work in progress",
+  "Status: shipping",
   "侵入検知 Intrusion detection online",
   "All systems nominal",
 ];
@@ -119,7 +119,7 @@ export default function Home() {
             delay: 0.45,
             ease: "expo.out",
           });
-          gsap.from(".lx-hero__kanji", { yPercent: 8, autoAlpha: 0, duration: 1.4, ease: "expo.out", delay: 0.2 });
+          gsap.from(".lx-tv", { y: 30, autoAlpha: 0, duration: 0.8, ease: "back.out(1.4)", delay: 0.2 });
           gsap.from(".lx-core-wrap", { autoAlpha: 0, scale: 0.7, duration: 1.8, ease: "expo.out" });
           gsap.from(".lx-hero .lx-agent__band", { xPercent: -105, duration: 0.6, delay: 0.1, ease: "power4.out" });
         }),
@@ -236,19 +236,25 @@ export default function Home() {
             </div>
 
             <div className="lx-hero__visual">
-              <div className="lx-hero__stage">
-                <div className="lx-core-wrap">
-                  {webgl ? (
-                    <Suspense fallback={<div className="lx-core-fallback" aria-hidden="true" />}>
-                      <HeroCore reduced={reduced} />
-                    </Suspense>
-                  ) : (
-                    <div className="lx-core-fallback" aria-hidden="true" />
-                  )}
+              {/* The agent tape plays on a CRT screen: channel bar, scanlines, vignette. */}
+              <div className="lx-hero__stage lx-tv">
+                <div className="lx-tv__bar" aria-hidden="true">
+                  <span className="lx-tv__live">
+                    <i /> CH.01 · Live
+                  </span>
+                  <span>Now playing</span>
                 </div>
-                <span className="lx-hero__kanji" lang="ja" aria-hidden="true">
-                  防衛
-                </span>
+                <div className="lx-tv__screen">
+                  <div className="lx-core-wrap">
+                    {webgl ? (
+                      <Suspense fallback={<div className="lx-core-fallback" aria-hidden="true" />}>
+                        <HeroCore reduced={reduced} />
+                      </Suspense>
+                    ) : (
+                      <div className="lx-core-fallback" aria-hidden="true" />
+                    )}
+                  </div>
+                </div>
               </div>
               <div className="lx-hero__triad" data-hero-fade>
                 <TriadPanel />
@@ -260,7 +266,7 @@ export default function Home() {
             <span className="lx-scroll-cue">
               <ArrowDown size={14} /> Scroll to engage
             </span>
-            <HeroSubtitle fallback="Click anywhere to test the barrier" />
+            <HeroSubtitle fallback="Click anywhere to play the tape" />
             <span>Bandung, ID — UTC+7</span>
           </div>
         </section>
@@ -274,7 +280,7 @@ export default function Home() {
               items={tape}
               reverse
               speed={26}
-              label="Caution: restricted zone, defense line holding"
+              label="Caution: restricted zone, work in progress"
               renderItem={(item) => <TapeSegment item={item} />}
               className="lx-marquee--alert lx-tape lx-tape--front"
             />

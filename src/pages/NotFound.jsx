@@ -10,7 +10,7 @@ export default function NotFound() {
       <section className="lx-page lx-404">
         <div className="lx-hazard" aria-hidden="true" />
         <span className="lx-404__alert" data-reveal>
-          <span lang="ja">警告</span> Warning — pattern unknown
+          <span lang="ja">警告</span> Warning — signal lost
         </span>
         <span className="lx-404__kanji" lang="ja" aria-hidden="true" data-reveal>
           信号途絶

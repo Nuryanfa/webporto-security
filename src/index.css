@@ -73,7 +73,7 @@ summary {
   z-index: 300;
   padding: 10px 14px;
   font-size: 12px;
-  color: #050403;
+  color: #0b0b0e;
   transform: translateY(-160%);
   transition: transform 0.2s ease;
 }

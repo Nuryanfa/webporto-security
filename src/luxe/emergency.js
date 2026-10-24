@@ -1,4 +1,4 @@
-// "Pattern red" drill: a site-wide easter egg (Konami code, or `breach` in the terminal).
+// "Red alert" drill: a site-wide easter egg (Konami code, or `breach` in the terminal).
 // Purely cosmetic; it recolours the UI, intensifies the hero barrier and auto-clears.
 
 const DURATION = 9000;

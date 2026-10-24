@@ -5,13 +5,14 @@ import { capabilities } from "../../content/capabilities";
 
 const LABELS = {
   idle: ["待機", "Standby"],
-  busy: ["審議中", "Deliberating"],
-  ok: ["可決", "Approved"],
+  busy: ["同期中", "Syncing"],
+  ok: ["完了", "Ready"],
 };
 
 /**
- * Three decision cores (Backend / Security / DevOps) that deliberate and vote.
- * Purely decorative state; the content it frames comes from capabilities.js.
+ * The squad: three cores (Backend / Security / DevOps) that sync and report ready,
+ * each in its own capability colour. Purely decorative state; the content it
+ * frames comes from capabilities.js.
  */
 export default function TriadPanel({ className = "" }) {
   const reduced = useMotionPreference();
@@ -50,10 +51,10 @@ export default function TriadPanel({ className = "" }) {
   const approved = states.filter((s) => s === "ok").length;
 
   return (
-    <div className={`lx-triad ${className}`} role="group" aria-label="Triad system: backend, security and DevOps">
+    <div className={`lx-triad ${className}`} role="group" aria-label="Squad: backend, security and DevOps">
       <div className="lx-triad__head">
-        <span>Triad system</span>
-        <span lang="ja">三位一体</span>
+        <span>Squad</span>
+        <span lang="ja">三人組</span>
       </div>
       <div className="lx-triad__cores">
         {capabilities.map((core, i) => {
@@ -73,8 +74,8 @@ export default function TriadPanel({ className = "" }) {
         })}
       </div>
       <div className={`lx-triad__verdict ${approved === 3 ? "is-go" : ""}`}>
-        <span>Consensus {approved}/3</span>
-        <span>{approved === 3 ? "Deploy authorized" : "Deliberating…"}</span>
+        <span>Squad {approved}/3</span>
+        <span>{approved === 3 ? "Ready to ship" : "Syncing…"}</span>
       </div>
     </div>
   );

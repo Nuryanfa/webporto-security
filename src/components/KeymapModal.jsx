@@ -111,7 +111,7 @@ export default function KeymapModal({ isOpen, onClose }) {
           ))}
           <button type="button" className="lx-keymap__row is-alert" onClick={drill}>
             <Siren size={15} />
-            <span>Pattern red drill</span>
+            <span>Red alert drill</span>
             <kbd>↑↑↓↓</kbd>
           </button>
         </div>
@@ -146,7 +146,7 @@ export default function KeymapModal({ isOpen, onClose }) {
 
         <footer className="lx-keymap__foot">
           <span>Esc or ? to close</span>
-          <span>Defense division · NY-07</span>
+          <span>Agent NY-07 · on call</span>
         </footer>
       </div>
     </div>

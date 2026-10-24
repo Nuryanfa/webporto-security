@@ -15,7 +15,7 @@ export const capabilities = [
       { label: "AegisGate", to: "/archive?project=AEGIS" },
       { label: "TaskForge", to: "/archive?project=TFGE" },
     ],
-    color: "#ff7a00",
+    color: "#ff6b1a",
   },
   {
     id: "security",
@@ -30,7 +30,7 @@ export const capabilities = [
       { label: "SecureNet Lab", to: "/archive?project=SNET" },
       { label: "X.509 Validation", to: "/archive?project=X509" },
     ],
-    color: "#ff2d4a",
+    color: "#38d9f5",
   },
   {
     id: "devops",
@@ -48,7 +48,7 @@ export const capabilities = [
         href: "https://www.skills.google/public_profiles/7e1b2448-d30c-499f-a889-034966a54a1b",
       },
     ],
-    color: "#b6ff3b",
+    color: "#ffd23f",
   },
 ];
 

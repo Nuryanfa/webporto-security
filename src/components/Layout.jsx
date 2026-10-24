@@ -46,41 +46,6 @@ function useJakartaTime(withSeconds = false) {
   return time || "--:--";
 }
 
-// Four viewport corner brackets with a live scroll read-out: a cockpit frame.
-function HudFrame() {
-  const readout = useRef(null);
-  useEffect(() => {
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      const pct = max > 0 ? Math.round((window.scrollY / max) * 100) : 0;
-      if (readout.current) readout.current.textContent = `Y ${String(pct).padStart(3, "0")}%`;
-    };
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(frame);
-    };
-  }, []);
-  return (
-    <div className="lx-hud" aria-hidden="true">
-      <i className="lx-hud__c lx-hud__c--tl" />
-      <i className="lx-hud__c lx-hud__c--tr" />
-      <i className="lx-hud__c lx-hud__c--bl" />
-      <i className="lx-hud__c lx-hud__c--br" />
-      <span className="lx-hud__read lx-hud__read--l">LAT -6.9175 · LON 107.6191</span>
-      <span ref={readout} className="lx-hud__read lx-hud__read--r">
-        Y 000%
-      </span>
-    </div>
-  );
-}
-
 const KONAMI = ["arrowup", "arrowup", "arrowdown", "arrowdown", "arrowleft", "arrowright", "arrowleft", "arrowright", "b", "a"];
 
 // Pattern-red drill overlay: Konami code or `breach` in the terminal; Esc or 9s clears it.
@@ -124,7 +89,7 @@ function EmergencyLayer() {
       <div className="lx-alert__banner">
         {active ? (
           <>
-            <span lang="ja">警告</span> Emergency · pattern red
+            <span lang="ja">警告</span> Emergency · red alert
             <small>Drill — simulated · Esc to clear</small>
           </>
         ) : (
@@ -273,12 +238,11 @@ export default function Layout({ children }) {
     <OverlayMotionContext.Provider value={isOverlayActive}>
       <div className="lx-shell cyber-shell" data-ui-overlay={isOverlayActive ? "active" : "idle"}>
         <div className="lx-atmos" aria-hidden="true">
-          <i className="lx-atmos__hex" />
+          <i className="lx-atmos__dots" />
           <i className="lx-atmos__glow" />
           <i className="lx-atmos__scan" />
         </div>
         <div className="lx-grain" aria-hidden="true" />
-        <HudFrame />
         <EmergencyLayer />
 
         <Preloader />
@@ -304,7 +268,7 @@ export default function Layout({ children }) {
             </span>
             <span className="lx-brand__name">
               <b>Nur Yanfa</b>
-              <small>Defense division · NY-07</small>
+              <small>Agent NY-07 · Bandung</small>
             </span>
           </Link>
 
@@ -475,7 +439,7 @@ export default function Layout({ children }) {
           </div>
 
           <div className="lx-footer__wordmark" aria-hidden="true">
-            <span lang="ja">防衛</span>
+            <span lang="ja">ヤンファ</span>
             <span>Nur Yanfa</span>
           </div>
 

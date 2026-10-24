@@ -8,11 +8,11 @@ import { episodes } from "../../content/episodes";
 const SEEN_KEY = "lx-intro-seen";
 
 const BOOT = [
-  ["TRIAD DEFENSE SYSTEM", "BOOT"],
+  ["AGENT NY-07 · CHANNEL 01", "BOOT"],
   ["loading kernel modules", "OK"],
   ["applying firewall ruleset", "OK"],
   ["starting intrusion detection", "OK"],
-  ["verifying operator identity", "OK"],
+  ["verifying agent identity", "OK"],
 ];
 
 function alreadySeen() {
@@ -101,7 +101,7 @@ export default function Preloader() {
       <div className="lx-pre__granted">
         <span lang="ja">認証完了</span>
         <b>Access granted</b>
-        <small className="lx-pre__pattern">Pattern: orange — operator confirmed</small>
+        <small className="lx-pre__pattern">Signal locked — agent online</small>
       </div>
       <div className="lx-pre__card">
         <TitleCard episode={episodes["/"]} maskClass="lx-pre__mask" />

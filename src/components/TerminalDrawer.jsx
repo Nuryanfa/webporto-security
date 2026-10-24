@@ -39,15 +39,15 @@ const FEED = [
 
 const HELP = [
   "commands:",
-  "  whoami               operator profile",
+  "  whoami               agent profile",
   "  ls operations        list projects        (ls records: experience)",
   "  open <code>          open a project, e.g. open aegis",
   "  episode <1-5>        jump to an episode   (goto <page> also works)",
-  "  cat triad.log        capability cores",
+  "  cat squad.log        capability cores",
   "  loadout              equipment by slot",
   "  sound on|off         UI sound",
   "  feed on|off          simulated SIEM feed",
-  "  breach               run the pattern-red drill",
+  "  breach               run the red-alert drill",
   "  clear · exit",
 ];
 
@@ -57,7 +57,7 @@ const pad = (n) => String(n).padStart(2, "0");
 export default function TerminalDrawer({ open, onClose }) {
   const navigate = useNavigate();
   const [lines, setLines] = useState([
-    { kind: "sys", text: "TRIAD-SHELL v7 · defense division · type `help`" },
+    { kind: "sys", text: "AGENT-SHELL v7 · NY-07 · type `help`" },
   ]);
   const [value, setValue] = useState("");
   const [feedOn, setFeedOn] = useState(false);
@@ -112,7 +112,7 @@ export default function TerminalDrawer({ open, onClose }) {
         out(...HELP);
         break;
       case "whoami":
-        out(`${profile.name} — operator NY-07`, profile.role, profile.positioning, `base: ${profile.location}`);
+        out(`${profile.name} — agent NY-07`, profile.role, profile.positioning, `base: ${profile.location}`);
         break;
       case "ls":
       case "dir":
@@ -143,15 +143,15 @@ export default function TerminalDrawer({ open, onClose }) {
         break;
       }
       case "cat":
-        if (arg === "triad.log") {
+        if (arg === "squad.log" || arg === "triad.log") {
           out(
             ...capabilities.flatMap((c, i) => [
-              `[core-${pad(i + 1)}] ${c.kanji} ${c.verb.toUpperCase()} — ${c.title}: 可決 APPROVED`,
+              `[core-${pad(i + 1)}] ${c.kanji} ${c.verb.toUpperCase()} — ${c.title}: READY`,
               `          proven in: ${c.proof}`,
             ]),
-            "consensus 3/3 — deploy authorized",
+            "squad 3/3 — ready to ship",
           );
-        } else err(`cat: ${arg || "(missing file)"}: no such file (try triad.log)`);
+        } else err(`cat: ${arg || "(missing file)"}: no such file (try squad.log)`);
         break;
       case "loadout":
       case "stack":
@@ -171,7 +171,7 @@ export default function TerminalDrawer({ open, onClose }) {
         break;
       case "breach":
       case "alert":
-        out("警告 pattern red — drill initiated (simulation)");
+        out("警告 red alert — drill initiated (simulation)");
         triggerEmergency();
         break;
       case "sudo":
@@ -217,7 +217,7 @@ export default function TerminalDrawer({ open, onClose }) {
     <section ref={root} className="terminal-drawer lx-term" role="dialog" aria-label="Terminal">
       <header className="lx-term__bar">
         <span>
-          <Terminal size={13} /> TRIAD-SHELL // bdg-node-07
+          <Terminal size={13} /> AGENT-SHELL // bdg-node-07
         </span>
         <span className="lx-term__hint">feed {feedOn ? "on" : "off"} · Esc to close</span>
         <button type="button" onClick={onClose} aria-label="Close terminal">
