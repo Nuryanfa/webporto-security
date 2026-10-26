@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics, track } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 
 import RouteTransition from "./components/RouteTransition";
@@ -35,6 +35,39 @@ function usePrefetchRoutes() {
   }, []);
 }
 
+// The site succeeds when a visitor leaves for the work: record which channel and from where.
+const CHANNELS = [
+  ["github", (url) => url.hostname === "github.com"],
+  ["linkedin", (url) => url.hostname.endsWith("linkedin.com")],
+  ["google_skills", (url) => url.hostname.endsWith("skills.google")],
+  ["email", (url) => url.protocol === "mailto:"],
+];
+
+function useChannelClicks() {
+  useEffect(() => {
+    const onClick = (event) => {
+      const link = event.target.closest?.("a[href]");
+      if (!link) return;
+      let url;
+      try {
+        url = new URL(link.href);
+      } catch {
+        return;
+      }
+      const channel = CHANNELS.find(([, matches]) => matches(url))?.[0];
+      if (!channel) return;
+      track("channel_click", {
+        channel,
+        page: window.location.pathname,
+        // Repository links say which project; profile links stay generic.
+        target: channel === "github" ? url.pathname.split("/")[2] || "profile" : channel,
+      });
+    };
+    document.addEventListener("click", onClick, { capture: true });
+    return () => document.removeEventListener("click", onClick, { capture: true });
+  }, []);
+}
+
 function AnimatedRoutes() {
   usePrefetchRoutes();
   return (
@@ -56,6 +89,7 @@ function AnimatedRoutes() {
 }
 
 export default function App() {
+  useChannelClicks();
   return (
     <>
       <Router>

@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { gsap, SplitText, useGSAP, onIntroDone } from "../../luxe/gsap";
+import { gsap, ScrollTrigger, SplitText, useGSAP, onIntroDone } from "../../luxe/gsap";
 import useMotionPreference from "../../utils/useMotionPreference";
 
 function byDocumentOrder(a, b) {
@@ -70,7 +70,15 @@ export default function SplitReveal({
         });
       });
 
-      const cancel = trigger === "intro" ? onIntroDone(build) : (build(), () => {});
+      // Splitting measures and rewrites the text, forcing style recalcs; doing it for
+      // every heading at once blocked phones for ~2s. Scroll headings split only when
+      // they come near the viewport ("max" end: any later position still triggers).
+      const lazy = () => {
+        const near = ScrollTrigger.create({ trigger: el, start: "top bottom+=300", end: "max", once: true, onEnter: build });
+        return () => near.kill();
+      };
+      const cancel =
+        trigger === "intro" ? onIntroDone(build) : trigger === "scroll" ? lazy() : (build(), () => {});
       return () => {
         cancel();
         split?.revert();

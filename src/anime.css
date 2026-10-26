@@ -811,15 +811,19 @@ body {
   width: 100% !important;
   height: 100% !important;
 }
+/* CSS tape on phones and weak devices: floats and tilts like the 3D one. */
 .lx-core-fallback {
   position: absolute;
-  inset: 26%;
-  background: linear-gradient(135deg, #2a160b, #0b0b0e);
-  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
-  box-shadow: 0 0 80px rgba(255, 107, 26, 0.3);
-  animation: lx-breathe 6s ease-in-out infinite;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 0 7%;
 }
-@keyframes lx-breathe { 50% { transform: scale(1.05); } }
+.lx-core-fallback .lx-vhs { width: 100%; animation: lx-tape-float 4.5s ease-in-out infinite; }
+@keyframes lx-tape-float {
+  0%, 100% { transform: translateY(-3%) rotate(-4deg); }
+  50% { transform: translateY(3%) rotate(-1deg); }
+}
 .lx-hero__kanji {
   writing-mode: vertical-rl;
   font-size: clamp(56px, min(13vh, 7.4vw), 140px);
@@ -2790,7 +2794,7 @@ html[data-motion="reduced"] .lx-header__status i,
 html[data-motion="reduced"] .lx-404__alert,
 html[data-motion="reduced"] .lx-triad__core,
 html[data-motion="reduced"] .lx-scroll-cue svg,
-html[data-motion="reduced"] .lx-core-fallback,
+html[data-motion="reduced"] .lx-core-fallback .lx-vhs,
 html[data-motion="reduced"] .lx-scope__ring,
 html[data-motion="reduced"] .lx-pre__skip,
 html[data-motion="reduced"] .lx-alert__frame {

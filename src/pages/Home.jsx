@@ -10,6 +10,7 @@ import TriadPanel from "../components/luxe/TriadPanel";
 import Loadout from "../components/luxe/Loadout";
 import Monologue from "../components/luxe/Monologue";
 import HeroSubtitle from "../components/luxe/Subtitle";
+import VhsTape from "../components/luxe/VhsTape";
 import { gsap, useGSAP, onIntroDone } from "../luxe/gsap";
 import useMotionPreference from "../utils/useMotionPreference";
 import { profile } from "../content/profile";
@@ -20,11 +21,22 @@ import { capabilities, stack } from "../content/capabilities";
 // Home shows the first three operations; the archive holds the rest.
 const featured = projects.slice(0, 3);
 
+// Phones, weak devices and the moment before the 3D chunk arrives: the same tape, in CSS.
+function FlatTape() {
+  return (
+    <div className="lx-core-fallback">
+      <VhsTape title="NY-07" subtitle="Backend · Security · DevOps" sticker="▶ REC" />
+    </div>
+  );
+}
+
 const HeroCore = lazy(() => import("../components/luxe/HeroCore"));
 
 function canRenderCore() {
   const nav = navigator;
   if (nav.connection?.saveData) return false;
+  // Phones get the CSS tape: the 3D one is 200px wide there and costs ~1s of main thread.
+  if (window.matchMedia("(max-width: 767px)").matches) return false;
   if ((nav.deviceMemory && nav.deviceMemory < 4) || (nav.hardwareConcurrency && nav.hardwareConcurrency < 4)) {
     return false;
   }
@@ -247,11 +259,11 @@ export default function Home() {
                 <div className="lx-tv__screen">
                   <div className="lx-core-wrap">
                     {webgl ? (
-                      <Suspense fallback={<div className="lx-core-fallback" aria-hidden="true" />}>
+                      <Suspense fallback={<FlatTape />}>
                         <HeroCore reduced={reduced} />
                       </Suspense>
                     ) : (
-                      <div className="lx-core-fallback" aria-hidden="true" />
+                      <FlatTape />
                     )}
                   </div>
                 </div>

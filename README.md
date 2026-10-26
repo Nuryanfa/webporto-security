@@ -1,93 +1,89 @@
 <div align="center">
 
 # Muhamad Nur Yanfa
-### Backend · Security · DevOps
 
-**Built to endure. Secure by design.**
+**Backend · Security · DevOps · Cloud**
 
-A personal portfolio connecting backend engineering, defensive security, and reliable software delivery through a cybersecurity × anime-inspired interface.
+*Built to endure. Secure by design.*
 
-[Explore the live portfolio](https://nuryanfa.vercel.app/) · [Quick overview](https://nuryanfa.vercel.app/overview) · [Selected work](https://nuryanfa.vercel.app/archive) · [Contact](https://nuryanfa.vercel.app/network)
+I build backend systems, define security boundaries, and improve the delivery paths that keep software reliable. Based in Bandung, Indonesia, open to backend, security, DevOps, and cloud roles.
+
+[Live portfolio](https://nuryanfa.vercel.app/) · [One-page overview](https://nuryanfa.vercel.app/overview) · [Selected work](https://nuryanfa.vercel.app/archive) · [Contact](https://nuryanfa.vercel.app/network)
 
 </div>
 
 ---
 
-[![Portfolio homepage showing the interactive Nexus, portrait, and navigation nodes](docs/images/portfolio-desktop.png)](https://nuryanfa.vercel.app/)
+[![Portfolio home: the name on a slanted orange band, role chips, and a VHS tape playing on a CRT screen](docs/images/portfolio-desktop.png)](https://nuryanfa.vercel.app/)
 
 <details>
-<summary>View the mobile experience</summary>
+<summary>More screens: the work archive and the mobile home</summary>
 
-<img src="docs/images/portfolio-mobile.png" width="390" alt="Mobile portfolio with the Nexus, section controls, and bottom navigation" />
+<br />
+
+<img src="docs/images/portfolio-work.png" alt="Work page: a target list of seven projects beside the selected project's title, summary and repository link" />
+
+<img src="docs/images/portfolio-mobile.png" width="390" alt="Mobile home with the CRT screen, name band and primary actions in the first screen" />
 
 </details>
 
-## About the portfolio
+## Start here
 
-I am Muhamad Nur Yanfa, based in Bandung, Indonesia. I build backend systems, define security boundaries, and improve the delivery paths that keep software reliable.
-
-This repository contains the frontend of my portfolio. The backend, infrastructure, and security projects featured on the site live in their own linked repositories.
-
-The experience uses an interactive **Nexus** as its entry point: select a node to preview a section, then open it to explore the work. A **Quick overview** offers a direct route to the essentials.
-
-## Explore
-
-| Section | What you will find |
+| If you have | Go to |
 | --- | --- |
-| [Nexus](https://nuryanfa.vercel.app/) | Interactive identity, projects, experience, and contact nodes |
-| [Operations](https://nuryanfa.vercel.app/archive) | Seven selected projects, scope and status labels, source links, and three-stage concept maps |
-| [Trace](https://nuryanfa.vercel.app/timeline) | DevOps, fullstack, and backend experience |
-| [Channel](https://nuryanfa.vercel.app/network) | Email, GitHub, and LinkedIn contact channels |
-| [Quick overview](https://nuryanfa.vercel.app/overview) | A concise summary of work, experience, and ways to connect |
+| 30 seconds | [One-page overview](https://nuryanfa.vercel.app/overview): roles, projects, experience and credentials, printable as a PDF |
+| 2 minutes | [Selected work](https://nuryanfa.vercel.app/archive): each project's scope, status, architecture stages and source |
+| Code to read | [AegisGate](https://github.com/Nuryanfa/AegisGate), the Go API gateway behind most of the backend and security claims |
 
-## Selected engineering work
+## Selected work
 
-Project statuses below reflect the portfolio content at the time of this documentation.
+Statuses are labelled honestly on the site and repeated here.
 
-| Project | Focus | Portfolio status |
+| Project | Focus | Status |
 | --- | --- | --- |
-| [AegisGate](https://github.com/Nuryanfa/AegisGate) | Go API gateway with request security, Redis-backed limits, observability, and a gRPC control plane | v0.8 released; production-like, not production-ready |
+| [AegisGate](https://github.com/Nuryanfa/AegisGate) | Go API gateway: request security, Redis-backed rate limits, bounded WAF checks, observability, gRPC control plane | v0.8 released; production-like, not production-ready |
 | [TaskForge](https://github.com/Nuryanfa/TaskForge) | Durable background jobs and workflow orchestration in Go | v0.1 foundation; workers and database-backed execution are planned |
-| [SecureNet Enterprise Lab](https://github.com/Nuryanfa/securenet-enterprise-lab) | Network segmentation, detection engineering, and attack simulations | Deployed lab |
-| [Zenith Task Manager](https://github.com/Nuryanfa/TaskManager) | MERN task management, Kanban planning, and focus sessions | Repository |
+| [SecureNet Enterprise Lab](https://github.com/Nuryanfa/securenet-enterprise-lab) | Network segmentation, detection with Wazuh and Suricata, MITRE ATT&CK mapping | Deployed lab |
+| [Zenith Task Manager](https://github.com/Nuryanfa/TaskManager) | MERN task management with Kanban planning and focus sessions | Repository |
 | [Smart Sprint Training System](https://github.com/Nuryanfa/DeteksiPose-Lari) | Markerless pose estimation and athlete session analysis | In development |
-| Certificate Validation System | X.509 validation architecture and explicit trust boundaries | Prototype; no dedicated source repository linked |
+| Certificate Validation System | X.509 validation architecture with explicit trust boundaries | Prototype; no dedicated repository |
 | [E-Commerce SQA](https://github.com/Nuryanfa/e-commerse-sqa) | Critical commerce flows and repeatable quality workflows | Archived |
 
-Concept maps on the site explain project themes; they are not live infrastructure telemetry. Follow each source link for implementation details.
+The three-stage architecture maps on the site explain each project's design; they are not live telemetry. Follow the source links for implementation detail.
 
-## Experience highlights
+## Experience
 
-- **DevOps Engineer — NTI:** server and hosting setup, team delivery workflows, and CI/CD.
-- **Fullstack Developer — SI MANTAP:** university application features and student guidance workflows.
-- **Backend Engineer Intern — Digitak Labs:** API development, relational data design, and GitLab delivery workflows.
+- **DevOps Engineer, Nuansa Teknologi Indonesia (current):** production servers and hosting, the team's code workflow, and CI/CD pipelines.
+- **Fullstack Developer, Universitas Kebangsaan (SI MANTAP):** university application features and student guidance workflows.
+- **Backend Engineer Intern, Digitak Labs:** API development, relational data design, and GitLab delivery workflows.
 
-[Explore the experience timeline →](https://nuryanfa.vercel.app/timeline)
+**Credentials:** 23 Google Cloud skill badges on [Google Skills](https://www.skills.google/public_profiles/7e1b2448-d30c-499f-a889-034966a54a1b), covering networking and IAM, compute and serverless delivery, and data platforms.
 
-## Interface and interaction
+## About this site
 
-- **Cybersecurity × anime visual direction:** dark surfaces, restrained teal accents, fine circuit lines, a portrait core, and an abstract city horizon.
-- **Purposeful motion:** route transitions, staggered content reveals, shared selection indicators, spring-based interactions, and brief signal responses.
-- **Responsive navigation:** a desktop rail, mobile bottom navigation, and touch-friendly section and project controls.
-- **Motion preferences:** Device, Full, and Reduced modes, with device preferences respected in Device mode and the selection saved locally.
-- **Keyboard support:** skip-to-content navigation and project/contact tabs with arrow-key, Home, and End selection.
-- **Shareable project selections:** project query parameters and session-based selection memory.
+The portfolio is framed as an anime series: every page is an episode with its own title card, and the interface borrows from Zenless Zone Zero and Persona (slanted panels, sticker labels, CRT screens and VHS tapes) over a warm orange and graphite palette.
+
+- **Motion with a purpose.** Pages change like a TV channel: the screen closes to a line, the episode card appears, and the next page opens. The new page renders while the screen is dark, so the switch stays smooth on heavy pages.
+- **A cel-shaded 3D tape** plays on the home screen (three.js, toon shading with an inverted-hull outline). It loads after the page is idle, pauses off-screen, and falls back to CSS on weak devices.
+- **Readable first.** Project title, summary and repository link come before decoration; every page name matches the navigation.
+- **Accessible by default.** Reduced motion is respected (Device, Full and Reduced modes), touch targets are at least 44px, headings are ordered, and the archive works by keyboard (arrow keys, Home, End, and J/K).
+- **Extras.** Number keys switch pages, `?` opens the keyboard map, `` ` `` opens a small terminal, and there is a hidden drill to find.
 
 ## Stack
 
 | Layer | Technology |
 | --- | --- |
-| Interface | React 18 · React Router |
-| Build tooling | Vite |
-| Styling | Tailwind CSS · custom CSS |
-| Motion | Framer Motion · Anime.js |
-| Icons | Lucide React |
-| Typography | Space Grotesk · JetBrains Mono |
-| Hosting and measurements | Vercel · Vercel Analytics · Speed Insights |
+| Interface | React 18 · React Router 7 |
+| Build | Vite 5, plus a prerender step that writes per-route HTML with Open Graph tags |
+| Motion | GSAP 3 (ScrollTrigger, SplitText) · Lenis smooth scroll |
+| 3D | three.js · React Three Fiber |
+| Styling | Hand-written CSS with design tokens |
+| Icons and type | Lucide · Barlow Condensed · Barlow · JetBrains Mono · Shippori Mincho (kanji) |
+| Hosting | Vercel · Vercel Analytics · Speed Insights |
 
 ## Run locally
 
-Use Node.js 22 or newer and npm.
+Use Node.js 22 or newer.
 
 ```bash
 git clone https://github.com/Nuryanfa/webporto-security.git
@@ -96,25 +92,21 @@ npm ci
 npm run dev
 ```
 
-Open the local URL printed by Vite, usually `http://localhost:5173`. No application secrets or database setup are required for this frontend.
+Open the URL Vite prints, usually `http://localhost:5173`. The site needs no secrets or database.
 
 | Command | Purpose |
 | --- | --- |
 | `npm run dev` | Start the development server |
-| `npm run build` | Create the production build in `dist/` |
+| `npm run build` | Build to `dist/` and prerender each route |
 | `npm run preview` | Serve the production build locally |
-| `npm run test:smoke` | Check server-rendered pages, project deep links, and content consistency |
+| `npm run test:smoke` | Render every page and project deep link, and check the content stays consistent |
 
-The smoke check validates rendering and data relationships; it does not replace browser testing of motion, keyboard navigation, or mobile layouts.
+The smoke test checks rendering and data; motion, keyboard and mobile layouts still need a check in the browser.
 
-## Maintain the portfolio
+## Editing content
 
-Content lives in `src/content/`: profile positioning, projects, experience, and concept-map stages can be updated without rewriting the page layout.
+Everything you would want to change lives in `src/content/`: profile, projects, experience, capabilities, credentials, page episodes and SEO. See [the development guide](docs/DEVELOPMENT.md) for the source layout, editing rules, verification and deployment.
 
-See [the development guide](docs/DEVELOPMENT.md) for the source layout, content-editing rules, verification steps, and deployment settings.
+## Contact
 
-## Connect
-
-[GitHub](https://github.com/Nuryanfa) · [LinkedIn](https://www.linkedin.com/in/muhamad-nur-yanfa-069036368) · [Email](mailto:nuryanfa93@gmail.com)
-
-Built and maintained by **Muhamad Nur Yanfa**.
+[GitHub](https://github.com/Nuryanfa) · [LinkedIn](https://www.linkedin.com/in/muhamad-nur-yanfa-069036368) · [Email, via the contact page](https://nuryanfa.vercel.app/network)
