@@ -833,7 +833,6 @@ body {
   -webkit-text-stroke: 1px rgba(255, 107, 26, 0.6);
   user-select: none;
 }
-.lx-hero__triad { display: flex; justify-content: center; width: 100%; }
 .lx-hero__foot {
   display: flex;
   justify-content: space-between;
@@ -850,83 +849,7 @@ body {
 @keyframes lx-bob { 50% { transform: translateY(4px); } }
 
 /* Triad decision panel */
-.lx-triad {
-  width: min(460px, 100%);
-  border: 1px solid var(--lx-line-2);
-  background: rgba(20, 20, 25, 0.82);
-  backdrop-filter: blur(8px);
-  clip-path: var(--lx-chamfer);
-}
-.lx-triad__head {
-  display: flex;
-  justify-content: space-between;
-  padding: 9px 14px 8px;
-  background: var(--lx-orange);
-  color: var(--lx-bg);
-  font: 800 12px/1 var(--lx-cond);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-}
-.lx-triad__head [lang="ja"] { letter-spacing: 0.1em; }
-.lx-triad__cores {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  padding: 12px;
-}
-.lx-triad__core {
-  --c: var(--lx-orange);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 10px 10px 9px;
-  border: 1px solid var(--lx-line);
-  background: rgba(244, 244, 240, 0.02);
-  transition: border-color 0.3s, background 0.3s;
-}
-.lx-triad__core small {
-  font: 600 10px/1 var(--lx-cond);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--lx-ink-3);
-}
-.lx-triad__kanji { font-size: 26px; font-weight: 800; line-height: 1.1; color: var(--lx-ink); }
-.lx-triad__core b {
-  font: 700 12px/1 var(--lx-cond);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--lx-ink-2);
-}
-.lx-triad__core em {
-  margin-top: 6px;
-  padding: 4px 6px 3px;
-  font: 700 10.5px/1 var(--lx-cond);
-  font-style: normal;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  border: 1px solid var(--lx-line);
-  color: var(--lx-ink-3);
-}
-.lx-triad__core.is-busy {
-  border-color: var(--lx-amber);
-  animation: lx-busy 0.5s steps(2) infinite;
-}
-.lx-triad__core.is-busy em { color: var(--lx-amber); border-color: var(--lx-amber); }
-.lx-triad__core.is-ok { border-color: color-mix(in srgb, var(--lx-lime) 45%, transparent); }
-.lx-triad__core.is-ok em { background: var(--lx-lime); border-color: var(--lx-lime); color: var(--lx-bg); }
 @keyframes lx-busy { 50% { background: rgba(56, 217, 245, 0.12); } }
-.lx-triad__verdict {
-  display: flex;
-  justify-content: space-between;
-  padding: 9px 14px 10px;
-  border-top: 1px solid var(--lx-line);
-  font: 700 11.5px/1 var(--lx-cond);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--lx-amber);
-}
-.lx-triad__verdict.is-go { color: var(--lx-lime); }
 
 /* ── Marquee band ─────────────────────────────────────────────────────── */
 .lx-band {
@@ -2652,13 +2575,11 @@ html[data-alert="red"] {
   .lx-icon-btn { display: none; }
   .lx-menu-btn { display: block; }
 
-  /* Hero stacks: core, then name, then the triad panel. */
+  /* Hero stacks: the CRT screen, then the name. */
   .lx-hero__grid { grid-template-columns: 1fr; gap: 20px; }
   .lx-hero__visual { display: contents; }
   .lx-hero__stage { order: -1; max-width: 520px; margin: 0 auto; }
   .lx-core-wrap { max-width: min(62vw, 380px); }
-  .lx-hero__triad { order: 1; }
-  .lx-triad { width: 100%; }
 
   .lx-gear__head { grid-template-columns: 1fr; }
   .lx-caps__grid { grid-template-columns: 1fr; }
@@ -2722,7 +2643,6 @@ html[data-alert="red"] {
   .lx-hero__actions .lx-btn { flex: 1 1 100%; }
   .lx-hero__foot span:not(:first-child) { display: none; }
   .lx-hero__kanji { font-size: clamp(44px, 13vw, 80px); }
-  .lx-triad__kanji { font-size: 22px; }
 
   .lx-work__track { grid-template-columns: 1fr; }
   .lx-scope { --size: 92px; }
@@ -2792,7 +2712,6 @@ html[data-motion="reduced"] .lx-alert-chip i,
 html[data-motion="reduced"] .lx-status i,
 html[data-motion="reduced"] .lx-header__status i,
 html[data-motion="reduced"] .lx-404__alert,
-html[data-motion="reduced"] .lx-triad__core,
 html[data-motion="reduced"] .lx-scroll-cue svg,
 html[data-motion="reduced"] .lx-core-fallback .lx-vhs,
 html[data-motion="reduced"] .lx-scope__ring,
@@ -2879,7 +2798,6 @@ html[data-motion="reduced"] .lx-trace__fill { transform: none; }
 .lx-slot,
 .lx-tool,
 .lx-readout,
-.lx-triad,
 .lx-keymap__panel,
 .lx-contact__aside,
 .lx-brief__portrait { clip-path: none; }
@@ -3294,26 +3212,6 @@ html[data-motion="reduced"] .lx-trace__fill { transform: none; }
 html[data-motion="reduced"] .lx-statusline i { animation: none; }
 
 /* TRIAD votes: text + LED, not filled chips. */
-.lx-triad__core em,
-.lx-triad__core.is-ok em,
-.lx-triad__core.is-busy em {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0;
-  border: 0;
-  background: none;
-}
-.lx-triad__core em::before {
-  content: "";
-  width: 6px;
-  height: 6px;
-  background: var(--lx-ink-3);
-}
-.lx-triad__core.is-ok em { color: var(--lx-lime); }
-.lx-triad__core.is-ok em::before { background: var(--lx-lime); box-shadow: 0 0 6px var(--lx-lime); }
-.lx-triad__core.is-busy em::before { background: var(--lx-amber); }
-.lx-triad__core.is-ok { border-color: var(--lx-line); }
 .lx-avail__zone {
   font: 600 12px/1 var(--lx-cond);
   letter-spacing: 0.2em;
@@ -3828,7 +3726,6 @@ html[data-motion="reduced"] .lx-tape::after { animation: none; }
 
 /* Slanted tabs: episode tag, panel headers, target list label. */
 .lx-ep-tag,
-.lx-triad__head,
 .lx-ops__index::before,
 .lx-dossier__outcome > span,
 .lx-scan__bar {
@@ -3844,7 +3741,6 @@ html[data-motion="reduced"] .lx-tape::after { animation: none; }
   background: var(--lx-orange);
   transform: skewX(-12deg);
 }
-.lx-triad__head,
 .lx-ops__index::before {
   align-self: flex-start;
   width: fit-content;
@@ -3854,10 +3750,8 @@ html[data-motion="reduced"] .lx-tape::after { animation: none; }
   clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
   padding-inline: 16px;
 }
-.lx-triad__head { display: flex; gap: 18px; }
 
 /* Panels */
-.lx-triad,
 .lx-ops__index,
 .lx-flow,
 .lx-contact__aside,
@@ -3871,7 +3765,6 @@ html[data-motion="reduced"] .lx-tape::after { animation: none; }
   backdrop-filter: none;
   clip-path: none;
 }
-.lx-triad { display: flex; flex-direction: column; margin-top: 14px; overflow: visible; }
 @media (min-width: 1024px) {
   .lx-ops__index { margin-top: 14px; overflow: visible; }
 }
@@ -4260,11 +4153,6 @@ html[data-motion="reduced"] .lx-tv__live i { animation: none; }
 }
 
 /* Squad panel: each member wears its capability colour. */
-.lx-triad__core { border-top: 3px solid var(--c); }
-.lx-triad__kanji { color: var(--c); }
-.lx-triad__core.is-ok em { color: var(--c); }
-.lx-triad__core.is-ok em::before { background: var(--c); box-shadow: none; }
-.lx-triad__verdict.is-go { color: var(--lx-pop-2); }
 
 /* Mincho now only speaks kanji; names and quotes take the heading voice. */
 .lx-hero__title,
@@ -4555,3 +4443,49 @@ html[data-motion="reduced"] .lx-vhs__window i { animation: none; }
 .lx-next:hover .lx-vhs__window i,
 .lx-next:focus-visible .lx-vhs__window i { animation-play-state: running; animation-duration: 0.5s; }
 .lx-next__ch { z-index: 2; }
+
+/* ==========================================================================
+   Fixes — loadout pressed+hover, role chips, live dot, contact alignment
+   ========================================================================== */
+
+/* A selected tool keeps its orange fill while hovered (hover set a dark fill under dark text). */
+.lx-tool[aria-pressed="true"],
+.lx-tool[aria-pressed="true"]:hover {
+  background: var(--lx-orange);
+  color: var(--lx-bg);
+}
+
+/* Role chips lift onto their shadow, like every other sticker control. */
+.lx-agent__chips li {
+  transition: transform 0.2s var(--lx-pop), box-shadow 0.2s var(--lx-pop);
+}
+.lx-agent__chips li:hover {
+  transform: skewX(-12deg) translate(-3px, -3px);
+  box-shadow: 7px 7px 0 var(--lx-orange);
+}
+.lx-agent__chips li:last-child:hover { box-shadow: 7px 7px 0 var(--lx-lime); }
+
+/* Live dot: a soft breathing glow with a widening ring, instead of a hard blink. */
+.lx-statusline--go i {
+  position: relative;
+  border-radius: 50%;
+  background: var(--lx-lime);
+  box-shadow: none;
+  animation: lx-live 2.4s ease-in-out infinite;
+}
+.lx-statusline--go i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--lx-lime);
+  animation: lx-live-ring 2.4s ease-out infinite;
+}
+@keyframes lx-live { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+@keyframes lx-live-ring { 0% { transform: scale(1); opacity: 0.7; } 100% { transform: scale(2.6); opacity: 0; } }
+html[data-motion="reduced"] .lx-statusline--go i,
+html[data-motion="reduced"] .lx-statusline--go i::after { animation: none; }
+
+/* Contact: the side panel lines up with the channel list, and the hover fill stays inside it. */
+.lx-contact__aside { position: relative; top: auto; }
+.lx-channel::before { inset: 0; }

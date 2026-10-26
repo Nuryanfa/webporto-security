@@ -6,7 +6,6 @@ import MagneticLink from "../components/MagneticLink";
 import SplitReveal from "../components/luxe/SplitReveal";
 import Marquee from "../components/luxe/Marquee";
 import ProjectCard from "../components/luxe/ProjectCard";
-import TriadPanel from "../components/luxe/TriadPanel";
 import Loadout from "../components/luxe/Loadout";
 import Monologue from "../components/luxe/Monologue";
 import HeroSubtitle from "../components/luxe/Subtitle";
@@ -175,11 +174,6 @@ export default function Home() {
         {/* ── Hero ───────────────────────────────────────────── */}
         <section className="lx-hero" aria-labelledby="hero-title">
           <div className="lx-hero__meta" data-hero-fade>
-            <span className="lx-statusline">
-              <b>EP.01</b>
-              <span lang="ja">第壱話 · 起動</span>
-              <span>System online</span>
-            </span>
             <span className="lx-statusline lx-statusline--go">
               <i />
               Open to backend · security · DevOps · cloud roles
@@ -267,9 +261,6 @@ export default function Home() {
                     )}
                   </div>
                 </div>
-              </div>
-              <div className="lx-hero__triad" data-hero-fade>
-                <TriadPanel />
               </div>
             </div>
           </div>
